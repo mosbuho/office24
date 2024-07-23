@@ -1,3 +1,88 @@
+# 프로젝트 구조 및 설정 가이드
+
+## 프로젝트 구조
+
+```
+project-root/
+│
+├── backend/
+│   ├── table/
+│   │   ├── controller/
+│   │   ├── entity/
+│   │   ├── mapper/
+│   │   └── service/
+│   ├── table/
+│   │   ├── controller/
+│   │   ├── entity/
+│   │   ├── mapper/
+│   │   └── service/
+│   └── ...
+│
+└── frontend/
+    ├── assets/
+    ├── components/
+    ├── context/
+    ├── hooks/
+    ├── pages/
+    ├── services/
+    ├── styles/
+    └── utils/
+```
+
+### 백엔드 (Spring Boot)
+
+- controller: API 엔드포인트 정의
+- entity: 데이터베이스 모델 정의
+- mapper: 데이터베이스 쿼리 매핑
+- service: 비즈니스 로직 구현
+
+### 프론트엔드 (React)
+
+- assets: 이미지, 폰트 등의 정적 파일
+- components: 재사용 가능한 React 컴포넌트
+- context: React Context API를 사용한 상태 관리
+- hooks: 커스텀 React Hooks
+- pages: 라우트에 해당하는 페이지 컴포넌트
+- services: API 호출 및 데이터 처리 로직
+- styles: 전역 스타일 및 테마 설정
+- utils: 유틸리티 함수 및 헬퍼 모듈
+
+## 의존성 설치
+
+### 백엔드 (Maven)
+
+   ```
+   mvn clean install
+   ```
+
+### 프론트엔드 (npm)
+
+   ```
+   npm install
+   ```
+
+## 프로젝트 실행
+
+### 백엔드 실행
+
+백엔드 디렉토리에서:
+```
+mvn spring-boot:run
+```
+
+### 프론트엔드 실행
+
+프론트엔드 디렉토리에서:
+```
+npm start
+```
+
+<br>
+
+---
+
+<br>
+
 # 프로젝트 브랜치 관리 절차
 
 브랜치를 나누어 프로젝트를 진행하기 위한 절차
