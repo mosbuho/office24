@@ -47,7 +47,6 @@ target/
 .DS_Store
 Thumbs.db
 
-
 # ============================================================================
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
@@ -74,3 +73,7 @@ frontend/.env.production.local
 frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
+
+# ============================================================================
+
+application-secrets.properties
