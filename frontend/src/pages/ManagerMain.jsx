@@ -1,12 +1,17 @@
 import React from 'react';
+import { Routes, Route} from 'react-router-dom';
+import ManagerLogin from './ManagerLogin';
+import ManagerDashboard from './ManagerDashboard';
 
-function Main() {
+function ManagerMain() {
   return (
-    <div>
-      <h1>Manager Main Page</h1>
-      <div></div>
-    </div>
+    <>
+        <Routes>
+          <Route path="login" element={<ManagerLogin />} />
+          <Route path="dashboard" element={ <ManagerDashboard /> } />
+        </Routes>
+    </>
   );
 }
 
-export default Main;
+export default ManagerMain;

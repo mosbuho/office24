@@ -1,0 +1,27 @@
+/* 헤더 컴포넌트 css */
+.header_container {
+    width: 80%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.logout_button {
+    background: none;
+    border: none;
+    color: #2c3e50;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 100px;
+}
