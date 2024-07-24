@@ -77,3 +77,5 @@ frontend/yarn-error.log*
 # ============================================================================
 
 application-secrets.properties
+
+office24-user.sql
