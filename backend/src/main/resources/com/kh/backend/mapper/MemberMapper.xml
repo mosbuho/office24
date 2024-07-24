@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.backend.mapper.MemberMapper">
+    <resultMap id="resultMapMember" type="com.kh.backend.entity.Member">
+        <result property="no" column="no"/>
+        <result property="id" column="id"/>
+        <result property="pw" column="pw"/>
+        <result property="name" column="name"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="birth" column="birth"/>
+        <result property="gender" column="gender"/>
+        <result property="regDate" column="reg_date"/>
+    </resultMap>
+    <insert id="create">
+        insert into MEMBER(id, pw, name, phone,email, birth,gender,reg_date)
+        values (#{id},#{pw},#{name},#{phone},#{email},#{birth},#{gender},#{regDate})
+    </insert>
+    <update id="update">
+        update MEMBER set id=#{id}, pw=#{pw}, name=#{name}, phone=#{phone}, email=#{email}, post=#{post},
+                          address=#{address},birth=#{birth},gender=#{gender},reg_date=#{regDate} where no=#{no}
+    </update>
+    <select id="read" resultMap="resultMapMember">
+        select id,pw,name,phone,email,post,address,birth,gender,reg_date from MEMBER where no=#{no}
+    </select>
+    <delete id="delete">
+        delete from MEMBER where no=#{no}
+    </delete>
+</mapper>
