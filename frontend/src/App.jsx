@@ -1,25 +1,30 @@
-import { useState } from 'react'
-import './App.css'
+import {createContext, useCallback, useMemo, useReducer, useRef} from 'react';
+import './App.css';
+import {Routes, Route} from 'react-router-dom';
+
+import Login from "./pages/Login.jsx";
+import MemberRegister from "./pages/MemberRegister.jsx";
+import Home from "./pages/Home.jsx";
+import MemberUpdate from "./pages/MemberUpdate.jsx";
+import MemberDelete from "./pages/MemberDelete.jsx";
+import Payment from "./pages/Payment.jsx";
+
+
+export const UserStateContext = createContext();
+export const UserDispatchContext = createContext();
 
 function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    return (
+        <Routes>
+            <Route path={"/"} element={<Home/>}/>
+            <Route path="/member/login" element={<Login/>}/>
+            <Route path="/member/register" element={<MemberRegister/>}/>
+            <Route path={"/member/update"}  element={<MemberUpdate/>}/>
+            <Route path={"/member/delete"} element={<MemberDelete/>}/>
+            <Route path={"/member/payment"} element={<Payment/>}/>
+        </Routes>
+    )
 }
 
 export default App
