@@ -11,11 +11,6 @@ project-root/
 │   │   ├── entity/
 │   │   ├── mapper/
 │   │   └── service/
-│   ├── table/
-│   │   ├── controller/
-│   │   ├── entity/
-│   │   ├── mapper/
-│   │   └── service/
 │   └── ...
 │
 └── frontend/
@@ -60,22 +55,6 @@ project-root/
    ```
    npm install
    ```
-
-## 프로젝트 실행
-
-### 백엔드 실행
-
-백엔드 디렉토리에서:
-```
-mvn spring-boot:run
-```
-
-### 프론트엔드 실행
-
-프론트엔드 디렉토리에서:
-```
-npm start
-```
 
 <br>
 
