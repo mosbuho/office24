@@ -1,6 +1,6 @@
-const Footer = () => {
+const MemberFooter = () => {
     return(
         <div className={"footer"}>Footer</div>
     )
 }
-export default Footer;
+export default MemberFooter;

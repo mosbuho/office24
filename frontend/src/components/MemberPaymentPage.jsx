@@ -1,6 +1,6 @@
-const PaymentPage = () => {
+const MemberPaymentPage = () => {
     return (
         <div className={"paymentPage"}>결제페이지</div>
     )
 }
-export default PaymentPage;
+export default MemberPaymentPage;

@@ -1,0 +1,114 @@
+.login-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 40px;
+    text-align: center;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.logo {
+    font-size: 40px;
+    font-weight: bold;
+    color: #6363d2;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.loginForm {
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.login-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #6363d2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.login-button:hover {
+    background-color: #5151a6;
+}
+
+.help-links {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.help-links a {
+    margin: 0 10px;
+    color: #6363d2;
+    text-decoration: none;
+}
+
+.help-links a:hover {
+    text-decoration: underline;
+}
+
+.apis {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.api-button {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.api-button img.api-logo {
+    margin-right: 10px;
+}
+
+.api-button:hover {
+    background-color: #f0f0f0;
+}
+
+.api-button:last-child {
+    margin-bottom: 0;
+}
+
+.naver-login {
+    border-color: #1ec800;
+}
+
+.facebook-login {
+    border-color: #1877f2;
+}
+
+.google-login {
+    border-color: #db4437;
+}
