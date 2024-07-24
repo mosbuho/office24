@@ -1,0 +1,82 @@
+/* 대쉬보드 페이지 css */
+.main-content {
+    width: 160%;
+    margin: 450px 0 0 -80px;
+    padding: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mini-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    height: 100px;
+}
+
+.mini-stats {
+    width: 20%;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.product,
+.reserve,
+.statistics {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.product h3,
+.reserve h3,
+.statistics h3 {
+    margin: 0 0 10px;
+}
+
+.more-link {
+    font-size: 14px;
+    text-decoration: none;
+    color: #3498db;
+}
+
+.more-link:hover {
+    text-decoration: underline;
+}
+
+.product button,
+.reserve button {
+    margin-right: 10px;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+table th,
+table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.chart-container {
+    width: 100%;
+    height: 400px;
+}

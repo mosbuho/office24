@@ -1,0 +1,50 @@
+/* 사이드바 컴포넌트 css */
+.sidebar_container {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+
+}
+
+.sidebar {
+    width: 20%;
+    height: 100vh;
+    background-color: white;
+    color: #2c3e50;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar .logo {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 20px 0;
+    cursor: pointer;
+    color: #2c3e50;
+}
+
+.button_container {
+    width: 75px;
+    margin-left: -33px;
+    margin-top: 10px;
+}
+
+.sidebar_button {
+    width: 100%;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #2c3e50;
+    display: block;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.sidebar_button:hover {
+    background-color: #34495e;
+    color: white;
+}
