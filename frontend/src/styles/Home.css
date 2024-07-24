@@ -1,0 +1,25 @@
+.header {
+    width: 1200px;
+    height: 100px;
+    border: 1px solid black;
+}
+.low{
+    width: 1200px;
+    height: 500px;
+    border: 1px solid black;
+}
+.new{
+    width: 1200px;
+    height: 500px;
+    border: 1px solid black;
+}
+.footer{
+    width: 1200px;
+    height: 100px;
+    border: 1px solid black;
+}
+.apis{
+    width: 400px;
+    height: 300px;
+    border: 1px solid black;
+}
