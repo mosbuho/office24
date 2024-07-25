@@ -1,5 +1,103 @@
-.registerForm {
-    width: 800px;
-    height: 1000px;
-    border: 1px solid black;
+body {
+    padding: 40px;
+    margin: 0;
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.memberRegister {
+    width: 600px;
+    padding: 40px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.memberRegister h1 {
+    font-size: 36px;
+    font-weight: bold;
+    color: #6363d2;
+    margin-bottom: 30px;
+}
+
+.memberRegister .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.memberRegister .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.memberRegister .form-group input,
+.memberRegister .form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.memberRegister .form-group input:focus,
+.memberRegister .form-group select:focus {
+    border-color: #6363d2;
+    outline: none;
+}
+
+.memberRegister .form-group .error {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.memberRegister .button1,
+.memberRegister .button2 {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.memberRegister .button1 {
+    background-color: #6363d2;
+    color: white;
+}
+
+.memberRegister .button1:hover {
+    background-color: #4a4a9d;
+}
+
+.memberRegister .button2 {
+    background-color: #1877f2;
+    color: white;
+}
+
+.memberRegister .button2:hover {
+    background-color: #145dbf;
+}
+
+.id-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.id-group input {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.id-group button {
+    white-space: nowrap;
 }
