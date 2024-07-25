@@ -3,25 +3,35 @@
 ## 프로젝트 구조
 
 ```
-project-root/
+office24/
 │
 ├── backend/
 │   ├── table/
-│   │   ├── controller/
-│   │   ├── entity/
-│   │   ├── mapper/
-│   │   └── service/
+│   │   ├── controller
+│   │   ├── entity
+│   │   ├── mapper
+│   │   └── service
 │   └── ...
 │
 └── frontend/
     ├── assets/
     ├── components/
-    ├── context/
-    ├── hooks/
+    │   ├── member/
+    │   ├── manager/
+    │   └── admin/
     ├── pages/
-    ├── services/
-    ├── styles/
-    └── utils/
+    │   ├── member/
+    │   ├── manager/
+    │   └── admin/
+    └── styles/
+        ├── components/
+        │   ├── member/
+        │   ├── manager/
+        │   └── admin/
+        └── pages/
+            ├── member/
+            ├── manager/
+            └── admin/
 ```
 
 ### 백엔드 (Spring Boot)
@@ -35,12 +45,8 @@ project-root/
 
 - assets: 이미지, 폰트 등의 정적 파일
 - components: 재사용 가능한 React 컴포넌트
-- context: React Context API를 사용한 상태 관리
-- hooks: 커스텀 React Hooks
 - pages: 라우트에 해당하는 페이지 컴포넌트
-- services: API 호출 및 데이터 처리 로직
 - styles: 전역 스타일 및 테마 설정
-- utils: 유틸리티 함수 및 헬퍼 모듈
 
 ## 의존성 설치
 

@@ -1,0 +1,16 @@
+.header {
+    height: 80px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.nav {
+    height: 80px;
+    text-align: center;
+}
+
+.nav input {
+    width: 50%;
+    height: 65px;
+}
