@@ -1,5 +1,107 @@
-.paymentPage {
-    width: 1200px;
-    height: 2000px;
-    border: 1px solid black;
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.member-payment-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.member-payment-container {
+    width: 80%;
+    max-width: 1400px;
+    height: auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: repeat(5, auto);
+    gap: 20px;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+}
+
+.member-payment-form {
+    display: contents;
+}
+
+.member-payment-form-payment,
+.member-payment-form-start-date,
+.member-payment-form-end-date,
+.member-payment-form-people,
+.member-payment-form-payment-method,
+.member-payment-photo,
+.member-payment-title,
+.member-payment-description,
+.member-payment-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+.member-payment-form-payment {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.member-payment-form-start-date {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.member-payment-form-end-date {
+    grid-column: 1;
+    grid-row: 3;
+}
+
+.member-payment-form-people {
+    grid-column: 1;
+    grid-row: 4;
+}
+
+.member-payment-form-payment-method {
+    grid-column: 1;
+    grid-row: 5;
+}
+
+.member-payment-photo {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+}
+
+.member-payment-title {
+    grid-column: 3;
+    grid-row: 1;
+}
+
+.member-payment-description {
+    grid-column: 3;
+    grid-row: 2 / span 2;
+}
+
+.member-payment-details {
+    grid-column: 2 / span 2;
+    grid-row: 4 / span 2;
+}
+
+input, select {
+    margin-top: 10px;
+    padding: 10px;
+    width: calc(100% - 20px);
+    box-sizing: border-box;
 }

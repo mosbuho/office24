@@ -9,6 +9,7 @@ import MemberPayment from './pages/member/MemberPayment';
 import MemberSearch from './pages/member/MemberSearch';
 import ManagerMain from './pages/manager/ManagerMain';
 import ManagerLogin from './pages/manager/ManagerLogin';
+import MemberPaymentList from "./pages/member/MemberPaymentList.jsx";
 
 function App() {
   return (
@@ -21,6 +22,9 @@ function App() {
         <Route path="/member/update" element={<MemberUpdate />} />
         <Route path="/member/delete" element={<MemberDelete />} />
         <Route path="/payment" element={<MemberPayment />} />
+        {/*멤버 결제목록*/}
+        <Route path="/paymentList" element={<MemberPaymentList />} />"/>
+
         <Route path="/search" element={<MemberSearch />} />
         {/* 매니저 */}
         <Route path="/manager/login" element={<ManagerLogin />} />
