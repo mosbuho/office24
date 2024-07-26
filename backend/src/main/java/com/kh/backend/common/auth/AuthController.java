@@ -23,6 +23,54 @@ public class AuthController {
         this.authService = authService;
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> loginMember(@RequestBody LoginRequest loginRequest) {
+        Member member = authService.authenticateMember(loginRequest.getId(), loginRequest.getPw());
+        if (member != null) {
+            String accessToken = jwtUtil.generateAccessToken(member.getId(), "ROLE_MEMBER");
+            String refreshToken = jwtUtil.generateRefreshToken(member.getId());
+            return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
+        } else {
+            return ResponseEntity.badRequest().body("Invalid username or password");
+        }
+    }
+
+    @PostMapping("/manager/login")
+    public ResponseEntity<?> loginManager(@RequestBody LoginRequest loginRequest) {
+        Manager manager = authService.authenticateManager(loginRequest.getId(), loginRequest.getPw());
+        if (manager != null) {
+            String accessToken = jwtUtil.generateAccessToken(manager.getId(), "ROLE_MANAGER");
+            String refreshToken = jwtUtil.generateRefreshToken(manager.getId());
+            return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
+        } else {
+            return ResponseEntity.badRequest().body("Invalid username or password");
+        }
+    }
+
+    @PostMapping("/admin/login")
+    public ResponseEntity<?> loginAdmin(@RequestBody LoginRequest loginRequest) {
+        Admin admin = authService.authenticateAdmin(loginRequest.getId(), loginRequest.getPw());
+        if (admin != null) {
+            String accessToken = jwtUtil.generateAccessToken(admin.getId(), "ROLE_ADMIN");
+            String refreshToken = jwtUtil.generateRefreshToken(admin.getId());
+            return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
+        } else {
+            return ResponseEntity.badRequest().body("Invalid username or password");
+        }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshRequest refreshRequest) {
+        if (jwtUtil.validateRefreshToken(refreshRequest.getRefreshToken())) {
+            String username = jwtUtil.getUsernameFromRefreshToken(refreshRequest.getRefreshToken());
+            String role = authService.getRoleByUsername(username);
+            String newAccessToken = jwtUtil.generateAccessToken(username, role);
+            return ResponseEntity.ok(new AuthResponse(newAccessToken, refreshRequest.getRefreshToken()));
+        } else {
+            return ResponseEntity.badRequest().body("Invalid refresh token");
+        }
+    }
+
     @PostMapping("/register")
     public ResponseEntity<?> registerMember(@RequestBody RegisterRequest registerRequest) {
         try {
@@ -35,18 +83,6 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> loginMember(@RequestBody LoginRequest loginRequest) {
-        Member member = authService.authenticateMember(loginRequest.getId(), loginRequest.getPw());
-        if (member != null) {
-            String accessToken = jwtUtil.generateAccessToken(member.getId());
-            String refreshToken = jwtUtil.generateRefreshToken(member.getId());
-            return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
-        } else {
-            return ResponseEntity.badRequest().body("Invalid username or password");
-        }
-    }
-
     @PostMapping("/manager/register")
     public ResponseEntity<?> registerManager(@RequestBody RegisterRequest registerRequest) {
         try {
@@ -55,41 +91,6 @@ public class AuthController {
             return ResponseEntity.ok(null);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/manager/login")
-    public ResponseEntity<?> loginManager(@RequestBody LoginRequest loginRequest) {
-        Manager manager = authService.authenticateManager(loginRequest.getId(), loginRequest.getPw());
-        if (manager != null) {
-            String accessToken = jwtUtil.generateAccessToken(manager.getId());
-            String refreshToken = jwtUtil.generateRefreshToken(manager.getId());
-            return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
-        } else {
-            return ResponseEntity.badRequest().body("Invalid username or password");
-        }
-    }
-
-    @PostMapping("/admin/login")
-    public ResponseEntity<?> loginAdmin(@RequestBody LoginRequest loginRequest) {
-        Admin admin = authService.authenticateAdmin(loginRequest.getId(), loginRequest.getPw());
-        if (admin != null) {
-            String accessToken = jwtUtil.generateAccessToken(admin.getId());
-            String refreshToken = jwtUtil.generateRefreshToken(admin.getId());
-            return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
-        } else {
-            return ResponseEntity.badRequest().body("Invalid username or password");
-        }
-    }
-
-    @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@RequestBody RefreshRequest refreshRequest) {
-        if (jwtUtil.validateRefreshToken(refreshRequest.getRefreshToken())) {
-            String username = jwtUtil.getUsernameFromRefreshToken(refreshRequest.getRefreshToken());
-            String newAccessToken = jwtUtil.generateAccessToken(username);
-            return ResponseEntity.ok(new AuthResponse(newAccessToken, refreshRequest.getRefreshToken()));
-        } else {
-            return ResponseEntity.badRequest().body("Invalid refresh token");
         }
     }
 }

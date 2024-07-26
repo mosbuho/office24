@@ -1,20 +1,23 @@
 import '../../styles/pages/manager/ManagerLogin.css';
+import { setTokens } from '../../utils/auth';
+import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import axios from 'axios';
 
 const ManagerLogin = () => {
     const [id, setId] = useState('');
     const [pw, setPw] = useState('');
-    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         try {
             const response = await axios.post('http://localhost:8080/auth/manager/login', { id, pw });
-            localStorage.setItem('accessToken', response.data.accessToken);
-            localStorage.setItem('refreshToken', response.data.refreshToken);
+            const { accessToken, refreshToken } = response.data;
+            setTokens(accessToken, refreshToken);
+            navigate('/');
         } catch (err) {
-            setError('Invalid username or password');
+            console.error('Login failed:', err);
         }
     };
 
@@ -31,7 +34,6 @@ const ManagerLogin = () => {
                     <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} required />
                 </div>
                 <button type="submit">Login</button>
-                {error && <p>{error}</p>}
             </form>
         </div>
     );

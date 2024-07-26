@@ -28,12 +28,39 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public Member authenticateMember(String id, String pw) {
+        Member member = memberMapper.findById(id);
+        if (member != null && passwordEncoder.matches(pw, member.getPw())) {
+            return member;
+        }
+        return null;
+    }
+
+    public Manager authenticateManager(String id, String pw) {
+        Manager manager = managerMapper.findById(id);
+        if (manager != null && passwordEncoder.matches(pw, manager.getPw())) {
+            return manager;
+        }
+        return null;
+    }
+
     public Admin authenticateAdmin(String id, String pw) {
         Admin admin = adminMapper.findById(id);
         if (admin != null && passwordEncoder.matches(pw, admin.getPw())) {
             return admin;
         }
         return null;
+    }
+
+    public String getRoleByUsername(String username) {
+        if (adminMapper.findById(username) != null) {
+            return "ROLE_ADMIN";
+        } else if (managerMapper.findById(username) != null) {
+            return "ROLE_MANAGER";
+        } else if (memberMapper.findById(username) != null) {
+            return "ROLE_MEMBER";
+        }
+        throw new RuntimeException("User not found");
     }
 
     @Transactional
@@ -53,14 +80,7 @@ public class AuthService {
         memberMapper.insertMember(member);
     }
 
-    public Member authenticateMember(String id, String pw) {
-        Member member = memberMapper.findById(id);
-        if (member != null && passwordEncoder.matches(pw, member.getPw())) {
-            return member;
-        }
-        return null;
-    }
-
+    @Transactional
     public void registerManager(String id, String pw, String name, String phone, String email) {
         if (managerMapper.findById(id) != null) {
             throw new RuntimeException("Username already exists");
@@ -74,11 +94,4 @@ public class AuthService {
         managerMapper.insertManager(manager);
     }
 
-    public Manager authenticateManager(String id, String pw) {
-        Manager manage = managerMapper.findById(id);
-        if (manage != null && passwordEncoder.matches(pw, manage.getPw())) {
-            return manage;
-        }
-        return null;
-    }
 }

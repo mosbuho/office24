@@ -17,10 +17,11 @@ public class JwtUtil {
     private final long accessTokenExpiration = 3600000;
     private final long refreshTokenExpiration = 10800000;
 
-    public String generateAccessToken(String username) {
+    public String generateAccessToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .claim("role", role)
+                .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                 .signWith(accessKey)
                 .compact();
@@ -29,7 +30,7 @@ public class JwtUtil {
     public String generateRefreshToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(refreshKey)
                 .compact();
@@ -61,5 +62,10 @@ public class JwtUtil {
     public String getUsernameFromRefreshToken(String token) {
         return Jwts.parserBuilder().setSigningKey(refreshKey).build()
                 .parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String getRoleFromAccessToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(accessKey).build()
+                .parseClaimsJws(token).getBody().get("role", String.class);
     }
 }
