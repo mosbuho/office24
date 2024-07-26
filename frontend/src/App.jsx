@@ -1,14 +1,15 @@
 import { React } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import MemberMain from './pages/member/MemberMain';
-import MemberLogin from './pages/member/MemberLogin';
-import MemberRegister from './pages/member/MemberRegister';
-import MemberUpdate from './pages/member/MemberUpdate';
-import MemberDelete from './pages/member/MemberDelete';
-import MemberPayment from './pages/member/MemberPayment';
-import MemberSearch from './pages/member/MemberSearch';
-import ManagerMain from './pages/manager/ManagerMain';
 import ManagerLogin from './pages/manager/ManagerLogin';
+import ManagerMain from './pages/manager/ManagerMain';
+import MemberDelete from './pages/member/MemberDelete';
+import MemberLogin from './pages/member/MemberLogin';
+import MemberMain from './pages/member/MemberMain';
+import MemberPayment from './pages/member/MemberPayment';
+import MemberRegister from './pages/member/MemberRegister';
+import MemberSearch from './pages/member/MemberSearch';
+import MemberUpdate from './pages/member/MemberUpdate';
+import LoginForm from './pages/admin/LoginForm';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/manager/login" element={<ManagerLogin />} />
         <Route path="/manager" element={<ManagerMain />} />
         {/* 어드민 */}
+        <Route path="/admin/login" element={<LoginForm />} />
       </Routes>
     </Router>
   );
