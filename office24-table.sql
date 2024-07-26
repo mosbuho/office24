@@ -15,12 +15,12 @@ create sequence booking_seq start with 1 increment by 1 nocache nocycle;
 create table member (
     no       number default member_seq.nextval primary key,             -- 구분 코드
     id       varchar2(12) check ( length(id) >= 6 ) not null unique,    -- 아이디 (6자 이상 12자 이하 한글x)
-    pw       char(60) not null,           								-- 비밀번호 (8자 이상 16자 이하 한글x, 영문 대문자, 소문자, 숫자, 특수문자 각 1개씩 포함)
+    pw       varchar2(100) not null,           							-- 비밀번호 (8자 이상 16자 이하 한글x, 영문 대문자, 소문자, 숫자, 특수문자 각 1개씩 포함)
     name     varchar2(12) check ( length(name) >= 2 ) not null,         -- 이름 (2자 이상 12자 이하 영어x)
-    phone    char(14),                                         			-- 번호 (번호, 이메일 둘 중 하나만 필수)
-    email    varchar2(32),                                     			-- 이메일 (번호, 이메일 둘 중 하나만 필수)
+    phone    char(14) not null,                                         -- 번호 (번호, 이메일 둘 중 하나만 필수)
+    email    varchar2(32) default null,                                 -- 이메일 (번호, 이메일 둘 중 하나만 필수)
     birth    date not null,                                             -- 생일
-    gender   varchar2(1) default null,                                     			-- 성별 ('M', 'W' // 선택)
+    gender   varchar2(1) default null,                                  -- 성별 ('M', 'W' // 선택)
     reg_date date default systimestamp                                  -- 가입일
 );
 
@@ -28,11 +28,11 @@ create table member (
 
 create table manager (
     no       number default manager_seq.nextval primary key,            -- 구분 코드
-    id       varchar2(12) not null unique,                              -- 오피스 관리자 아이디 (6자 이상 12자 이하 한글x)
-    pw       char(60) not null,   								        -- 오피스 관리자 비밀번호 (8자 이상 16자 이하 한글x, 영문 대문자, 소문자, 숫자, 특수문자 각 1개씩 포함)
-    name     varchar2(12) not null,                                    	-- 오피스 관리자 이름 (2자 이상 12자 이하 영어x)
-    phone    char(14),                                         			-- 오피스 관리자 번호 (번호, 이메일 둘 중 하나만 필수)
-    email    varchar2(32),                                     			-- 오피스 관리자 이메일 (번호, 이메일 둘 중 하나만 필수)
+    id       varchar2(12) check ( length(id) >= 6 ) not null unique,    -- 오피스 관리자 아이디 (6자 이상 12자 이하 한글x)
+    pw       varchar2(100) not null,   								    -- 오피스 관리자 비밀번호 (8자 이상 16자 이하 한글x, 영문 대문자, 소문자, 숫자, 특수문자 각 1개씩 포함)
+    name     varchar2(12) check ( length(name) >= 2 ) not null,         -- 오피스 관리자 이름 (2자 이상 12자 이하 영어x)
+    phone    char(14) not null,                                         -- 오피스 관리자 번호 (번호, 이메일 둘 중 하나만 필수)
+    email    varchar2(32) default null,                                 -- 오피스 관리자 이메일 (번호, 이메일 둘 중 하나만 필수)
     reg_date date default systimestamp                                  -- 가입일
 );
 
@@ -40,8 +40,8 @@ create table manager (
 
 create table admin (
     no       number default admin_seq.nextval primary key,              -- 구분 코드
-    id       varchar2(12) check ( length(id) >= 6 ) not null unique,  	-- 총 관리자 아이디 (6자 이상 12자 이하 한글x)
-    pw       char(60) not null,         								-- 총 관리자 비밀번호 (8자 이상 16자 이하 한글x, 영문 대문자, 소문자, 숫자, 특수문자 각 1개씩 포함)
+    id       varchar2(12) not null unique,  	                        -- 총 관리자 아이디 (6자 이상 12자 이하 한글x)
+    pw       varchar2(100) not null,         							-- 총 관리자 비밀번호 (8자 이상 16자 이하 한글x, 영문 대문자, 소문자, 숫자, 특수문자 각 1개씩 포함)
     lv       number(1) not null,                                      	-- 총 관리자 권한 레벨
     reg_date date default systimestamp                                	-- 가입일
 );
