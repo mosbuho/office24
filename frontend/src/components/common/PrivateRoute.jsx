@@ -8,7 +8,14 @@ const PrivateRoute = ({ children, requiredRole }) => {
     const accessToken = localStorage.getItem('accessToken');
 
     if (!isAuthenticated()) {
-        return <Navigate to="/login" state={{ from: location }} replace />;
+        const pathname = location.pathname;
+        if (pathname.startsWith('/manager')) {
+            return <Navigate to="/manager/login" state={{ from: location }} replace />;
+        } else if (pathname.startsWith('/admin')) {
+            return <Navigate to="/admin/login" state={{ from: location }} replace />;
+        } else {
+            return <Navigate to="/login" state={{ from: location }} replace />;
+        }
     }
 
     try {

@@ -15,9 +15,9 @@ const ManagerLogin = () => {
             const response = await axios.post('http://localhost:8080/auth/manager/login', { id, pw });
             const { accessToken, refreshToken } = response.data;
             setTokens(accessToken, refreshToken);
-            navigate('/');
-        } catch (err) {
-            console.error('Login failed:', err);
+            navigate('/manager');
+        } catch {
+            alert("로그인 실패");
         }
     };
 

@@ -31,7 +31,7 @@ public class AuthController {
             String refreshToken = jwtUtil.generateRefreshToken(member.getId());
             return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
         } else {
-            return ResponseEntity.badRequest().body("Invalid username or password");
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -43,7 +43,7 @@ public class AuthController {
             String refreshToken = jwtUtil.generateRefreshToken(manager.getId());
             return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
         } else {
-            return ResponseEntity.badRequest().body("Invalid username or password");
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -55,7 +55,7 @@ public class AuthController {
             String refreshToken = jwtUtil.generateRefreshToken(admin.getId());
             return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
         } else {
-            return ResponseEntity.badRequest().body("Invalid username or password");
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -67,7 +67,7 @@ public class AuthController {
             String newAccessToken = jwtUtil.generateAccessToken(username, role);
             return ResponseEntity.ok(new AuthResponse(newAccessToken, refreshRequest.getRefreshToken()));
         } else {
-            return ResponseEntity.badRequest().body("Invalid refresh token");
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -79,7 +79,7 @@ public class AuthController {
                     registerRequest.getBirth(), registerRequest.getGender());
             return ResponseEntity.ok(null);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -90,7 +90,7 @@ public class AuthController {
                     registerRequest.getName(), registerRequest.getPhone(), registerRequest.getEmail());
             return ResponseEntity.ok(null);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 }

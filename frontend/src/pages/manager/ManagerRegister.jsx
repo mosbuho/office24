@@ -1,22 +1,21 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 const ManagerRegister = () => {
     const [id, setId] = useState('');
     const [pw, setPw] = useState('');
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
-    const [success, setSuccess] = useState('');
-    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             await axios.post('http://localhost:8080/auth/manager/register', { id, pw, name, phone, email });
-            setSuccess('Registration successful!');
-        } catch (err) {
-            setError(err.response.data || 'An error occurred');
+            navigate('/manager/login');
+        } catch {
+            alert("회원가입 실패");
         }
     };
 
@@ -45,8 +44,6 @@ const ManagerRegister = () => {
                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <button type="submit">Register</button>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-                {success && <p style={{ color: 'green' }}>{success}</p>}
             </form>
         </div>
     );

@@ -16,8 +16,8 @@ const MemberLogin = () => {
             const { accessToken, refreshToken } = response.data;
             setTokens(accessToken, refreshToken);
             navigate('/');
-        } catch (err) {
-            console.error('Login failed:', err);
+        } catch {
+            alert("로그인 실패");
         }
     };
 
