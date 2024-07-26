@@ -1,13 +1,12 @@
-package com.kh.backend.common.auth;
-
-import java.util.Date;
+package com.kh.backend.member;
 
 import lombok.Getter;
 import lombok.Setter;
+import java.util.Date;
 
 @Getter
 @Setter
-class RegisterRequest {
+public class Member {
     private String id;
     private String pw;
     private String name;

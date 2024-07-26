@@ -12,29 +12,54 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtil {
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long expiration = 86400000; // 24 hours
+    private final Key accessKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final Key refreshKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final long accessTokenExpiration = 3600000;
+    private final long refreshTokenExpiration = 10800000;
 
-    public String generateToken(String username) {
+    public String generateAccessToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(key)
+                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
+                .signWith(accessKey)
                 .compact();
     }
 
-    public boolean validateToken(String token) {
+    public String generateRefreshToken(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
+                .signWith(refreshKey)
+                .compact();
+    }
+
+    public boolean validateAccessToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(accessKey).build().parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }
 
-    public String getUsernameFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build()
+    public boolean validateRefreshToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(refreshKey).build().parseClaimsJws(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    public String getUsernameFromAccessToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(accessKey).build()
+                .parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String getUsernameFromRefreshToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(refreshKey).build()
                 .parseClaimsJws(token).getBody().getSubject();
     }
 }
