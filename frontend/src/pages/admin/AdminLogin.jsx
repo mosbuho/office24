@@ -1,10 +1,9 @@
-import '../../styles/pages/member/MemberLogin.css';
 import { setTokens } from '../../utils/auth';
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const MemberLogin = () => {
+const AdminLogin = () => {
     const [id, setId] = useState('');
     const [pw, setPw] = useState('');
     const navigate = useNavigate();
@@ -12,7 +11,7 @@ const MemberLogin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8080/auth/login', { id, pw });
+            const response = await axios.post('http://localhost:8080/auth/admin/login', { id, pw });
             const { accessToken, refreshToken } = response.data;
             setTokens(accessToken, refreshToken);
             navigate('/');
@@ -23,7 +22,7 @@ const MemberLogin = () => {
 
     return (
         <div>
-            <h2>Member Login</h2>
+            <h2>Admin Login</h2>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>ID:</label>
@@ -39,4 +38,4 @@ const MemberLogin = () => {
     );
 };
 
-export default MemberLogin;
+export default AdminLogin;
