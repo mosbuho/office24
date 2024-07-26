@@ -1,19 +1,24 @@
 package com.kh.backend.member;
 
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberServiceImpl implements MemberService {
     private final MemberMapper memberMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public MemberServiceImpl(MemberMapper memberMapper) {
+    public MemberServiceImpl(MemberMapper memberMapper, PasswordEncoder passwordEncoder) {
         this.memberMapper = memberMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public boolean create(Member member) {
         System.out.println("create 메소드");
+        String pw = member.getPw();
+        member.setPw(passwordEncoder.encode(pw));
         try {
             memberMapper.create(member);
             return true;

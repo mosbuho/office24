@@ -47,6 +47,4 @@ public class MemberController {
             return ResponseEntity.ok("중복된 아이디입니다.");
         }
     }
-
-
 }
