@@ -14,9 +14,9 @@ const AdminLogin = () => {
             const response = await axios.post('http://localhost:8080/auth/admin/login', { id, pw });
             const { accessToken, refreshToken } = response.data;
             setTokens(accessToken, refreshToken);
-            navigate('/');
-        } catch (err) {
-            console.error('Login failed:', err);
+            navigate('/admin');
+        } catch (error) {
+            alert(error.response.data || '알 수 없는 오류가 발생했습니다.');
         }
     };
 

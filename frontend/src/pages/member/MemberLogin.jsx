@@ -16,8 +16,8 @@ const MemberLogin = () => {
             const { accessToken, refreshToken } = response.data;
             setTokens(accessToken, refreshToken);
             navigate('/');
-        } catch (err) {
-            console.error('Login failed:', err);
+        } catch (error) {
+            alert(error.response.data || '알 수 없는 오류가 발생했습니다.');
         }
     };
 

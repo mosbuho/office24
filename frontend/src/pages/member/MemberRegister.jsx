@@ -1,6 +1,7 @@
 import '../../styles/pages/member/MemberRegister.css';
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const MemberRegister = () => {
@@ -11,16 +12,15 @@ const MemberRegister = () => {
     const [email, setEmail] = useState('');
     const [birth, setBirth] = useState('');
     const [gender, setGender] = useState('');
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             await axios.post('http://localhost:8080/auth/register', { id, pw, name, phone, email, birth, gender });
-            setSuccess('Registration successful!');
-        } catch (err) {
-            setError(err.response.data || 'An error occurred');
+            navigate('/login');
+        } catch (error) {
+            alert(error.response.data || '알 수 없는 오류가 발생했습니다.');
         }
     };
 
@@ -61,8 +61,6 @@ const MemberRegister = () => {
                     </select>
                 </div>
                 <button type="submit">Register</button>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-                {success && <p style={{ color: 'green' }}>{success}</p>}
             </form>
         </div>
     );

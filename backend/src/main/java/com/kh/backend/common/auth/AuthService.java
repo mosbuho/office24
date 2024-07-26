@@ -2,6 +2,7 @@ package com.kh.backend.common.auth;
 
 import java.util.Date;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,14 +61,14 @@ public class AuthService {
         } else if (memberMapper.findById(username) != null) {
             return "ROLE_MEMBER";
         }
-        throw new RuntimeException("User not found");
+        throw new RuntimeException("로그인 정보를 찾을 수 없습니다.");
     }
 
     @Transactional
     public void registerMember(String id, String pw, String name, String phone, String email, Date birth,
             String gender) {
         if (memberMapper.findById(id) != null) {
-            throw new RuntimeException("Username already exists");
+            throw new RuntimeException("동일한 아이디가 존재합니다.");
         }
         Member member = new Member();
         member.setId(id);
@@ -77,13 +78,17 @@ public class AuthService {
         member.setEmail(email);
         member.setBirth(birth);
         member.setGender(gender);
-        memberMapper.insertMember(member);
+        try {
+            memberMapper.insertMember(member);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("알 수 없는 오류가 발생했습니다.");
+        }
     }
 
     @Transactional
     public void registerManager(String id, String pw, String name, String phone, String email) {
         if (managerMapper.findById(id) != null) {
-            throw new RuntimeException("Username already exists");
+            throw new RuntimeException("동일한 아이디가 존재합니다.");
         }
         Manager manager = new Manager();
         manager.setId(id);
@@ -91,7 +96,11 @@ public class AuthService {
         manager.setName(name);
         manager.setPhone(phone);
         manager.setEmail(email);
-        managerMapper.insertManager(manager);
+        try {
+            managerMapper.insertManager(manager);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("알 수 없는 오류가 발생했습니다.");
+        }
     }
 
 }
