@@ -31,7 +31,7 @@ public class AuthController {
             String refreshToken = jwtUtil.generateRefreshToken(member.getId());
             return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
         } else {
-            return ResponseEntity.badRequest().body("Invalid username or password");
+            return ResponseEntity.badRequest().body("아이디 또는 비밀번호가 일치하지 않습니다.");
         }
     }
 
@@ -43,7 +43,7 @@ public class AuthController {
             String refreshToken = jwtUtil.generateRefreshToken(manager.getId());
             return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
         } else {
-            return ResponseEntity.badRequest().body("Invalid username or password");
+            return ResponseEntity.badRequest().body("아이디 또는 비밀번호가 일치하지 않습니다.");
         }
     }
 
@@ -55,7 +55,7 @@ public class AuthController {
             String refreshToken = jwtUtil.generateRefreshToken(admin.getId());
             return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
         } else {
-            return ResponseEntity.badRequest().body("Invalid username or password");
+            return ResponseEntity.badRequest().body("아이디 또는 비밀번호가 일치하지 않습니다.");
         }
     }
 
@@ -67,7 +67,7 @@ public class AuthController {
             String newAccessToken = jwtUtil.generateAccessToken(username, role);
             return ResponseEntity.ok(new AuthResponse(newAccessToken, refreshRequest.getRefreshToken()));
         } else {
-            return ResponseEntity.badRequest().body("Invalid refresh token");
+            return ResponseEntity.badRequest().body("다시 로그인해주세요.");
         }
     }
 
