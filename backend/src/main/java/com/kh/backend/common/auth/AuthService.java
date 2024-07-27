@@ -87,9 +87,6 @@ public class AuthService {
 
     @Transactional
     public void registerManager(String id, String pw, String name, String phone, String email) {
-        if (managerMapper.findById(id) != null) {
-            throw new RuntimeException("동일한 아이디가 존재합니다.");
-        }
         Manager manager = new Manager();
         manager.setId(id);
         manager.setPw(passwordEncoder.encode(pw));
@@ -101,6 +98,11 @@ public class AuthService {
         } catch (DataIntegrityViolationException e) {
             throw new RuntimeException("알 수 없는 오류가 발생했습니다.");
         }
+    }
+
+    @Transactional
+    public boolean idCheckManager(String id) {
+        return managerMapper.findById(id) == null;
     }
 
 }
