@@ -41,6 +41,8 @@ public class SecurityConfig {
                 }))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/message/**").permitAll() // 회원가입 시 번호인증 접근 허용
+                        .requestMatchers("/manager/check-id").permitAll() // 아이디 중복 확인 허용 >> 삭제할 예정
                         .requestMatchers("/manager/**").hasRole("MANAGER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().hasRole("MEMBER"))

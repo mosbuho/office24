@@ -3,7 +3,7 @@ import '../../styles/components/manager/ManagerSidebar.css';
 const ManagerSidebar = ({ title, firstChild, secondChild, thirdChild, fourthChild, fifthChild }) => {
     return (
         <>
-            <div className='sidebar_container'>
+            <div className='managerSidebar_container'>
                 <div className="sidebar">
                     <div className="logo">{title}</div>
                     <div className='button_container'>

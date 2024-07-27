@@ -1,15 +1,16 @@
-/* 헤더 컴포넌트 css */
-.header_container {
+.managerHeader_container {
     width: 80%;
+    height: 70px;
     position: fixed;
     top: 0;
     right: 0;
     z-index: 1000;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
 }
 
-.header {
+.managerHeader_container .header {
     width: 100%;
     padding: 20px;
     display: flex;
@@ -17,7 +18,7 @@
     align-items: center;
 }
 
-.logout_button {
+.managerHeader_container .logout_button {
     background: none;
     border: none;
     color: #2c3e50;

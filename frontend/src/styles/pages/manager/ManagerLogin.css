@@ -1,4 +1,4 @@
-body {
+.managerLogin-container {
   font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
@@ -8,7 +8,7 @@ body {
   background-color: #f8f9fa;
 }
 
-.login-container {
+.managerLogin-container .log-container {
   background-color: #fff;
   padding: 40px;
   border-radius: 8px;
@@ -17,25 +17,39 @@ body {
   text-align: center;
 }
 
-.login-container .logo {
-  font-size: 24px;
+.managerLogin-container .logo {
+  font-size: 40px;
   font-weight: bold;
   color: #6363d2;
   margin-bottom: 20px;
 }
 
-.login-tabs {
+.managerLogin-container .login-tabs {
   display: flex;
   justify-content: space-around;
   margin-bottom: 20px;
 }
 
-.login-form {
+.managerLogin-container .login-tabs div {
+  background: none;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+.managerLogin-container .login-tabs div.active {
+  width: 200px;
+  border-bottom: 1px solid #6363d2;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.managerLogin-container .login-form {
   display: flex;
   flex-direction: column;
 }
 
-.login-form input {
+.managerLogin-container .login-form input {
   padding: 10px;
   margin-bottom: 10px;
   border: 1px solid #ddd;
@@ -43,22 +57,11 @@ body {
   font-size: 14px;
 }
 
-.domain-container {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
+.managerLogin-container .login-form input::placeholder {
+  font-size: 12px; 
 }
 
-.domain {
-  background-color: #f1f3f5;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  margin-left: 5px;
-}
-
-.login-btn {
+.managerLogin-container .login-btn {
   background-color: #6363d2;
   color: #fff;
   padding: 10px;
@@ -66,18 +69,20 @@ body {
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
-.login-options {
+.managerLogin-container .login-options {
   display: flex;
   justify-content: space-between;
   margin: 20px 0;
 }
 
-.login-options button {
+.managerLogin-container .login-options button {
   color: #6363d2;
+  background-color: #fff;
   text-decoration: none;
   font-size: 14px;
   border: none;
+  cursor: pointer;
 }
