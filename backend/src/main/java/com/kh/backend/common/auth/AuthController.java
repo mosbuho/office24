@@ -1,10 +1,7 @@
 package com.kh.backend.common.auth;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.kh.backend.admin.Admin;
 import com.kh.backend.common.jwt.JwtUtil;
@@ -68,6 +65,15 @@ public class AuthController {
             return ResponseEntity.ok(new AuthResponse(newAccessToken, refreshRequest.getRefreshToken()));
         } else {
             return ResponseEntity.badRequest().body("다시 로그인해주세요.");
+        }
+    }
+
+    @GetMapping("/idCheck")
+    public ResponseEntity<?> idCheck(@RequestParam("id") String id) {
+        if (authService.idCheckMember(id))  {
+            return ResponseEntity.ok(null);
+        } else {
+            return ResponseEntity.badRequest().body(null);
         }
     }
 

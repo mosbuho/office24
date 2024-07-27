@@ -63,6 +63,9 @@ public class AuthService {
         }
         throw new RuntimeException("로그인 정보를 찾을 수 없습니다.");
     }
+    public boolean idCheckMember(String id)   {
+        return memberMapper.findById(id) == null;
+    }
 
     @Transactional
     public void registerMember(String id, String pw, String name, String phone, String email, Date birth,
