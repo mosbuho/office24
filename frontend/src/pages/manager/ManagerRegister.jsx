@@ -123,7 +123,7 @@ const ManagerRegister = () => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:8080/auth/manager/register', {
+      const response = await axios.post('http://localhost:8080/manager/register', {
         id,
         pw,
         name,
@@ -145,7 +145,7 @@ const ManagerRegister = () => {
   // [중복 확인] 버튼
   const handleIdCheck = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/auth/manager/idCheck', {
+      const response = await axios.get('http://localhost:8080/manager/idCheck', {
         params: { id }
       });
       if (response.status === 200) {

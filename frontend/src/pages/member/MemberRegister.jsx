@@ -17,7 +17,7 @@ const MemberRegister = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            await axios.post('http://localhost:8080/auth/register', { id, pw, name, phone, email, birth, gender });
+            await axios.post('http://localhost:8080/member/register', { id, pw, name, phone, email, birth, gender });
             navigate('/login');
         } catch (error) {
             alert(error.response.data || '알 수 없는 오류가 발생했습니다.');

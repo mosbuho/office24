@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { getAccessToken, refreshAccessToken, removeTokens } from './auth';
-import { useNavigate } from 'react-router-dom';
 
 const instance = axios.create({
     baseURL: 'http://localhost:8080',

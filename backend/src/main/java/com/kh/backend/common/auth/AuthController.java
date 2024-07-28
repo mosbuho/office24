@@ -3,11 +3,9 @@ package com.kh.backend.common.auth;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.backend.admin.Admin;
@@ -40,7 +38,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/login")
+    @PostMapping("/member/login")
     public ResponseEntity<?> loginMember(@RequestBody LoginRequest loginRequest) {
         Member member = authService.authenticateMember(loginRequest.getId(), loginRequest.getPw());
         if (member != null) {
@@ -73,38 +71,6 @@ public class AuthController {
             return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
         } else {
             return ResponseEntity.badRequest().body("아이디 또는 비밀번호가 일치하지 않습니다.");
-        }
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<?> registerMember(@RequestBody RegisterRequest registerRequest) {
-        try {
-            authService.registerMember(registerRequest.getId(), registerRequest.getPw(),
-                    registerRequest.getName(), registerRequest.getPhone(), registerRequest.getEmail(),
-                    registerRequest.getBirth(), registerRequest.getGender());
-            return ResponseEntity.ok(null);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/manager/register")
-    public ResponseEntity<?> registerManager(@RequestBody RegisterRequest registerRequest) {
-        try {
-            authService.registerManager(registerRequest.getId(), registerRequest.getPw(),
-                    registerRequest.getName(), registerRequest.getPhone(), registerRequest.getEmail());
-            return ResponseEntity.ok(null);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/manager/idCheck")
-    public ResponseEntity<String> idCheck(@RequestParam("id") String id) {
-        if (authService.idCheckManager(id)) {
-            return ResponseEntity.ok(null);
-        } else {
-            return ResponseEntity.badRequest().body(null);
         }
     }
 }

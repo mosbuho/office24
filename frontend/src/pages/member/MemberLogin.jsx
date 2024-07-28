@@ -12,7 +12,7 @@ const MemberLogin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8080/auth/login', { id, pw });
+            const response = await axios.post('http://localhost:8080/auth/member/login', { id, pw });
             const { accessToken, refreshToken } = response.data;
             setTokens(accessToken, refreshToken);
             navigate('/');
