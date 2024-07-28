@@ -5,8 +5,17 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const MemberLogin = () => {
-    const [id, setId] = useState('');
-    const [pw, setPw] = useState('');
+    const [formData, setFormData] = useState({
+        id: '',
+        pw: ''
+    })
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        })
+    }
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -22,16 +31,17 @@ const MemberLogin = () => {
     };
 
     return (
-        <div>
-            <h2>Member Login</h2>
+        <div className="member-login-form">
+            <div className="logo">로고</div>
+            <h2>로그인</h2>
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label>ID:</label>
-                    <input type="text" value={id} onChange={(e) => setId(e.target.value)} required />
+                    <label htmlFor="id">아이디</label>
+                    <input type="text" id="id" name="id" value={formData.id} onChange={handleChange} required/>
                 </div>
                 <div>
-                    <label>Password:</label>
-                    <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} required />
+                    <label htmlFor="pw">비밀번호</label>
+                    <input type="password" id="pw" name="pw" value={formData.pw} onChange={handleChange} required/>
                 </div>
                 <button type="submit">Login</button>
             </form>
