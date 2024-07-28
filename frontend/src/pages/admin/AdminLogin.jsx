@@ -1,3 +1,4 @@
+import '../../styles/pages/admin/AdminLogin.css';
 import { setTokens } from '../../utils/auth';
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
@@ -21,19 +22,20 @@ const AdminLogin = () => {
     };
 
     return (
-        <div>
-            <h2>Admin Login</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>ID:</label>
-                    <input type="text" value={id} onChange={(e) => setId(e.target.value)} required />
+        <div className="admin-login-container">
+            <div className='log-container'>
+                <div className="logo">office24</div>
+                <div className="login-tabs">
+                    <div className="active">총 관리자</div>
                 </div>
-                <div>
-                    <label>Password:</label>
-                    <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} required />
-                </div>
-                <button type="submit">Login</button>
-            </form>
+                <form className="login-form" onSubmit={handleSubmit}>
+                    <input type="text" placeholder="아이디를 입력해 주세요." value={id}
+                        onChange={(e) => setId(e.target.value)} required />
+                    <input type="password" placeholder="비밀번호를 입력해 주세요." value={pw}
+                        onChange={(e) => setPw(e.target.value)} required />
+                    <button type="submit" className="login-btn">로그인</button>
+                </form>
+            </div>
         </div>
     );
 };
