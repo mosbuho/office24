@@ -114,3 +114,28 @@ body {
 .member-register .button1:hover {
     background-color: #4a4a9d;
 }
+
+
+.member-register .form-group.phone-group .input-group {
+    display: flex;
+    align-items: center;
+}
+
+.member-register .form-group.phone-group .input-group input {
+    flex: 1;
+}
+
+.member-register .form-group.phone-group .input-group .check-btn {
+    margin-left: 10px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #6363d2;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.member-register .form-group.phone-group .input-group .check-btn:hover {
+    background-color: #4a4a9d;
+}

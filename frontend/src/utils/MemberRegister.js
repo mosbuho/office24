@@ -1,8 +1,9 @@
 export const idCheck = () => {
     const id = document.querySelector('#id').value;
     const idInfo = document.querySelector("#idInfo");
-    if (id.length < 6 || id.length > 12) {
-        idInfo.textContent = '아이디는 6자 이상 12자 이하이어야 합니다';
+    const idPattern = /^[a-zA-Z0-9]{6,12}$/;
+    if (!idPattern.test(id)) {
+        idInfo.textContent = '아이디는 6자 이상 12자 이하의 영문자와 숫자로만 구성되어야 합니다.';
         return false;
     } else {
         idInfo.textContent = '';
@@ -16,7 +17,7 @@ export const pwCheck = () => {
     const pwPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/;
 
     if (!pwPattern.test(pw)) {
-        pwInfo.textContent = '비밀번호는 8자에서 16자 사이여야 하며, 대문자, 소문자, 숫자, 특수문자를 각각 하나 이상 포함해야 합니다';
+        pwInfo.textContent = '비밀번호는 8자에서 16자 사이여야 하며, 대문자, 소문자, 숫자, 특수문자를 각각 하나 이상 포함해야 합니다.';
         return false;
     } else {
         pwInfo.textContent = '';
@@ -83,6 +84,7 @@ export const allCheck = () => {
     const pwCheck1 = pwCheckCheck();
     const name = nameCheck();
     const phone = phoneCheck();
+    const email = document.querySelector("#email").value ? emailCheck() : true;
     return id && pw && pwCheck1 && name && phone;
 }
 
