@@ -15,7 +15,7 @@ import net.nurigo.sdk.message.service.DefaultMessageService;
 
 @RestController
 @RequestMapping("/message")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true") // allowCredentials 추가
+@CrossOrigin(origins = "http://localhost:5173")
 public class MessageController {
 
     final DefaultMessageService messageService;

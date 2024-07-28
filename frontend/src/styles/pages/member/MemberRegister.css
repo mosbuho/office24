@@ -55,7 +55,7 @@ body {
 .member-register .form-group span {
     display: block;
     margin-top: 5px;
-    color: red; /* 에러 메시지를 빨간색으로 표시 */
+    color: red;
 }
 
 .member-register .form-group.id-group .input-group {
@@ -137,5 +137,30 @@ body {
 }
 
 .member-register .form-group.phone-group .input-group .check-btn:hover {
+    background-color: #4a4a9d;
+}
+
+
+.member-register .form-group.verify-group .input-group {
+    display: flex;
+    align-items: center;
+}
+
+.member-register .form-group.verify-group .input-group input {
+    flex: 1;
+}
+
+.member-register .form-group.verify-group .input-group .check-btn {
+    margin-left: 10px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #6363d2;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.member-register .form-group.verify-group .input-group .check-btn:hover {
     background-color: #4a4a9d;
 }

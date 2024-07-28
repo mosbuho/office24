@@ -207,17 +207,16 @@ const MemberRegister = () => {
                     <span id="phoneInfo" className="info-message"></span>
                 </div>
                 {verification.isCodeSent && (
-                    <div className="form-group">
+                    <div className="form-group verify-group">
                         <label htmlFor="verificationCode">인증 코드</label>
-                        <input type="text" id="verificationCode" name="verificationCode"
-                               value={verification.verificationCode} onChange={handleVerificationChange} required />
-                        <button type="button" className="check-btn" onClick={verifyCode}>인증</button>
+                        <div className="input-group">
+                            <input type="text" id="verificationCode" name="verificationCode" value={verification.verificationCode} onChange={handleVerificationChange} required />
+                            <button type="button" className="check-btn" onClick={verifyCode}>인증</button>
+                        </div>
                     </div>
                 )}
                 {verification.isVerified && (
-                    <div className="info-message">
-                        인증 성공
-                    </div>
+                    <span className="info-message">인증 성공</span>
                 )}
                 <button type="submit" className="button1">회원가입</button>
             </form>
