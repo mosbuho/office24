@@ -9,6 +9,7 @@ const ManagerLogin = () => {
     const [pw, setPw] = useState('');
     const navigate = useNavigate();
 
+    // [로그인] 버튼
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -22,19 +23,24 @@ const ManagerLogin = () => {
     };
 
     return (
-        <div>
-            <h2>Manager Login</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>ID:</label>
-                    <input type="text" value={id} onChange={(e) => setId(e.target.value)} required />
+        <div className="managerLogin-container">
+            <div className='log-container'>
+                <div className="logo">office24</div>
+                <div className="login-tabs">
+                    <div className="active">오피스 관리자</div>
                 </div>
-                <div>
-                    <label>Password:</label>
-                    <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} required />
+                <form className="login-form" onSubmit={handleSubmit}>
+                    <input type="text" placeholder="아이디를 입력해 주세요." value={id}
+                        onChange={(e) => setId(e.target.value)} required />
+                    <input type="password" placeholder="비밀번호를 입력해 주세요." value={pw}
+                        onChange={(e) => setPw(e.target.value)} required />
+                    <button type="submit" className="login-btn">로그인</button>
+                </form>
+                <div className="login-options">
+                    <button onClick={() => navigate('/manager/register')}>회원가입</button>
+                    <button onClick={() => navigate('/manager/findAccount')}>아이디/비밀번호 찾기</button>
                 </div>
-                <button type="submit">Login</button>
-            </form>
+            </div>
         </div>
     );
 };

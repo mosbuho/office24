@@ -31,7 +31,7 @@ create table manager (
     id       varchar2(12) check ( length(id) >= 6 ) not null unique,    -- 오피스 관리자 아이디 (6자 이상 12자 이하 한글x)
     pw       varchar2(100) not null,   								    -- 오피스 관리자 비밀번호 (8자 이상 16자 이하 한글x, 영문 대문자, 소문자, 숫자, 특수문자 각 1개씩 포함)
     name     varchar2(12) check ( length(name) >= 2 ) not null,         -- 오피스 관리자 이름 (2자 이상 12자 이하 영어x)
-    phone    char(14) not null,                                         -- 오피스 관리자 번호 (번호, 이메일 둘 중 하나만 필수)
+    phone    char(11) not null,                                         -- 오피스 관리자 번호 (번호, 이메일 둘 중 하나만 필수)
     email    varchar2(32) default null,                                 -- 오피스 관리자 이메일 (번호, 이메일 둘 중 하나만 필수)
     reg_date date default systimestamp                                  -- 가입일
 );
