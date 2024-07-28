@@ -53,17 +53,6 @@ public class AuthService {
         return null;
     }
 
-    public String getRoleByUsername(String username) {
-        if (adminMapper.findById(username) != null) {
-            return "ROLE_ADMIN";
-        } else if (managerMapper.findById(username) != null) {
-            return "ROLE_MANAGER";
-        } else if (memberMapper.findById(username) != null) {
-            return "ROLE_MEMBER";
-        }
-        throw new RuntimeException("로그인 정보를 찾을 수 없습니다.");
-    }
-
     @Transactional
     public void registerMember(String id, String pw, String name, String phone, String email, Date birth,
             String gender) {

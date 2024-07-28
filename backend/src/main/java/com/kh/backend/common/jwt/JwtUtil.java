@@ -27,45 +27,51 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String generateRefreshToken(String username) {
+    public String generateRefreshToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(refreshKey)
                 .compact();
     }
 
-    public boolean validateAccessToken(String token) {
+    public boolean validateAccessToken(String accessToken) {
         try {
-            Jwts.parserBuilder().setSigningKey(accessKey).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(accessKey).build().parseClaimsJws(accessToken);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }
 
-    public boolean validateRefreshToken(String token) {
+    public boolean validateRefreshToken(String refreshToken) {
         try {
-            Jwts.parserBuilder().setSigningKey(refreshKey).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(refreshKey).build().parseClaimsJws(refreshToken);
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
+        } catch (JwtException e) {
             return false;
         }
     }
 
-    public String getUsernameFromAccessToken(String token) {
+    public String getUsernameFromAccessToken(String accessToken) {
         return Jwts.parserBuilder().setSigningKey(accessKey).build()
-                .parseClaimsJws(token).getBody().getSubject();
+                .parseClaimsJws(accessToken).getBody().getSubject();
     }
 
-    public String getUsernameFromRefreshToken(String token) {
+    public String getUsernameFromRefreshToken(String refreshToken) {
         return Jwts.parserBuilder().setSigningKey(refreshKey).build()
-                .parseClaimsJws(token).getBody().getSubject();
+                .parseClaimsJws(refreshToken).getBody().getSubject();
     }
 
-    public String getRoleFromAccessToken(String token) {
+    public String getRoleFromAccessToken(String accessToken) {
         return Jwts.parserBuilder().setSigningKey(accessKey).build()
-                .parseClaimsJws(token).getBody().get("role", String.class);
+                .parseClaimsJws(accessToken).getBody().get("role", String.class);
+    }
+
+    public String getRoleFromRefreshToken(String refreshToken) {
+        return Jwts.parserBuilder().setSigningKey(refreshKey).build()
+                .parseClaimsJws(refreshToken).getBody().get("role", String.class);
     }
 }
