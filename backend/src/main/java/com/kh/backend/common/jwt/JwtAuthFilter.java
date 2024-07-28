@@ -23,22 +23,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String token = getTokenFromRequest(request);
-
-        if (token != null && jwtUtil.validateAccessToken(token)) {
-            String username = jwtUtil.getUsernameFromAccessToken(token);
-            String role = jwtUtil.getRoleFromAccessToken(token);
+        String accessToken = getAccessTokenFromRequest(request);
+        if (accessToken != null && jwtUtil.validateAccessToken(accessToken)) {
+            String username = jwtUtil.getUsernameFromAccessToken(accessToken);
+            String role = jwtUtil.getRoleFromAccessToken(accessToken);
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     username, null, Collections.singletonList(new SimpleGrantedAuthority(role)));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-
         filterChain.doFilter(request, response);
     }
 
-    private String getTokenFromRequest(HttpServletRequest request) {
+    private String getAccessTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);

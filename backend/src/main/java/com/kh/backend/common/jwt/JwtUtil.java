@@ -14,8 +14,8 @@ import io.jsonwebtoken.security.Keys;
 public class JwtUtil {
     private final Key accessKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final Key refreshKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long accessTokenExpiration = 3600000;
-    private final long refreshTokenExpiration = 10800000;
+    private final long accessTokenExpiration = 1000 * 60 * 60 * 1;
+    private final long refreshTokenExpiration = 1000 * 60 * 60 * 24;
 
     public String generateAccessToken(String username, String role) {
         return Jwts.builder()

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from 'jwt-decode';
 
 export const setTokens = (accessToken, refreshToken) => {
     localStorage.setItem('accessToken', accessToken);
@@ -14,6 +14,30 @@ export const removeTokens = () => {
     localStorage.removeItem('refreshToken');
 };
 
+export const isAuthenticated = async () => {
+    let accessToken = getAccessToken();
+    if (!accessToken) {
+        return false;
+    }
+
+    let decodedToken;
+    try {
+        decodedToken = jwtDecode(accessToken);
+    } catch {
+        return false;
+    }
+
+    const currentTime = Date.now() / 1000;
+    if (decodedToken.exp <= currentTime) {
+        accessToken = await refreshAccessToken();
+        if (!accessToken) {
+            return false;
+        }
+        decodedToken = jwtDecode(accessToken);
+    }
+    return decodedToken.exp > currentTime;
+};
+
 export const refreshAccessToken = async () => {
     try {
         const response = await axios.post('http://localhost:8080/auth/refresh', {
@@ -22,20 +46,8 @@ export const refreshAccessToken = async () => {
         const { accessToken, refreshToken } = response.data;
         setTokens(accessToken, refreshToken);
         return accessToken;
-    } catch (error) {
-        console.error('Failed to refresh token:', error);
+    } catch {
         removeTokens();
         return null;
     }
-};
-
-export const isAuthenticated = () => {
-    const token = getAccessToken();
-    if (!token) {
-        return false;
-    }
-
-    const decodedToken = jwtDecode(token);
-    const currentTime = Date.now() / 1000;
-    return decodedToken.exp > currentTime;
 };

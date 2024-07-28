@@ -1,38 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { isAuthenticated } from '../../utils/auth';
 import { jwtDecode } from 'jwt-decode';
 
+const handleRedirect = (pathname) => {
+    if (pathname.startsWith('/manager')) {
+        return <Navigate to="/manager/login" state={{ from: pathname }} replace />;
+    } else if (pathname.startsWith('/admin')) {
+        return <Navigate to="/admin/login" state={{ from: pathname }} replace />;
+    } else {
+        return <Navigate to="/login" state={{ from: pathname }} replace />;
+    }
+};
+
 const PrivateRoute = ({ children, requiredRole }) => {
     const location = useLocation();
+    const [authStatus, setAuthStatus] = useState(null);
     const accessToken = localStorage.getItem('accessToken');
 
-    if (!isAuthenticated()) {
-        const pathname = location.pathname;
-        if (pathname.startsWith('/manager')) {
-            return <Navigate to="/manager/login" state={{ from: location }} replace />;
-        } else if (pathname.startsWith('/admin')) {
-            return <Navigate to="/admin/login" state={{ from: location }} replace />;
-        } else {
-            return <Navigate to="/login" state={{ from: location }} replace />;
-        }
+    useEffect(() => {
+        const checkAuth = async () => {
+            const isAuth = await isAuthenticated();
+            setAuthStatus(isAuth);
+        };
+        checkAuth();
+    }, []);
+
+    if (authStatus === null) {
+        return <></>;
+    }
+
+    if (!authStatus) {
+        return handleRedirect(location.pathname);
     }
 
     try {
         const decodedToken = jwtDecode(accessToken);
         const userRole = decodedToken.role;
-
         if (userRole !== requiredRole) {
-            const redirectPaths = {
-                'ROLE_MANAGER': '/manager/login',
-                'ROLE_ADMIN': '/admin/login',
-            };
-
-            const redirectTo = redirectPaths[requiredRole] || '/login';
-            return <Navigate to={redirectTo} replace />;
+            return handleRedirect(location.pathname);
         }
-    } catch (error) {
-        return <Navigate to="/login" replace />;
+    } catch {
+        return handleRedirect(location.pathname);
     }
 
     return children;

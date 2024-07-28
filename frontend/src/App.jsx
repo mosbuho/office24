@@ -11,12 +11,15 @@ import MemberSearch from './pages/member/MemberSearch';
 import MemberUpdate from './pages/member/MemberUpdate';
 import AdminLogin from './pages/admin/AdminLogin';
 import ManagerRegister from './pages/manager/ManagerRegister';
+import AdminMain from './pages/admin/AdminMain';
 import PrivateRoute from './components/common/PrivateRoute';
+
 function App() {
   return (
     <Router>
       <Routes>
         {/* 공개 라우트 */}
+        <Route path="/" element={<MemberMain />} />
         <Route path="/login" element={<MemberLogin />} />
         <Route path="/manager/login" element={<ManagerLogin />} />
         <Route path="/admin/login" element={<AdminLogin />} />
@@ -24,7 +27,6 @@ function App() {
         <Route path="/manager/register" element={<ManagerRegister />} />
 
         {/* 멤버 보호 라우트 */}
-        <Route path="/" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberMain /></PrivateRoute>} />
         <Route path="/member/update" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberUpdate /></PrivateRoute>} />
         <Route path="/member/delete" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberDelete /></PrivateRoute>} />
         <Route path="/payment" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberPayment /></PrivateRoute>} />
@@ -34,6 +36,7 @@ function App() {
         <Route path="/manager" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerMain /></PrivateRoute>} />
 
         {/* 어드민 라우트 추가 */}
+        <Route path="/admin" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMain /></PrivateRoute>} />
       </Routes>
     </Router>
   );

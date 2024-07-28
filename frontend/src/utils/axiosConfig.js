@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getAccessToken, refreshAccessToken, removeTokens } from './auth';
+import { useNavigate } from 'react-router-dom';
 
 const instance = axios.create({
     baseURL: 'http://localhost:8080',
@@ -7,9 +8,9 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     (config) => {
-        const token = getAccessToken();
-        if (token) {
-            config.headers['Authorization'] = `Bearer ${token}`;
+        const accessToken = getAccessToken();
+        if (accessToken) {
+            config.headers['Authorization'] = `Bearer ${accessToken}`;
         }
         return config;
     },
@@ -28,7 +29,14 @@ instance.interceptors.response.use(
                 return instance(originalRequest);
             } else {
                 removeTokens();
-                window.location.href = '/login';
+                const pathname = window.location.pathname;
+                if (pathname.startsWith('/manager')) {
+                    window.location.href = '/manager/login';
+                } else if (pathname.startsWith('/admin')) {
+                    window.location.href = '/admin/login';
+                } else {
+                    window.location.href = '/login';
+                }
             }
         }
         return Promise.reject(error);
