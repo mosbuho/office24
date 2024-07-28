@@ -44,9 +44,9 @@ const MemberRegister = () => {
             alert('아이디는 6자 이상 12자 이하의 영문자와 숫자로만 구성되어야 합니다.');
             return false;
         }
-        axios.get(`http://localhost:8080/auth/idCheck`, {params: {id}})
+        axios.get(`http://localhost:8080/auth/idCheck`, {params: {id}, withCredentials: true })
             .then(response => {
-                if (response.status === 200)    {
+                if (response.status === 200) {
                     alert('사용 가능한 아이디입니다.');
                     return true;
                 }
@@ -77,8 +77,9 @@ const MemberRegister = () => {
             alert('전화번호는 010으로 시작하며 숫자 11자여야 합니다.');
             return false;
         }
-        return axios.post(`http://localhost:8080/auth/sendCode`, { phone: formData.phone }, {
-            headers: { 'Content-Type': 'application/json' }
+        return axios.post(`http://localhost:8080/message/send-one`, {to: formData.phone}, {
+            headers: {'Content-Type': 'application/json'},
+            withCredentials: true
         })
             .then(response => {
                 if (response.status === 200) {
@@ -98,17 +99,21 @@ const MemberRegister = () => {
     };
 
     const verifyCode = () => {
-        axios.post(`http://localhost:8080/auth/verifyCode`, {phone: formData.phone, code: verification.verificationCode}, {
-            headers: {'Content-Type': 'application/json'}
+        return axios.post(`http://localhost:8080/message/verify-code`, {text: verification.verificationCode}, {
+            headers: {'Content-Type': 'application/json'},
+            withCredentials: true
         })
             .then(response => {
-                if (response.status === 200) {
+                if (response.data) {
                     setVerification({
                         ...verification,
                         isVerified: true
                     });
                     alert("인증 성공");
                     return true;
+                } else {
+                    alert("인증 실패");
+                    return false;
                 }
             })
             .catch(error => {
@@ -118,14 +123,14 @@ const MemberRegister = () => {
             });
     };
 
-
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (allCheck()&& sendVerificationCode() && verifyCode()) {
+        if (allCheck() && verification.isVerified) {
             axios.post('http://localhost:8080/auth/register', formData, {
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                withCredentials: true
             })
                 .then(response => {
                     if (response.status === 200) {
@@ -151,7 +156,7 @@ const MemberRegister = () => {
                     <label htmlFor="id">아이디</label>
                     <div className="input-group">
                         <input type="text" id="id" name="id" value={formData.id} onChange={handleChange} required
-                               onKeyUp={idCheck}/>
+                               onKeyUp={idCheck} />
                         <button type="button" className="check-btn" onClick={idDuplicate}>아이디 중복 확인</button>
                     </div>
                     <span id="idInfo" className="info-message"></span>
@@ -159,30 +164,30 @@ const MemberRegister = () => {
                 <div className="form-group">
                     <label htmlFor="pw">비밀번호</label>
                     <input type="password" id="pw" name="pw" value={formData.pw} onChange={handleChange}
-                           onKeyUp={pwCheck} required/>
+                           onKeyUp={pwCheck} required />
                     <span id="pwInfo" className="info-message"></span>
                 </div>
                 <div className="form-group">
                     <label htmlFor="pwCheck">비밀번호 확인</label>
                     <input type="password" id="pwCheck" name="pwCheck" value={formData.pwCheck} onChange={handleChange}
-                           onKeyUp={pwCheckCheck} required/>
+                           onKeyUp={pwCheckCheck} required />
                     <span id="pwCheckInfo" className="info-message"></span>
                 </div>
                 <div className="form-group">
                     <label htmlFor="name">이름</label>
                     <input type="text" id="name" name="name" value={formData.name} onChange={handleChange}
-                           onKeyUp={nameCheck} required/>
+                           onKeyUp={nameCheck} required />
                     <span id="nameInfo" className="info-message"></span>
                 </div>
                 <div className="form-group">
                     <label htmlFor="email">[선택] 이메일주소</label>
                     <input type="email" id="email" name="email" value={formData.email} onChange={handleChange}
-                           onKeyUp={emailCheck}/>
+                           onKeyUp={emailCheck} />
                     <span id="emailInfo" className=""></span>
                 </div>
                 <div className="form-group">
                     <label htmlFor="birth">생년월일</label>
-                    <input type="date" id="birth" name="birth" value={formData.birth} onChange={handleChange} required/>
+                    <input type="date" id="birth" name="birth" value={formData.birth} onChange={handleChange} required />
                     <span id="birthInfo" className="info-message"></span>
                 </div>
                 <div className="form-group">
@@ -196,7 +201,7 @@ const MemberRegister = () => {
                     <label htmlFor="phone">휴대전화번호</label>
                     <div className="input-group">
                         <input type="text" id="phone" name="phone" value={formData.phone} onChange={handleChange}
-                               onKeyUp={phoneCheck} required/>
+                               onKeyUp={phoneCheck} required />
                         <button type="button" className="check-btn" onClick={sendVerificationCode}>인증 코드 전송</button>
                     </div>
                     <span id="phoneInfo" className="info-message"></span>
@@ -205,7 +210,7 @@ const MemberRegister = () => {
                     <div className="form-group">
                         <label htmlFor="verificationCode">인증 코드</label>
                         <input type="text" id="verificationCode" name="verificationCode"
-                               value={verification.verificationCode} onChange={handleVerificationChange} required/>
+                               value={verification.verificationCode} onChange={handleVerificationChange} required />
                         <button type="button" className="check-btn" onClick={verifyCode}>인증</button>
                     </div>
                 )}
