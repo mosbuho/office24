@@ -7,7 +7,7 @@ body {
     height: 100vh;
 }
 
-.member-login-form {
+.find-id-form {
     background: #ffffff;
     padding: 40px;
     border-radius: 8px;
@@ -16,24 +16,24 @@ body {
     text-align: center;
 }
 
-.member-login-form .logo {
+.find-id-form .logo {
     font-size: 36px;
     font-weight: bold;
     margin-bottom: 20px;
     color: #6363d2;
 }
 
-.member-login-form h2 {
+.find-id-form h2 {
     margin-bottom: 20px;
     font-size: 28px;
     color: #333;
 }
 
-.member-login-form div {
+.find-id-form div {
     margin-bottom: 20px;
 }
 
-.member-login-form label {
+.find-id-form label {
     display: block;
     margin-bottom: 10px;
     font-weight: bold;
@@ -41,7 +41,8 @@ body {
     text-align: left;
 }
 
-.member-login-form input {
+.find-id-form input[type="email"],
+.find-id-form input[type="text"] {
     width: 100%;
     padding: 12px;
     border: 1px solid #ddd;
@@ -49,7 +50,7 @@ body {
     font-size: 16px;
 }
 
-.member-login-form button {
+.find-id-form button {
     width: 100%;
     padding: 14px;
     background-color: #6363d2;
@@ -60,55 +61,29 @@ body {
     cursor: pointer;
 }
 
-.member-login-form button:hover {
+.find-id-form button:hover {
     background-color: #4a4a9d;
 }
 
-.help-links {
-    text-align: center;
-    margin-top: 10px;
+.find-id-form .radio-group {
+    display: flex;
+    justify-content: center;
     margin-bottom: 20px;
 }
 
-.help-links a {
+.find-id-form .radio-group label {
     margin: 0 10px;
-    color: #6363d2;
-    text-decoration: none;
+    font-weight: normal;
+    color: #555;
 }
 
-.help-links a:hover {
-    text-decoration: underline;
-}
-
-
-.kakao-login-button {
-    width: 100%;
-    padding: 14px;
-    background-color: #fee500 !important;
-    border: none;
-    border-radius: 4px;
-    color: #000 !important;
+.find-id-form .result,
+.find-id-form .error {
+    margin-top: 20px;
     font-size: 18px;
-    cursor: pointer;
-    margin-top: 10px;
+    color: #333;
 }
 
-.kakao-login-button:hover {
-    background-color: #ffd700 !important;
-}
-
-.naver-login-button {
-    width: 100%;
-    padding: 14px;
-    background-color: #03C75A !important;
-    border: none;
-    border-radius: 4px;
-    color: white !important;
-    font-size: 18px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-.naver-login-button:hover {
-    background-color: #028a4c !important;
+.find-id-form .error {
+    color: red;
 }

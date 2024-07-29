@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.backend.member.MemberMapper">
-    <insert id="insertMember" parameterType="com.kh.backend.member.Member"> INSERT INTO member (id,
-        pw, name, phone, email, birth, gender) VALUES (#{id}, #{pw}, #{name}, #{phone}, #{email},
-        #{birth}, #{gender}) </insert>
+    <resultMap id="memberResultMap" type="com.kh.backend.member.Member">
+        <result property="id" column="id"/>
+        <result property="pw" column="pw"/>
+        <result property="name" column="name"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="birth" column="birth"/>
+        <result property="gender" column="gender"/>
+    </resultMap>
+    <insert id="insertMember" parameterType="com.kh.backend.member.Member">
+        INSERT INTO member (id, pw, name, phone, email, birth, gender)
+        VALUES (#{id}, #{pw}, #{name}, #{phone, jdbcType=VARCHAR}, #{email, jdbcType=VARCHAR}, #{birth, jdbcType=DATE}, #{gender, jdbcType=VARCHAR})
+    </insert>
     <select id="findById" parameterType="String" resultType="com.kh.backend.member.Member"> SELECT
         no, pw FROM member WHERE id = #{id} </select>
+    <select id="findByEmail" resultType="com.kh.backend.member.Member">
+        select * from OFFICE24.MEMBER where email = #{email}
+    </select>
+    <select id="findByPhone" resultType="com.kh.backend.member.Member">
+        select * from OFFICE24.MEMBER where PHONE = #{phone}
+    </select>
+    <select id="findByIdAndPhone" resultType="com.kh.backend.member.Member">
+        select * from OFFICE24.MEMBER where ID = #{id} and PHONE = #{phone}
+    </select>
 </mapper>

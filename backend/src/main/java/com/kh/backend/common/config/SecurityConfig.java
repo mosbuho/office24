@@ -41,6 +41,8 @@ public class SecurityConfig {
                 }))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/member/kakao/**").permitAll().
+                        requestMatchers("/member/naver/**").permitAll()
                         .requestMatchers("/member/register", "/manager/register").permitAll()
                         .requestMatchers("/member/idCheck", "/manager/idCheck").permitAll()
                         .requestMatchers("/message/**").permitAll()
