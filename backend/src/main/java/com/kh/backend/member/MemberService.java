@@ -47,6 +47,13 @@ public class MemberService {
         return memberMapper.findById(id) == null;
     }
 
+    public String idExist(String phone) {
+        System.out.println("Service received phone: " + phone); // 로그 추가
+        String id = memberMapper.findIdByPhone(phone);
+        System.out.println("Found id: " + id); // 로그 추가
+        return id;
+    }
+
     @Transactional
     public void registerMember(String id, String pw, String name, String phone, String email, Date birth, String gender) {
         Member member = new Member();
@@ -66,6 +73,7 @@ public class MemberService {
             throw new RuntimeException("회원 등록 중 오류가 발생했습니다.", e);
         }
     }
+
     public String getKakaoLoginUrl() {
         return "https://kauth.kakao.com/oauth/authorize?client_id=" + kakaoClientId + "&redirect_uri=" + kakaoRedirectUri + "&response_type=code";
     }
@@ -135,11 +143,13 @@ public class MemberService {
         }
         return member;
     }
+
     public String getNaverLoginUrl() {
         String clientId = naverClientId;
         String redirectUri = naverRedirectUri;
         return "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=" + clientId + "&redirect_uri=" + redirectUri;
     }
+
     public String getNaverAccessToken(String code) {
         String clientId = naverClientId;
         String clientSecret = naverClientSecret;
@@ -169,6 +179,7 @@ public class MemberService {
             throw new RuntimeException(response.getBody().toString());
         }
     }
+
     public Member getNaverUser(String accessToken) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "https://openapi.naver.com/v1/nid/me";
@@ -193,6 +204,7 @@ public class MemberService {
             throw new RuntimeException(response.getBody().toString());
         }
     }
+
     public Member findOrCreateNaverUser(String code) {
         String accessToken = getNaverAccessToken(code);
         Member naverUser = getNaverUser(accessToken);

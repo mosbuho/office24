@@ -1,68 +1,155 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../../styles/pages/member/MemberFindId.css';
+import {phoneCheck} from "../../utils/MemberRegister.js"; // CSS 파일 경로
 
 const MemberFindId = () => {
-    const [searchType, setSearchType] = useState('email');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [result, setResult] = useState(null);
-    const [error, setError] = useState(null);
+    const [formData, setFormData] = useState({
+        phone: ''
+    });
+    const [verification, setVerification] = useState({
+        isCodeSent: false,
+        verificationCode: '',
+        isVerified: false
+    });
+    const [id, setId] = useState(null);
 
-    const handleSearchTypeChange = (e) => {
-        setSearchType(e.target.value);
-        setEmail('');
-        setPhone('');
-        setResult(null);
-        setError(null);
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setFormData({ ...formData,
+            [name]: value});
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await axios.post('http://localhost:8080/member/findId', {
-                type: searchType,
-                email: searchType === 'email' ? email : null,
-                phone: searchType === 'phone' ? phone : null,
-            });
-            setResult(response.data.id);
-            setError(null);
-        } catch (error) {
-            setError(error.response.data || '아이디를 찾을 수 없습니다.');
-            setResult(null);
+    const handleVerificationChange = (e) => {
+        setVerification({ ...verification, [e.target.name]: e.target.value });
+    };
+
+
+    const sendVerificationCode = () => {
+        if (!phoneCheck()) {
+            alert('전화번호는 010으로 시작하며 숫자 11자여야 합니다.');
+            return false;
         }
+        return axios.post(`http://localhost:8080/message/send-one`, {to: formData.phone}, {
+            headers: {'Content-Type': 'application/json'},
+            withCredentials: true
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    setVerification({
+                        ...verification,
+                        isCodeSent: true
+                    });
+                    alert("인증 코드가 전송되었습니다.");
+                    return true;
+                }
+            })
+            .catch(error => {
+                alert('인증 코드 전송 실패: ' + error.message);
+                console.error(error.response.data);
+                return false;
+            });
     };
+
+    const verifyCode = () => {
+        return axios.post(`http://localhost:8080/message/verify-code`, {text: verification.verificationCode}, {
+            headers: {'Content-Type': 'application/json'},
+            withCredentials: true
+        })
+            .then(response => {
+                if (response.data) {
+                    setVerification({
+                        ...verification,
+                        isVerified: true
+                    });
+                    alert("인증 성공");
+                    return true;
+                } else {
+                    alert("인증 실패");
+                    return false;
+                }
+            })
+            .catch(error => {
+                alert("인증 실패: " + error.message);
+                console.error(error.response.data);  // 오류 메시지 출력
+                return false;
+            });
+    };
+
+    const findIdByPhone = () => {
+        axios.get(`http://localhost:8080/member/idExist`, {
+            params: {
+                phone: formData.phone
+            }
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    setId(response.data.id);
+                }
+            })
+            .catch(error => {
+                console.error(error.response); // 오류 메시지 출력
+                alert("아이디가 존재하지 않습니다.");
+            });
+    };
+
 
     return (
         <div className="find-id-form">
             <div className="logo">로고</div>
             <h2>아이디 찾기</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>
-                        <input type="radio" value="email" checked={searchType === 'email'} onChange={handleSearchTypeChange}/>
-                        이메일로 찾기
-                    </label>
-                    <label>
-                        <input type="radio" value="phone" checked={searchType === 'phone'} onChange={handleSearchTypeChange}/>
-                        핸드폰 번호로 찾기
-                    </label>
+            <div className="form-group phone-group">
+                <label htmlFor="phone">휴대전화번호</label>
+                <div className="input-group">
+                    <input
+                        type="text"
+                        id="phone"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        onKeyUp={phoneCheck}
+                        required
+                        placeholder="'-' 를 제외한 11자리 숫자"
+                    />
+                    <button type="button" className="check-btn" onClick={sendVerificationCode}>
+                        번호 인증
+                    </button>
                 </div>
-                {searchType === 'email' && (
-                    <div>
-                        <label htmlFor="email">이메일</label><input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
+                <span id="phoneInfo" className="info-message">유효한 전화번호를 입력해주세요.</span>
+            </div>
+            {verification.isCodeSent && (
+                <div className="form-group verify-group">
+                    <label htmlFor="verificationCode">인증 코드</label>
+                    <div className="input-group">
+                        <input
+                            type="text"
+                            id="verificationCode"
+                            name="verificationCode"
+                            value={verification.verificationCode}
+                            onChange={handleVerificationChange}
+                            required
+                        />
+                        <button type="button" className="check-btn" onClick={verifyCode}>
+                            인증
+                        </button>
                     </div>
-                )}
-                {searchType === 'phone' && (
-                    <div>
-                        <label htmlFor="phone">핸드폰 번호</label>
-                        <input type="text" id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} required/>
-                    </div>
-                )}
-                <button type="submit">아이디 찾기</button>
-            </form>
-            {result && <div className="result">아이디: {result}</div>}
-            {error && <div className="error">{error}</div>}
+                    {verification.isVerified && (
+                        <span className="info-message-success">번호 인증이 완료되었습니다.</span>
+                    )}
+                </div>
+            )}
+            {verification.isVerified && (
+                <div>
+                    <button type="button" className="find-id-btn" onClick={findIdByPhone}>
+                        아이디 찾기
+                    </button>
+                    {id && (
+                        <div className="user-id-result">
+                            <span className="info-message-success">아이디: {id}</span>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

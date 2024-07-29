@@ -5,6 +5,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    margin: 0;
 }
 
 .find-id-form {
@@ -29,11 +30,12 @@ body {
     color: #333;
 }
 
-.find-id-form div {
+.find-id-form .form-group {
     margin-bottom: 20px;
+    text-align: left;
 }
 
-.find-id-form label {
+.find-id-form .form-group label {
     display: block;
     margin-bottom: 10px;
     font-weight: bold;
@@ -41,49 +43,62 @@ body {
     text-align: left;
 }
 
-.find-id-form input[type="email"],
-.find-id-form input[type="text"] {
-    width: 100%;
+.find-id-form .input-group {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.find-id-form .input-group input {
+    flex: 1;
     padding: 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 16px;
+    box-sizing: border-box;
+    height: 42px;
 }
 
-.find-id-form button {
-    width: 100%;
-    padding: 14px;
-    background-color: #6363d2;
+.find-id-form .check-btn {
+    margin-left: 10px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 4px;
+    background-color: #6363d2;
     color: white;
-    font-size: 18px;
+    font-size: 16px;
     cursor: pointer;
+    border-radius: 4px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.find-id-form button:hover {
+.find-id-form .check-btn:hover {
     background-color: #4a4a9d;
 }
 
-.find-id-form .radio-group {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
+.find-id-form .info-message {
+    color: red;
+    position: relative;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+    text-align: left;
 }
 
-.find-id-form .radio-group label {
-    margin: 0 10px;
-    font-weight: normal;
-    color: #555;
+.find-id-form .info-message-success {
+    color: green;
+    font-size: 14px;
+    margin-top: 5px;
 }
 
-.find-id-form .result,
-.find-id-form .error {
+.find-id-form .user-id-result {
     margin-top: 20px;
-    font-size: 18px;
-    color: #333;
 }
 
 .find-id-form .error {
     color: red;
+    font-size: 18px;
+    margin-top: 20px;
 }

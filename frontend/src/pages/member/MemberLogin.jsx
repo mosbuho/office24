@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const SocialKakao = () => {
     const handleKakao = () => {
-        axios.get('http://localhost:8080/member/kakao/login-url')
+        axios.get('http://localhost:8080/auth/kakao/login-url')
             .then(response => {
                 const kakaoURL = response.data;
                 window.location.href = kakaoURL;
@@ -24,7 +24,7 @@ const SocialKakao = () => {
 
 const SocialNaver = () => {
     const handleNaver = () => {
-        axios.get('http://localhost:8080/member/naver/login-url')
+        axios.get('http://localhost:8080/auth/naver/login-url')
             .then(response => {
                 const naverURL = response.data;
                 window.location.href = naverURL;

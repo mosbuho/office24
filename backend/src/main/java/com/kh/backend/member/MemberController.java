@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Collections;
 
 @RestController
 @RequestMapping("/member")
@@ -24,6 +25,17 @@ public class MemberController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+    @GetMapping("/idExist")
+    public ResponseEntity<?> idExist(@RequestParam String phone) {
+        System.out.println("Received phone number: " + phone); // 로그 추가
+        String id = memberService.idExist(phone);
+        System.out.println("Returned id: " + id); // 로그 추가
+        if (id != null) {
+            return ResponseEntity.ok(Collections.singletonMap("id", id));
+        } else {
+            return ResponseEntity.badRequest().body("아이디가 존재하지 않습니다.");
+        }
+    }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerMember(@RequestBody Member member) {
@@ -34,37 +46,6 @@ public class MemberController {
             return ResponseEntity.ok(null);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-    @GetMapping("/kakao/login-url")
-    public ResponseEntity<String> getKakaoLoginUrl() {
-        String kakaoLoginUrl = memberService.getKakaoLoginUrl();
-        return ResponseEntity.ok(kakaoLoginUrl);
-    }
-
-    @GetMapping("/kakao/callback")
-    public void kakaoCallback(@RequestParam String code, HttpServletResponse response) throws IOException {
-        try {
-            Member member = memberService.findOrCreateKakaoUser(code);
-            response.sendRedirect("http://localhost:5173/login?message=success");
-        } catch (Exception e) {
-            response.sendRedirect("http://localhost:5173/login?message=error");
-        }
-    }
-    @GetMapping("/naver/login-url")
-    public ResponseEntity<String> getNaverLoginUrl() {
-        String naverLoginUrl = memberService.getNaverLoginUrl();
-        return ResponseEntity.ok(naverLoginUrl);
-    }
-
-    @GetMapping("/naver/callback")
-    public void naverCallback(@RequestParam String code, HttpServletResponse response) throws IOException {
-        try {
-            Member member = memberService.findOrCreateNaverUser(code);
-            response.sendRedirect("http://localhost:5173/login?message=success");
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("http://localhost:5173/login?message=error");
         }
     }
 }

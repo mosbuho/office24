@@ -7,4 +7,6 @@ public interface MemberMapper {
     void insertMember(Member member);
     Member findById(String id);
     Member findByEmail(String email);
+    Member findByPhone(String phone);
+    String findIdByPhone(String phone);
 }
