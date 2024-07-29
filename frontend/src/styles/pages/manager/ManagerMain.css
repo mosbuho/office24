@@ -10,7 +10,7 @@ body.manager-main-body {
     margin-left: 20%;
     margin-top: 70px;
     margin-bottom: 10px;
-    padding: 10px;
+    padding: 8px;
     background-color: #F5f5f5;
     min-height: 100vh;
     box-sizing: border-box;
@@ -19,14 +19,15 @@ body.manager-main-body {
 .main-content .dashboard {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
 }
 
 .main-content .mini-container {
     width: 100%;
     display: flex;
-    justify-content: space-around;
     height: 60px;
+    gap: 10px;
+    justify-content: center;
 }
 
 .main-content .mini-stats {
@@ -51,7 +52,7 @@ body.manager-main-body {
 
 .main-content .statcontent {
     display: flex;
-    align-items:center;
+    align-items: center;
 }
 
 .mini-stats:first-child::after {
@@ -105,7 +106,9 @@ body.manager-main-body {
 .main-content .mini-stats p {
     margin: 0;
     font-size: 10px;
+    font-weight: bold;
 }
+
 .main-content .info,
 .main-content .reserve,
 .main-content .chart-container,
@@ -120,28 +123,30 @@ body.manager-main-body {
 }
 
 .main-content .statistics {
-    width: 97%;
+    width: 93%;
     margin: 0 auto;
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
+    justify-content: center;
 }
 
 .main-content .chart-container {
     width: 50%;
-    height: 300px;
+    height: 280px;
 }
 
 
 .main-content .booking {
     width: 39%;
-    height: 300px;
+    height: 280px;
 }
 
 .main-content .bottom-content {
-    width: 97%;
+    width: 93%;
     margin: 0 auto;
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
+    justify-content: center;
 }
 
 .main-content .info {
@@ -154,29 +159,87 @@ body.manager-main-body {
     height: 300px;
 }
 
-.main-content .reserve h4,
+
 .main-content .chart-container h4 {
-    margin: 0 0 30px;
+    margin: 0 0 10px;
 }
 
+.main-content .info h4,
+.main-content .reserve h4,
 .main-content .booking h4 {
     margin: 0;
 }
 
+/* 예약리스트 */
 .main-content .table-container {
     overflow-x: auto;
+    height: 300px;
 }
 
 .main-content table {
-    width: 100%;
+    width: 95%;
+    height: 100px;
     border-collapse: collapse;
-    margin: 20px 0;
+    margin: 30px auto 0;
+    font-size: 11px;
 }
 
 .main-content table th,
 .main-content table td {
+    text-align: center;
     padding: 10px;
-    border: 1px solid #ddd;
-    text-align: left;
+    border-bottom: 1px solid #eee;
 }
 
+.main-content table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.main-content table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.main-content table tr:hover {
+    background-color: #f1f1f1;
+}
+
+
+/* 페이징 */
+.main-content .pagination {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    margin: 0;
+    list-style: none;
+    gap: 10px;
+}
+
+.main-content .pagination li {
+    display: inline;
+    margin: 0 2px;
+}
+
+
+.main-content .pagination li a {
+    padding: 3px 10px;
+    border: 1px solid #ddd;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 13px;
+}
+
+.main-content .pagination li a:hover {
+    background-color: #f4f4f4;
+}
+
+.main-content .pagination li.active a {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.main-content .break-me {
+    cursor: default;
+    color: #999;
+}

@@ -60,7 +60,14 @@ const ManagerMain = () => {
         },
       });
 
-      setBookings(response.data.bookings);
+      const bookData = response.data.bookings.map(booking => ({
+        ...booking,
+        BOOKING_DATE: new Date(booking.BOOKING_DATE).toLocaleDateString(),
+        START_DATE: new Date(booking.START_DATE).toLocaleDateString(),
+        END_DATE: new Date(booking.END_DATE).toLocaleDateString()
+      }));
+
+      setBookings(bookData);
       setPageCount(response.data.totalPages);
       setCurrentPage(selectedPage);
     } catch (error) {
@@ -78,9 +85,9 @@ const ManagerMain = () => {
     fetchBookings(selectedPage);
   };
 
-  if (loading) {
-    return <div>loading...</div>;
-  }
+  // if (loading) {
+  //   return <div>loading...</div>;
+  // }
   if (!stats) {
     return <div>Error loading data.</div>;
   }
@@ -128,20 +135,20 @@ const ManagerMain = () => {
           </div>
           <div className="statistics">
             <div className="chart-container">
-              <h4>매출</h4>
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={monthlyData} margin={{ left: 20, right: 50 }}>
-                  <XAxis dataKey="month" tick={{ fontSize: 12 }} tickLine={false} />
-                  <YAxis tick={{ fontSize: 12 }} tickLine={false} />
+              <h4>매출</h4><br />
+              <ResponsiveContainer width="100%" height={230}>
+                <BarChart data={monthlyData} margin={{ top:10, left: 0, right: 20 }}>
+                  <XAxis dataKey="month" tick={{ fontSize: 10 }} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11 }} tickLine={false} />
                   <Tooltip contentStyle={{ fontSize: 12 }} />
-                  <Bar dataKey="revenue" fill="#4171DD" barSize={15}
+                  <Bar dataKey="revenue" fill="#4171DD" barSize={11}
                     animationDuration={1000} animationEasing="ease-out" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
             <div className='booking'>
               <h4>이용자 성비</h4><br />
-              <ResponsiveContainer width="100%" height={250} margin={{ top: 30, right: 0, bottom: 0, left: 0 }} >
+              <ResponsiveContainer width="100%" height={250} margin={{ top: 0, right: 0, bottom: 0, left: 0 }} >
                 <PieChart>
                   <Pie
                     data={genderData}
@@ -159,7 +166,7 @@ const ManagerMain = () => {
                     ))}
                   </Pie>
                   <Tooltip />
-                  <Legend />
+                  <Legend verticalAlign="bottom" height={36} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -169,7 +176,7 @@ const ManagerMain = () => {
               <h4>내 정보</h4>
             </div>
             <div className="reserve">
-            <h3>예약 내역</h3>
+            <h4>예약 내역</h4>
             <div className="table-container">
               <table>
                 <thead>
@@ -183,12 +190,12 @@ const ManagerMain = () => {
                 </thead>
                 <tbody>
                   {bookings.map((booking) => (
-                    <tr key={booking.booking_no}>
-                      <td>{booking.booking_no}</td>
-                      <td>{new Date(booking.booking_date).toLocaleDateString()}</td>
-                      <td>{booking.booking_name}</td>
-                      <td>{booking.booking_phone}</td>
-                      <td>{new Date(booking.start_date).toLocaleDateString()} ~ {new Date(booking.end_date).toLocaleDateString()}</td>
+                    <tr key={booking.BOOKING_NO}>
+                      <td>{booking.BOOKING_NO}</td>
+                      <td>{booking.BOOKING_DATE}</td>
+                      <td>{booking.BOOKING_NAME}</td>
+                      <td>{booking.BOOKING_PHONE.trim()}</td> {/* 공백 제거 */}
+                      <td>{booking.START_DATE} ~ {booking.END_DATE}</td>
                     </tr>
                   ))}
                 </tbody>

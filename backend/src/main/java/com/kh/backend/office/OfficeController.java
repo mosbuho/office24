@@ -30,7 +30,6 @@ public class OfficeController {
         List<Map<String, Object>> genderRatio = officeService.getTotalGenderRatio(no);
         stats.put("genderRatio", genderRatio);
 
-        System.out.println(stats);
         return ResponseEntity.ok(stats);
     }
 }
