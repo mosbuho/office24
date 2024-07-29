@@ -1,5 +1,169 @@
-.registerForm {
-    width: 800px;
-    height: 1000px;
-    border: 1px solid black;
+body {
+    padding: 40px;
+    margin: 0;
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.member-register {
+    width: 600px;
+    padding: 40px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.member-register h1 {
+    font-size: 36px;
+    font-weight: bold;
+    color: #6363d2;
+    margin-bottom: 30px;
+}
+
+.member-register .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+    position: relative;
+}
+
+.member-register .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.member-register .form-group input,
+.member-register .form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.member-register .form-group input:focus,
+.member-register .form-group select:focus {
+    border-color: #6363d2;
+    outline: none;
+}
+
+.member-register .form-group span {
+    display: block;
+    margin-top: 5px;
+    color: red;
+}
+
+.member-register .form-group.id-group .input-group {
+    display: flex;
+    align-items: center;
+}
+
+.member-register .form-group.id-group .input-group input {
+    flex: 1;
+}
+
+.member-register .form-group.id-group .input-group .check-btn {
+    margin-left: 10px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #6363d2;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.member-register .form-group.id-group .input-group .check-btn:hover {
+    background-color: #4a4a9d;
+}
+
+.member-register .gender-group,
+.member-register .nationality-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.member-register .terms-group {
+    display: flex;
+    align-items: center;
+}
+
+.member-register .terms-group label {
+    margin: 0;
+}
+
+.member-register .button1 {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+    background-color: #6363d2;
+    color: white;
+}
+
+.member-register .button1:hover {
+    background-color: #4a4a9d;
+}
+
+
+.member-register .form-group.phone-group .input-group {
+    display: flex;
+    align-items: center;
+}
+
+.member-register .form-group.phone-group .input-group input {
+    flex: 1;
+}
+
+.member-register .form-group.phone-group .input-group .check-btn {
+    margin-left: 10px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #6363d2;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.member-register .form-group.phone-group .input-group .check-btn:hover {
+    background-color: #4a4a9d;
+}
+
+
+.member-register .form-group.verify-group .input-group {
+    display: flex;
+    align-items: center;
+}
+
+.member-register .form-group.verify-group .input-group input {
+    flex: 1;
+}
+
+.member-register .form-group.verify-group .input-group .check-btn {
+    margin-left: 10px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #6363d2;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.member-register .form-group.verify-group .input-group .check-btn:hover {
+    background-color: #4a4a9d;
+}
+.member-register .form-group .info-message-success {
+    color: blue !important;
 }
