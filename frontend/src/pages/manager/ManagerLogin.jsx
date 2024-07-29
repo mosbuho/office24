@@ -14,7 +14,7 @@ const ManagerLogin = () => {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:8080/auth/manager/login', { id, pw });
-            const { accessToken, refreshToken } = response.data;
+            const { accessToken, refreshToken, no } = response.data;
             setTokens(accessToken, refreshToken);
             navigate('/manager');
         } catch (error) {

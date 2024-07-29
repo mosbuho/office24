@@ -17,20 +17,22 @@ public class JwtUtil {
     private final long accessTokenExpiration = 1000 * 60 * 60 * 1;
     private final long refreshTokenExpiration = 1000 * 60 * 60 * 24;
 
-    public String generateAccessToken(String username, String role) {
+    public String generateAccessToken(String username, String role, int no) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("role", role)
+                .claim("no", no)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                 .signWith(accessKey)
                 .compact();
     }
 
-    public String generateRefreshToken(String username, String role) {
+    public String generateRefreshToken(String username, String role, int no) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("role", role)
+                .claim("no", no)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(refreshKey)
@@ -73,5 +75,15 @@ public class JwtUtil {
     public String getRoleFromRefreshToken(String refreshToken) {
         return Jwts.parserBuilder().setSigningKey(refreshKey).build()
                 .parseClaimsJws(refreshToken).getBody().get("role", String.class);
+    }
+
+    public int getNoFromAccessToken(String accessToken) {
+        return Jwts.parserBuilder().setSigningKey(accessKey).build()
+                .parseClaimsJws(accessToken).getBody().get("no", Integer.class);
+    }
+
+    public int getNoFromRefreshToken(String refreshToken) {
+        return Jwts.parserBuilder().setSigningKey(refreshKey).build()
+                .parseClaimsJws(refreshToken).getBody().get("no", Integer.class);
     }
 }

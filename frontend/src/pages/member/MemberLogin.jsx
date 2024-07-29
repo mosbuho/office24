@@ -13,7 +13,7 @@ const MemberLogin = () => {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:8080/auth/member/login', { id, pw });
-            const { accessToken, refreshToken } = response.data;
+            const { accessToken, refreshToken, no } = response.data;
             setTokens(accessToken, refreshToken);
             navigate('/');
         } catch (error) {

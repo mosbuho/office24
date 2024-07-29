@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Manager {
+    private int no;
     @NotBlank(message = "아이디는 필수 입력 값입니다.")
     @Size(min = 6, max = 12, message = "아이디는 6자 이상 12자 이하의 영문자와 숫자만 가능합니다.")
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "아이디는 영문자와 숫자만 가능합니다.")

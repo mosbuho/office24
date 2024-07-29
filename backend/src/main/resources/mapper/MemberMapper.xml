@@ -5,5 +5,5 @@
         pw, name, phone, email, birth, gender) VALUES (#{id}, #{pw}, #{name}, #{phone}, #{email},
         #{birth}, #{gender}) </insert>
     <select id="findById" parameterType="String" resultType="com.kh.backend.member.Member"> SELECT
-        pw FROM member WHERE id = #{id} </select>
+        no, pw FROM member WHERE id = #{id} </select>
 </mapper>
