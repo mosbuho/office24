@@ -13,6 +13,7 @@ import AdminLogin from './pages/admin/AdminLogin';
 import ManagerRegister from './pages/manager/ManagerRegister';
 import AdminMain from './pages/admin/AdminMain';
 import PrivateRoute from './components/common/PrivateRoute';
+import MemberFindId from "./pages/member/MemberFindId.jsx";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/member/register" element={<MemberRegister />} />
         <Route path="/manager/register" element={<ManagerRegister />} />
+        <Route path="/findId" element={<MemberFindId/>}/>
 
         {/* 멤버 보호 라우트 */}
         <Route path="/member/update" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberUpdate /></PrivateRoute>} />

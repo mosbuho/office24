@@ -95,10 +95,55 @@ body {
 
 .find-id-form .user-id-result {
     margin-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.find-id-form .find-id-btn {
+    background-color: #6363d2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.find-id-form .find-id-btn:hover {
+    background-color: #4a4a9d;
 }
 
 .find-id-form .error {
     color: red;
     font-size: 18px;
     margin-top: 20px;
+}
+
+.additional-links {
+    margin-top: 30px;
+}
+
+.additional-links .link-row {
+    margin-bottom: 10px;
+}
+
+.additional-links .link-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #6363d2;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+}
+
+.additional-links .link-button:hover {
+    background-color: #4a4a9d;
 }
