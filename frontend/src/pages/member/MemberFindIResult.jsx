@@ -1,8 +1,8 @@
 import React from 'react';
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import '../../styles/pages/member/MemberFindIdProc.css';
+import '../../styles/pages/member/MemberFindIdResult.css';
 
-const MemberFindIdProc = () => {
+const MemberFindIdResult = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const {ids} = location.state || { ids: [] };
@@ -36,4 +36,4 @@ const MemberFindIdProc = () => {
     );
 };
 
-export default MemberFindIdProc;
+export default MemberFindIdResult;

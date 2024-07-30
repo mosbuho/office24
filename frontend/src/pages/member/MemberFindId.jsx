@@ -71,9 +71,9 @@ const MemberFindId = () => {
         })
             .then(response => {
                 if (response.status === 200 && Array.isArray(response.data)) {
-                    navigate("/member/findIdProc", {state: {ids: response.data}});
+                    navigate("/member/findIdResult", {state: {ids: response.data}});
                 } else if (response.status === 200 && response.data.ids) {
-                    navigate("/member/findIdProc", {state: {ids: response.data.ids}});
+                    navigate("/member/findIdResult", {state: {ids: response.data.ids}});
                 }
             })
             .catch(error => {
