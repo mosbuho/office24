@@ -2,10 +2,12 @@ package com.kh.backend.common.auth;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import com.kh.backend.member.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -111,9 +113,9 @@ public class AuthController {
     }
     @GetMapping("/idExist")
     public ResponseEntity<?> idExist(@RequestParam String phone) {
-        String id = memberService.idExist(phone);
-        if (id != null) {
-            return ResponseEntity.ok(Collections.singletonMap("id", id));
+        List<String> ids = memberService.idExist(phone);
+        if (ids != null) {
+            return new ResponseEntity<>(ids, HttpStatus.OK);
         } else {
             return ResponseEntity.badRequest().body("아이디가 존재하지 않습니다.");
         }

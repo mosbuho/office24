@@ -1,7 +1,7 @@
 import '../../styles/pages/member/MemberLogin.css';
-import {setTokens} from '../../utils/auth';
-import {useNavigate, Link, useLocation} from 'react-router-dom';
-import React, {useState, useEffect} from 'react';
+import { setTokens } from '../../utils/auth';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const SocialKakao = () => {
@@ -16,9 +16,7 @@ const SocialKakao = () => {
     };
 
     return (
-        <>
-            <button onClick={handleKakao} className="kakao-login-button">카카오 로그인</button>
-        </>
+        <button onClick={handleKakao} className="kakao-login-button">카카오 로그인</button>
     );
 };
 
@@ -30,14 +28,12 @@ const SocialNaver = () => {
                 window.location.href = naverURL;
             })
             .catch(error => {
-            })
+            });
     }
 
     return (
-        <>
-            <button onClick={handleNaver} className="naver-login-button">네이버 로그인</button>
-        </>
-    )
+        <button onClick={handleNaver} className="naver-login-button">네이버 로그인</button>
+    );
 }
 
 const MemberLogin = () => {
@@ -47,7 +43,7 @@ const MemberLogin = () => {
     });
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         setFormData({
             ...formData,
             [name]: value
@@ -69,46 +65,46 @@ const MemberLogin = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:8080/auth/member/login', {
-            id: formData.id,
-            pw: formData.pw
-        }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
+        axios.post('http://localhost:8080/auth/member/login', formData, {
+            headers: { 'Content-Type': 'application/json' }
         })
             .then(response => {
-                const {accessToken, refreshToken} = response.data;
+                const { accessToken, refreshToken } = response.data;
                 setTokens(accessToken, refreshToken);
                 navigate('/');
             })
             .catch(error => {
-                alert(error.response.data || '알 수 없는 오류가 발생했습니다.');
+                alert(error.response?.data || '알 수 없는 오류가 발생했습니다.');
             });
     };
+    const logoClick = () => {
+        navigate("/")
+    }
 
     return (
-        <div className="member-login-form">
-            <div className="logo">로고</div>
-            <h2>로그인</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="id">아이디</label>
-                    <input type="text" id="id" name="id" value={formData.id} onChange={handleChange} required/>
-                </div>
-                <div>
-                    <label htmlFor="pw">비밀번호</label>
-                    <input type="password" id="pw" name="pw" value={formData.pw} onChange={handleChange} required/>
-                </div>
-                <div className="help-links">
-                    <Link to="/member/findId">아이디 찾기</Link>
-                    <Link to="/member/findPassword">비밀번호 찾기</Link>
-                    <Link to="/member/register">회원가입</Link>
-                </div>
-                <button type="submit">Login</button>
-            </form>
-            <SocialKakao/>
-            <SocialNaver/>
+        <div className="login-page">
+            <div className="member-login-form">
+                <div className="logo" onClick={logoClick}>OFFICE24</div>
+                <h2>로그인</h2>
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label htmlFor="id">아이디</label>
+                        <input type="text" id="id" name="id" value={formData.id} onChange={handleChange} required />
+                    </div>
+                    <div>
+                        <label htmlFor="pw">비밀번호</label>
+                        <input type="password" id="pw" name="pw" value={formData.pw} onChange={handleChange} required />
+                    </div>
+                    <div className="help-links">
+                        <Link to="/member/findId">아이디 찾기</Link>
+                        <Link to="/member/findPassword">비밀번호 찾기</Link>
+                        <Link to="/member/register">회원가입</Link>
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
+                <SocialKakao />
+                <SocialNaver />
+            </div>
         </div>
     );
 };

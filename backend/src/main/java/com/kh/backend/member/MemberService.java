@@ -2,6 +2,7 @@ package com.kh.backend.member;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,9 +49,9 @@ public class MemberService {
         return memberMapper.findById(id) == null;
     }
 
-    public String idExist(String phone) {
-        String id = memberMapper.findIdByPhone(phone);
-        return id;
+    public List<String> idExist(String phone) {
+        List<String> ids = memberMapper.findIdByPhone(phone);
+        return ids;
     }
 
     @Transactional

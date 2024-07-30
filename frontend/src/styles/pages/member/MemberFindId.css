@@ -1,3 +1,13 @@
+.find-id-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
 .find-id-form {
     background: #ffffff;
     padding: 40px;
@@ -136,4 +146,11 @@
 
 .additional-links .link-button:hover {
     background-color: #4a4a9d;
+}
+
+.user-id-result ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
 }
