@@ -1,10 +1,86 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from '../../utils/axiosConfig';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { PieChart, Pie } from 'recharts';
 import '../../styles/pages/admin/AdminMain.css';
-import { FaRegUser } from "react-icons/fa";
+import { FaAngleUp, FaAngleDown } from "react-icons/fa";
+import { LuLogOut } from "react-icons/lu";
+import { removeTokens } from '../../utils/auth';
+
+
+const calculateChange = (current, previous) => {
+    if (previous === 0) return 'N/A';
+    const change = ((current - previous) / previous) * 100;
+    return `${change.toFixed(2)}%`;
+};
+
+
+const formatAmount = (amount) => {
+    if (amount >= 1e9) {
+        return `$${(amount / 1e9).toFixed(1)}B`;
+    } else if (amount >= 1e6) {
+        return `$${(amount / 1e6).toFixed(1)}M`;
+    } else if (amount >= 1e4) {
+        return `$${(amount / 1e4).toFixed(1)}만`;
+    } else if (amount >= 1e3) {
+        return `$${(amount / 1e3).toFixed(1)}천`;
+    } else {
+        return `$${amount}`;
+    }
+};
+
+const formatNumber = (number) => {
+    return number.toLocaleString('ko-KR');
+};
 
 const AdminMain = () => {
+    const [totals, setTotals] = useState(null);
+    const [ageGroup, setAgeGroup] = useState([]);
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        removeTokens();
+        navigate('/admin/login', { replace: true });
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const resTotals = await axios.get('http://localhost:8080/admin/getStatistics');
+                setTotals(resTotals.data);
+                const resAgeGroup = await axios.get('http://localhost:8080/admin/getAgeGroupStatistics');
+                const mapData = resAgeGroup.data;
+                const ageOrder = ['-10대', '20대', '30대', '40대', '50대', '60대', '70대+'];
+                const initialData = ageOrder.map(ageGroup => ({
+                    ageGroup,
+                    M: '0.00',
+                    W: '0.00'
+                }));
+                const totalCount = mapData.reduce((sum, item) => sum + item.COUNT, 0);
+                const updatedData = mapData.reduce((acc, item) => {
+                    const ageGroup = item.AGEGROUP;
+                    const gender = item.GENDER;
+                    const percentage = (item.COUNT / totalCount * 100).toFixed(2);
+                    const existing = acc.find(data => data.ageGroup === ageGroup);
+                    if (existing) {
+                        existing[gender] = percentage;
+                    }
+
+                    return acc;
+                }, initialData);
+                updatedData.sort((a, b) => ageOrder.indexOf(a.ageGroup) - ageOrder.indexOf(b.ageGroup));
+                setAgeGroup(updatedData);
+            } catch {
+                console.error('통계 데이터 불러오는 중 에러 발생');
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    if (!totals) return <></>;
+
     const generateRandomData = (labels, total) => {
         let remaining = total;
         const data = labels.map((label, index) => {
@@ -35,12 +111,7 @@ const AdminMain = () => {
     ];
 
     const areaLabels = ['서울', '경기', '강원', '경상', '충청', '전라', '제주'];
-    const ageLabels = ['10대', '20대', '30대', '40대', '50대', '60대', '70대', '80대', '90대'];
-    const genderLabels = ['남성', '여성'];
-
     const areaData = generateRandomData(areaLabels, 100);
-    const ageData = generateRandomData(ageLabels, 100);
-    const genderData = generateRandomData(genderLabels, 100);
 
     const COLORS = [
         '#0088FE',
@@ -59,9 +130,9 @@ const AdminMain = () => {
             <div className="header">
                 <div className="logo">OFFICE24</div>
                 <input type="text" placeholder="Search" className="search-input" />
-                <div className="user-profile">
-                    <FaRegUser />
-                    <span>admin</span>
+                <div className="logout" onClick={handleLogout}>
+                    <LuLogOut />
+                    <span>로그아웃</span>
                 </div>
             </div>
             <nav className="sidebar">
@@ -78,33 +149,51 @@ const AdminMain = () => {
                 <div className="stats-grid">
                     <div className="stat-card">
                         <h3>누적 이용자 수</h3>
-                        <p className="stat-value">121,144명</p>
-                        <span className="stat-change positive">+10%</span>
+                        <p className="stat-value">{formatNumber(totals.TOTAL_MEMBER_COUNT)}명</p>
+                        <span className={`stat-change ${totals.TODAY_MEMBER_COUNT > totals.YESTERDAY_MEMBER_COUNT ? 'positive' : 'negative'}`}>
+                            {totals.TOTAL_MEMBER_COUNT > totals.YESTERDAY_MEMBER_COUNT ? <FaAngleUp /> : <FaAngleDown />}
+                            {calculateChange(totals.TODAY_MEMBER_COUNT, totals.YESTERDAY_MEMBER_COUNT)}
+                        </span>
                     </div>
                     <div className="stat-card">
                         <h3>누적 매니저 수</h3>
-                        <p className="stat-value">1,729명</p>
-                        <span className="stat-change positive">+8%</span>
+                        <p className="stat-value">{formatNumber(totals.TOTAL_MANAGER_COUNT)}명</p>
+                        <span className={`stat-change ${totals.TODAY_MANAGER_COUNT > totals.YESTERDAY_MANAGER_COUNT ? 'positive' : 'negative'}`}>
+                            {totals.TODAY_MANAGER_COUNT > totals.YESTERDAY_MANAGER_COUNT ? <FaAngleUp /> : <FaAngleDown />}
+                            {calculateChange(totals.TODAY_MANAGER_COUNT, totals.YESTERDAY_MANAGER_COUNT)}
+                        </span>
                     </div>
                     <div className="stat-card">
                         <h3>누적 오피스 수</h3>
-                        <p className="stat-value">6,843개</p>
-                        <span className="stat-change negative">-2%</span>
+                        <p className="stat-value">{formatNumber(totals.TOTAL_OFFICE_COUNT)}개</p>
+                        <span className={`stat-change ${totals.TODAY_OFFICE_COUNT > totals.YESTERDAY_OFFICE_COUNT ? 'positive' : 'negative'}`}>
+                            {totals.TODAY_OFFICE_COUNT > totals.YESTERDAY_OFFICE_COUNT ? <FaAngleUp /> : <FaAngleDown />}
+                            {calculateChange(totals.TODAY_OFFICE_COUNT, totals.YESTERDAY_OFFICE_COUNT)}
+                        </span>
                     </div>
                     <div className="stat-card">
                         <h3>누적 거래 금액</h3>
-                        <p className="stat-value">364.1M</p>
-                        <span className="stat-change negative">-5%</span>
+                        <p className="stat-value">{formatAmount(totals.TOTAL_TOTAL_AMOUNT)}</p>
+                        <span className={`stat-change ${totals.TODAY_TOTAL_AMOUNT > totals.YESTERDAY_TOTAL_AMOUNT ? 'positive' : 'negative'}`}>
+                            {totals.TODAY_TOTAL_AMOUNT > totals.YESTERDAY_TOTAL_AMOUNT ? <FaAngleUp /> : <FaAngleDown />}
+                            {calculateChange(totals.TODAY_TOTAL_AMOUNT, totals.YESTERDAY_TOTAL_AMOUNT)}
+                        </span>
                     </div>
                     <div className="stat-card">
                         <h3>누적 예약 건수</h3>
-                        <p className="stat-value">58,293건</p>
-                        <span className="stat-change positive">+3%</span>
+                        <p className="stat-value">{formatNumber(totals.TOTAL_BOOKING_COUNT)}건</p>
+                        <span className={`stat-change ${totals.TODAY_BOOKING_COUNT > totals.YESTERDAY_BOOKING_COUNT ? 'positive' : 'negative'}`}>
+                            {totals.TODAY_BOOKING_COUNT > totals.YESTERDAY_BOOKING_COUNT ? <FaAngleUp /> : <FaAngleDown />}
+                            {calculateChange(totals.TODAY_BOOKING_COUNT, totals.YESTERDAY_BOOKING_COUNT)}
+                        </span>
                     </div>
                     <div className="stat-card">
                         <h3>누적 리뷰 수</h3>
-                        <p className="stat-value">2,584개</p>
-                        <span className="stat-change positive">+12%</span>
+                        <p className="stat-value">{formatNumber(totals.TOTAL_REVIEW_COUNT)}개</p>
+                        <span className={`stat-change ${totals.TODAY_REVIEW_COUNT > totals.YESTERDAY_REVIEW_COUNT ? 'positive' : 'negative'}`}>
+                            {totals.TODAY_REVIEW_COUNT > totals.YESTERDAY_REVIEW_COUNT ? <FaAngleUp /> : <FaAngleDown />}
+                            {calculateChange(totals.TODAY_REVIEW_COUNT, totals.YESTERDAY_REVIEW_COUNT)}
+                        </span>
                     </div>
                 </div>
                 <div className="charts-container">
@@ -120,9 +209,11 @@ const AdminMain = () => {
                             </select>
                         </div>
                         <ResponsiveContainer width="100%" height={300}>
-                            <BarChart data={salesData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                            <BarChart data={salesData} margin={{ top: 20, right: 20, left: 20, bottom: 5 }}>
                                 <XAxis dataKey="name" />
                                 <YAxis />
+                                <Tooltip />
+                                <Legend />
                                 <Bar
                                     dataKey="value"
                                     fill="#8884d8"
@@ -159,25 +250,16 @@ const AdminMain = () => {
                         <h3>이용자 연령대 및 성별</h3>
                         <ResponsiveContainer width="100%" height={300}>
                             <BarChart
-                                data={ageData}
+                                data={ageGroup}
                                 layout="vertical"
-                                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                                margin={{ top: 5, bottom: 5 }}
                             >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis type="number" />
-                                <YAxis type="category" dataKey="name" />
-                                <Tooltip />
+                                <XAxis type="number" domain={[0, 'dataMax' > 50 ? 100 : 50]} />
+                                <YAxis type="category" dataKey="ageGroup" />
+                                <Tooltip formatter={(value) => `${value}%`} />
                                 <Legend />
-                                <Bar dataKey="value" fill="#8884d8" stackId="a" animationDuration={1000} animationEasing="ease-out">
-                                    {ageData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Bar>
-                                <Bar dataKey="value" fill="#82ca9d" stackId="b" animationDuration={1000} animationEasing="ease-out">
-                                    {genderData.map((entry, index) => (
-                                        <Cell key={`cell-gender-${index}`} fill={COLORS[(index + ageData.length) % COLORS.length]} />
-                                    ))}
-                                </Bar>
+                                <Bar dataKey="M" fill="#4b89dc" stackId="a" name="남성" animationDuration={1000} animationEasing="ease-out" />
+                                <Bar dataKey="W" fill="#db4455" stackId="b" name="여성" animationDuration={1000} animationEasing="ease-out" />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>

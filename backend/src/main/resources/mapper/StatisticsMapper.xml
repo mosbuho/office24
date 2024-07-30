@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.backend.statistics.StatisticsMapper">
+    <select id="getStatistics" resultType="java.util.Map"> SELECT today.report_date AS
+        today_report_date, today.member_count AS today_member_count, today.manager_count AS
+        today_manager_count, today.office_count AS today_office_count, today.total_amount AS
+        today_total_amount, today.booking_count AS today_booking_count, today.review_count AS
+        today_review_count, yesterday.report_date AS yesterday_report_date, yesterday.member_count
+        AS yesterday_member_count, yesterday.manager_count AS yesterday_manager_count,
+        yesterday.office_count AS yesterday_office_count, yesterday.total_amount AS
+        yesterday_total_amount, yesterday.booking_count AS yesterday_booking_count,
+        yesterday.review_count AS yesterday_review_count, total.member_count AS total_member_count,
+        total.manager_count AS total_manager_count, total.office_count AS total_office_count,
+        total.total_amount AS total_total_amount, total.booking_count AS total_booking_count,
+        total.review_count AS total_review_count FROM (SELECT * FROM statistics WHERE report_date =
+        TRUNC(SYSDATE)) today CROSS JOIN (SELECT * FROM statistics WHERE report_date =
+        TRUNC(SYSDATE) - 1) yesterday CROSS JOIN (SELECT SUM(member_count) AS member_count,
+        SUM(manager_count) AS manager_count, SUM(office_count) AS office_count, SUM(total_amount) AS
+        total_amount, SUM(booking_count) AS booking_count, SUM(review_count) AS review_count FROM
+        statistics) total </select>
+    <select id="getAgeGroupStatistics" resultType="map"> SELECT CASE WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 0 AND 19 THEN '-10대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 20 AND 29 THEN '20대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 30 AND 39 THEN '30대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 40 AND 49 THEN '40대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 50 AND 59 THEN '50대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 60 AND 69 THEN '60대' ELSE '70대+' END AS
+        ageGroup, gender, COUNT(*) AS count FROM member GROUP BY CASE WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 0 AND 19 THEN '-10대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 20 AND 29 THEN '20대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 30 AND 39 THEN '30대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 40 AND 49 THEN '40대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 50 AND 59 THEN '50대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 60 AND 69 THEN '60대' ELSE '70대+' END,
+        gender </select>
+</mapper>

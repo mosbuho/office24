@@ -1,17 +1,15 @@
 CREATE OR REPLACE TRIGGER trg_member_insert
 AFTER INSERT ON member
 FOR EACH ROW
-DECLARE
-    v_date VARCHAR2(7) := TO_CHAR(SYSDATE, 'YYYY-MM');
 BEGIN
-    MERGE INTO statistics a
-    USING (SELECT v_date AS report_date FROM dual) s
-    ON (a.report_date = s.report_date)
+    MERGE INTO statistics s
+    USING (SELECT TRUNC(:new.reg_date) AS report_date FROM dual) d
+    ON (s.report_date = d.report_date)
     WHEN MATCHED THEN
-        UPDATE SET a.member_count = a.member_count + 1
+        UPDATE SET s.member_count = s.member_count + 1
     WHEN NOT MATCHED THEN
         INSERT (report_date, member_count)
-        VALUES (s.report_date, 1);
+        VALUES (d.report_date, 1);
 END;
 /
 

@@ -8,6 +8,14 @@
   height: 100vh;
 }
 
+.logout {
+  width: 75px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: space-between;
+}
+
 .admin-main-container {
   .header {
     grid-area: header;
@@ -31,11 +39,6 @@
     border-radius: 4px;
   }
 
-  .user-profile {
-    display: flex;
-    align-items: center;
-  }
-
   .avatar {
     width: 32px;
     height: 32px;
@@ -49,6 +52,7 @@
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
+
 
   .sidebar ul {
     list-style-type: none;
@@ -86,6 +90,8 @@
 
   .stat-change {
     font-size: 14px;
+    display: flex;
+    align-items: center;
   }
 
   .stat-change.positive {

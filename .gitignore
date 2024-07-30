@@ -78,3 +78,5 @@ frontend/*.sw?
 
 application-secrets.properties
 office24-user.sql
+
+temp.sql
