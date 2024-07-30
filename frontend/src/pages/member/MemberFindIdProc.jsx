@@ -17,9 +17,11 @@ const MemberFindIdProc = () => {
                 <div className="logo" onClick={logoClick}>OFFICE24</div>
                 <h2>찾은 아이디</h2>
                 <ul>
-                    {ids.map((id, index) => (
+                    {ids.length > 0 ? ids.map((id, index) => (
                         <li key={index}>{id}</li>
-                    ))}
+                    )) : (
+                        <li>아이디를 찾을 수 없습니다.</li>
+                    )}
                 </ul>
                 <div className="button-container">
                     <Link to="/member/findPw" className="link-button">
