@@ -135,7 +135,7 @@ public class MemberService {
                     Date birthDate = dateFormat.parse(birthDateStr);
                     member.setBirth(birthDate);
                 } catch (Exception e) {
-                    e.printStackTrace(); // 예외 처리
+                    e.printStackTrace();
                 }
             }
 
@@ -215,11 +215,8 @@ public class MemberService {
             member.setGender((String) responseBodyObj.get("gender"));
             member.setPhone(((String) responseBodyObj.get("mobile")).replace("-",""));
 
-            /*
-            String birth = (String) responseBodyObj.get("birth");
+            String birth = (String) responseBodyObj.get("birthday");
             String birthYear = (String) responseBodyObj.get("birthyear");
-            System.out.println(birth);
-            System.out.println(birthYear);
 
             if (birth != null && birthYear != null) {
                 String birthDateStr = birthYear + "-" + birth;
@@ -228,10 +225,9 @@ public class MemberService {
                     Date birthDate = dateFormat.parse(birthDateStr);
                     member.setBirth(birthDate);
                 } catch (Exception e) {
-                    e.printStackTrace(); // 예외 처리
+                    e.printStackTrace();
                 }
             }
-             */
 
             return member;
         } else {
