@@ -324,7 +324,7 @@ public class MemberService {
                 member.setGender("U");
             }
 
-            List<Map<String, Object>> phones = (List<Map<String, Object>>) responseBody.get("phonenumbers");
+            List<Map<String, Object>> phones = (List<Map<String, Object>>) responseBody.get("phoneNumbers");
             if (phones != null && !phones.isEmpty()) {
                 String phone = (String) phones.get(0).get("value");
                 if (phone != null) {
