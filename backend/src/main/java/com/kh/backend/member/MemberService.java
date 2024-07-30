@@ -1,5 +1,6 @@
 package com.kh.backend.member;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -259,8 +260,9 @@ public class MemberService {
         return "https://accounts.google.com/o/oauth2/auth?client_id=" + googleClientId
                 + "&redirect_uri=" + googleRedirectUri
                 + "&response_type=code"
-                + "&scope=profile email";
+                + "&scope=profile email https://www.googleapis.com/auth/user.phonenumbers.read https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.gender.read";
     }
+
 
     public String getGoogleAccessToken(String code) {
         RestTemplate restTemplate = new RestTemplate();
@@ -282,11 +284,13 @@ public class MemberService {
 
         ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
         if (response.getStatusCode() == HttpStatus.OK) {
-            return (String) response.getBody().get("access_token");
+            Map<String, Object> responseBody = response.getBody();
+            return (String) responseBody.get("access_token");
         } else {
             throw new RuntimeException(response.getBody().toString());
         }
     }
+
     public Member getGoogleUser(String accessToken) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "https://people.googleapis.com/v1/people/me?personFields=birthdays,phoneNumbers,genders,emailAddresses,names";
@@ -317,34 +321,46 @@ public class MemberService {
             if (genders != null && !genders.isEmpty()) {
                 member.setGender("male".equals(genders.get(0).get("value")) ? "M" : "W");
             } else {
-                member.setGender("U"); // 성별 정보가 없는 경우
+                member.setGender("U");
             }
 
-            List<Map<String, Object>> phones = (List<Map<String, Object>>) responseBody.get("phoneNumbers");
+            List<Map<String, Object>> phones = (List<Map<String, Object>>) responseBody.get("phonenumbers");
             if (phones != null && !phones.isEmpty()) {
                 String phone = (String) phones.get(0).get("value");
-                member.setPhone(phone != null ? phone.replace("+82 ", "0").replace("-", "") : "");
+                if (phone != null) {
+                    phone = phone.replaceAll("[^0-9]", "");
+                    member.setPhone(phone);
+                }
             }
 
             List<Map<String, Object>> birthdays = (List<Map<String, Object>>) responseBody.get("birthdays");
             if (birthdays != null && !birthdays.isEmpty()) {
-                Map<String, Object> date = (Map<String, Object>) birthdays.get(0).get("date");
+                Map<String, Object> birthdayData = birthdays.get(0);
+                Map<String, Object> date = (Map<String, Object>) birthdayData.get("date");
                 if (date != null) {
-                    int year = (int) date.getOrDefault("year", 0);
-                    int month = (int) date.get("month");
-                    int day = (int) date.get("day");
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.set(year, month - 1, day);
-                    member.setBirth(calendar.getTime());
+                    Integer year = (Integer) date.get("year");
+                    Integer month = (Integer) date.get("month");
+                    Integer day = (Integer) date.get("day");
+
+                    if (year != null && month != null && day != null) {
+                        String birthDateString = String.format("%04d-%02d-%02d", year, month, day);
+
+                        try {
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                            Date birthDate = sdf.parse(birthDateString);
+
+                            member.setBirth(birthDate);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
-
             return member;
         } else {
             throw new RuntimeException(response.getBody().toString());
         }
     }
-
     public Member findOrCreateGoogleUser(String code) {
         String accessToken = getGoogleAccessToken(code);
         Member googleUser = getGoogleUser(accessToken);
@@ -353,9 +369,10 @@ public class MemberService {
         if (member == null) {
             String pw = "office24";
             registerMember(googleUser.getEmail(), pw, googleUser.getName(), googleUser.getPhone(),
-                    googleUser.getEmail(), null, googleUser.getGender());
+                    googleUser.getEmail(), googleUser.getBirth(), googleUser.getGender());
             member = memberMapper.findByEmail(googleUser.getEmail());
         }
         return member;
     }
+
 }
