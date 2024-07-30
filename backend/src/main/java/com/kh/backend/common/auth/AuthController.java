@@ -1,12 +1,13 @@
 package com.kh.backend.common.auth;
 
+import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
+import com.kh.backend.member.MemberService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.kh.backend.admin.Admin;
 import com.kh.backend.common.jwt.JwtUtil;
@@ -19,10 +20,12 @@ public class AuthController {
 
     private final JwtUtil jwtUtil;
     private final AuthService authService;
+    private final MemberService memberService;
 
-    public AuthController(JwtUtil jwtUtil, AuthService authService) {
+    public AuthController(JwtUtil jwtUtil, AuthService authService, MemberService memberService) {
         this.jwtUtil = jwtUtil;
         this.authService = authService;
+        this.memberService = memberService;
     }
 
     @PostMapping("/refresh")
@@ -72,6 +75,47 @@ public class AuthController {
             return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken, admin.getNo()));
         } else {
             return ResponseEntity.badRequest().body("아이디 또는 비밀번호가 일치하지 않습니다.");
+        }
+    }
+    @GetMapping("/kakao/login-url")
+    public ResponseEntity<String> getKakaoLoginUrl() {
+        String kakaoLoginUrl = memberService.getKakaoLoginUrl();
+        return ResponseEntity.ok(kakaoLoginUrl);
+    }
+
+    @GetMapping("/kakao/callback")
+    public void kakaoCallback(@RequestParam String code, HttpServletResponse response) throws IOException {
+        try {
+            Member member = memberService.findOrCreateKakaoUser(code);
+            response.sendRedirect("http://localhost:5173/login?message=success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("http://localhost:5173/login?message=error");
+        }
+    }
+    @GetMapping("/naver/login-url")
+    public ResponseEntity<String> getNaverLoginUrl() {
+        String naverLoginUrl = memberService.getNaverLoginUrl();
+        return ResponseEntity.ok(naverLoginUrl);
+    }
+
+    @GetMapping("/naver/callback")
+    public void naverCallback(@RequestParam String code, HttpServletResponse response) throws IOException {
+        try {
+            Member member = memberService.findOrCreateNaverUser(code);
+            response.sendRedirect("http://localhost:5173/login?message=success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("http://localhost:5173/login?message=error");
+        }
+    }
+    @GetMapping("/idExist")
+    public ResponseEntity<?> idExist(@RequestParam String phone) {
+        String id = memberService.idExist(phone);
+        if (id != null) {
+            return ResponseEntity.ok(Collections.singletonMap("id", id));
+        } else {
+            return ResponseEntity.badRequest().body("아이디가 존재하지 않습니다.");
         }
     }
 }
