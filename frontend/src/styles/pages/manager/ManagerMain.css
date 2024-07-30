@@ -1,4 +1,3 @@
-/* 대쉬보드 페이지 css */
 body.manager-main-body {
     background-color: #F5f5f5;
     margin: 0;
@@ -16,281 +15,332 @@ body.manager-main-body {
     box-sizing: border-box;
 }
 
-.main-content .dashboard {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+.main-content {
+    .dashboard {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
 
-.main-content .mini-container {
-    width: 100%;
-    display: flex;
-    height: 60px;
-    gap: 10px;
-    justify-content: center;
-}
+    .mini-container {
+        width: 100%;
+        display: flex;
+        height: 60px;
+        gap: 10px;
+        justify-content: center;
+    }
 
-.main-content .mini-stats {
-    width: 21%;
-    height: 40px;
-    background-color: #FFFEFF;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
-    box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1);
-    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    position: relative;
-}
+    .mini-stats {
+        width: 21%;
+        height: 40px;
+        background-color: #FFFEFF;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        position: relative;
+    }
 
-.main-content .mini-stats p {
-    font-weight: bold;
-}
+    .mini-stats p {
+        font-weight: bold;
+    }
 
-.main-content .statcontent {
-    display: flex;
-    align-items: center;
-}
+    .statcontent {
+        display: flex;
+        align-items: center;
+    }
 
-.mini-stats:first-child::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 5px;
-    background-color: #4171DD;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
+    .mini-stats:first-child::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 5px;
+        background-color: #4171DD;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
 
-.mini-stats:nth-child(2)::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 5px;
-    background-color: #CB6E59;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
+    .mini-stats:nth-child(2)::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 5px;
+        background-color: #CB6E59;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
 
-.mini-stats:nth-child(3)::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 5px;
-    background-color: #57C9A6;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
+    .mini-stats:nth-child(3)::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 5px;
+        background-color: #57C9A6;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
 
-.mini-stats:nth-child(4)::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 5px;
-    background-color: #EEBD6F;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
+    .mini-stats:nth-child(4)::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 5px;
+        background-color: #EEBD6F;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
 
-.main-content .mini-stats p {
-    margin: 0;
-    font-size: 10px;
-    font-weight: bold;
-}
+    .mini-stats p {
+        margin: 0;
+        font-size: 10px;
+        font-weight: bold;
+    }
 
-.main-content .info,
-.main-content .reserve,
-.main-content .chart-container,
-.main-content .booking {
-    background-color: #FFFEFF;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
-    box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1);
-    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
-}
+    .info,
+    .reserve,
+    .chart-container,
+    .booking {
+        background-color: #FFFEFF;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+    }
 
-.main-content .statistics {
-    width: 96%;
-    margin: 0 auto;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
+    .statistics {
+        width: 96%;
+        margin: 0 auto;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
 
-.main-content .chart-container {
-    width: 50%;
-    height: 280px;
-}
-
-
-.main-content .booking {
-    width: 39%;
-    height: 280px;
-}
-
-.main-content .bottom-content {
-    width: 96%;
-    margin: 0 auto;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
-.main-content .info {
-    width: 29%;
-    height: 300px;
-}
-
-.main-content .reserve {
-    width: 60%;
-    height: 300px;
-}
+    .chart-container {
+        width: 50%;
+        height: 280px;
+    }
 
 
-.main-content .chart-container h4 {
-    margin: 0 0 10px;
-}
+    .booking {
+        width: 39%;
+        height: 280px;
+    }
 
-.main-content .info h4,
-.main-content .reserve h4,
-.main-content .booking h4 {
-    margin: 0;
-}
+    .bottom-content {
+        width: 96%;
+        margin: 0 auto;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
 
-/* 예약리스트 */
-.main-content .table-container {
-    overflow-x: auto;
-    height: 300px;
-}
+    .info {
+        width: 29%;
+        height: 300px;
+    }
 
-.main-content table {
-    width: 95%;
-    height: 100px;
-    border-collapse: collapse;
-    margin: 30px auto 0;
-    font-size: 11px;
-}
-
-.main-content table th,
-.main-content table td {
-    text-align: center;
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-}
-
-.main-content table th {
-    background-color: #f4f4f4;
-    font-weight: bold;
-}
-
-.main-content table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.main-content table tr:hover {
-    background-color: #f1f1f1;
-}
+    .reserve {
+        width: 60%;
+        height: 300px;
+    }
 
 
-/* 페이징 */
-.main-content .pagination {
-    display: flex;
-    justify-content: center;
-    padding: 10px;
-    margin: 5px 0 0 0;
-    list-style: none;
-    gap: 5px;
-}
+    .chart-container h4 {
+        margin: 0 0 10px;
+    }
 
-.main-content .pagination li {
-    display: inline;
-}
+    .info h4,
+    .reserve h4,
+    .booking h4 {
+        margin: 0;
+    }
+
+    /* 예약리스트 */
+    .table-container {
+        overflow-x: auto;
+        height: 300px;
+    }
+
+    table {
+        width: 95%;
+        height: 100px;
+        border-collapse: collapse;
+        margin: 30px auto 0;
+        font-size: 11px;
+    }
+
+    table th,
+    table td {
+        text-align: center;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    table th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+    }
+
+    table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    table tr:hover {
+        background-color: #f1f1f1;
+    }
 
 
-.main-content .pagination li a {
-    padding: 3px 9px;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s, color 0.3s;
-    font-size: 11px;
-    cursor: pointer;
-}
+    /* 페이징 */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+        margin: 5px 0 0 0;
+        list-style: none;
+        gap: 5px;
+    }
 
-.main-content .pagination li a:hover {
-    background-color: #f4f4f4;
-}
+    .pagination li {
+        display: inline;
+    }
 
-.main-content .pagination li.active a {
-    background-color: #f4f4f4;
-    font-weight: bold;
-}
 
-.main-content .break-me {
-    cursor: default;
-    color: #999;
-}
+    .pagination li a {
+        padding: 3px 9px;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s, color 0.3s;
+        font-size: 11px;
+        cursor: pointer;
+    }
 
-/* 오피스 등록 상태 */
-.main-content .office-status {
-    margin-top: 20px;
-    padding: 20px;
-    margin-bottom: 10px;
-}
+    .pagination li a:hover {
+        background-color: #f4f4f4;
+    }
 
-.bottom-content h4 {
-    margin: 0;
-}
+    .pagination li.active a {
+        background-color: #f4f4f4;
+        font-weight: bold;
+    }
 
-.office-status ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
+    .break-me {
+        cursor: default;
+        color: #999;
+    }
 
-.office-status li {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 15px;
-    background-color: #F9F9F9;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    font-size: 12px;
-    cursor: pointer;
-}
+    /* 오피스 등록 상태 */
+    .office-status {
+        margin-top: 20px;
+        padding: 20px;
+        margin-bottom: 10px;
+    }
 
-.office-status li:nth-child(even) {
-    background-color: #f1f1f1;
-}
+    .bottom-content h4 {
+        margin: 0;
+    }
 
-.main-content li:hover {
-    background-color: #e0e0e0;
-}
+    .office-status ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
 
-.office-status li span {
-    display: inline-block;
-    padding: 2px 5px;
-    border-radius: 3px;
-    font-size: 11px;
-    font-weight: bold;
-    color: #FFF;
-}
+    .statusli {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 15px;
+        background-color: #F9F9F9;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        font-size: 12px;
+        cursor: pointer;
+    }
 
-.office-status li .approved {
-    background-color: #57C9A6;
-}
+    .statusli:nth-child(even) {
+        background-color: #f1f1f1;
+    }
 
-.office-status li .pending {
-    background-color: #EEBD6F;
+    .statusli:hover {
+        background-color: #e0e0e0;
+    }
+
+    .statusli span {
+        display: inline-block;
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-weight: bold;
+        color: #FFF;
+    }
+
+    .office-status li .approved {
+        background-color: #57C9A6;
+    }
+
+    .office-status li .pending {
+        background-color: #EEBD6F;
+    }
+
+    /* 오피스 등록 상태의 페이지네이션 */
+    ul.office-pagination {
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+        margin: 5px 0 0 0;
+        list-style: none;
+        gap: 5px;
+    }
+
+    ul.office-pagination li.pagination-item {
+        display: inline-block;
+    }
+
+    ul.office-pagination li.pagination-item,
+    ul.office-pagination li.previous,
+    ul.office-pagination li.next {
+        font-size: 11px;
+        /* 폰트 크기 지정 */
+    }
+
+    ul.office-pagination li.pagination-item a,
+    ul.office-pagination li.previous a,
+    ul.office-pagination li.next a {
+        padding: 3px 9px;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s, color 0.3s;
+        cursor: pointer;
+    }
+
+    ul.office-pagination li.pagination-item a:hover,
+    ul.office-pagination li.previous a:hover,
+    ul.office-pagination li.next a:hover {
+        background-color: #f4f4f4;
+    }
+
+    ul.office-pagination li.pagination-item.active a {
+        background-color: #f4f4f4;
+        font-weight: bold;
+    }
+
+    ul.office-pagination li.break-me {
+        cursor: default;
+        color: #999;
+    }
+
+
 }

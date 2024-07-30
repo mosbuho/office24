@@ -5,7 +5,7 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pi
 import ManagerSidebar from '../../components/manager/ManagerSidebar';
 import ManagerHeader from '../../components/manager/ManagerHeader';
 import { LuBarChart3, LuStar } from "react-icons/lu";
-import { FaWonSign, FaArrowLeft, FaArrowRight } from "react-icons/fa6";
+import { FaWonSign } from "react-icons/fa6";
 import ReactPaginate from 'react-paginate';
 import '../../styles/pages/manager/ManagerMain.css';
 
@@ -14,13 +14,14 @@ const COLORS = ['#57C9A6', '#EEBD6F'];
 const ManagerMain = () => {
   const { no } = useParams();
   const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [monthlyData, setMonthlyData] = useState([]);
   const [genderData, setGenderData] = useState([]);
   const [bookings, setBookings] = useState([]);
-  const [pageCount, setPageCount] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [bookingPageCount, setBookingPageCount] = useState(0);
+  const [currentBookingPage, setCurrentBookingPage] = useState(0);
   const [offices, setOffices] = useState([]);
+  const [officePageCount, setOfficePageCount] = useState(0);
+  const [currentOfficePage, setCurrentOfficePage] = useState(0);
 
   useEffect(() => {
     document.body.classList.add('manager-main-body');
@@ -47,9 +48,29 @@ const ManagerMain = () => {
       setStats(serverData);
       setMonthlyData(monthlyRevenue);
       setGenderData(genderRatio);
-      setOffices(serverData.offices);
+
+      // Set page count for offices pagination
+      setOfficePageCount(Math.ceil(serverData.offices.length / 5));
+      setOffices(serverData.offices.slice(0, 5)); // 첫 페이지 오피스 데이터 설정
     } catch (error) {
       console.error("Error fetching stats:", error);
+    }
+  };
+
+  const fetchOfficeStatus = async (selectedPage) => {
+    try {
+      const response = await axios.get(`/manager/office/status/${no}`, {
+        params: {
+          page: selectedPage + 1,
+          size: 5,
+        },
+      });
+
+      setOffices(response.data.offices);
+      setOfficePageCount(Math.ceil(response.data.total / 5));
+      setCurrentOfficePage(selectedPage);
+    } catch (error) {
+      console.error("Error fetching office status:", error);
     }
   };
 
@@ -70,8 +91,8 @@ const ManagerMain = () => {
       }));
 
       setBookings(bookData);
-      setPageCount(response.data.totalPages);
-      setCurrentPage(selectedPage);
+      setBookingPageCount(response.data.totalPages);
+      setCurrentBookingPage(selectedPage);
     } catch (error) {
       console.error("Error fetching bookings:", error);
     }
@@ -82,9 +103,14 @@ const ManagerMain = () => {
     fetchBookings(0);
   }, [no]);
 
-  const handlePageClick = (data) => {
+  const handleBookingPageClick = (data) => {
     const selectedPage = data.selected;
     fetchBookings(selectedPage);
+  };
+
+  const handleOfficePageClick = (data) => {
+    const selectedPage = data.selected;
+    fetchOfficeStatus(selectedPage);
   };
 
   if (!stats) {
@@ -139,8 +165,7 @@ const ManagerMain = () => {
                   <XAxis dataKey="month" tick={{ fontSize: 10 }} tickLine={false} />
                   <YAxis tick={{ fontSize: 11 }} tickLine={false} />
                   <Tooltip contentStyle={{ fontSize: 12 }} />
-                  <Bar dataKey="revenue" fill="#4171DD" barSize={9}
-                    animationDuration={1000} animationEasing="ease-out" />
+                  <Bar dataKey="revenue" fill="#4171DD" barSize={9} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -154,8 +179,8 @@ const ManagerMain = () => {
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    outerRadius={90}
-                    innerRadius={80}
+                    outerRadius={80}
+                    innerRadius={70}
                     fill="#8884d8"
                     label
                   >
@@ -175,7 +200,7 @@ const ManagerMain = () => {
               <div className='office-status'>
                 <ul>
                   {offices.map((office) => (
-                    <li key={office.no}>
+                    <li key={office.no} className='statusli'>
                       {office.title}
                       <span className={office.availability === 1 ? 'approved' : 'pending'}>
                         {office.availability === 1 ? '승인됨' : '대기 중'}
@@ -183,8 +208,21 @@ const ManagerMain = () => {
                     </li>
                   ))}
                 </ul>
+                <ReactPaginate
+                  previousLabel={'이전'}
+                  nextLabel={'다음'}
+                  breakLabel={'...'}
+                  breakClassName={'break-me'}
+                  pageCount={officePageCount}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={handleOfficePageClick}
+                  containerClassName={'office-pagination'}
+                  pageClassName={'pagination-item'}
+                  subContainerClassName={'pages pagination'}
+                  activeClassName={'active'}
+                />
               </div>
-
             </div>
             <div className="reserve">
               <h4>예약 내역</h4>
@@ -216,10 +254,10 @@ const ManagerMain = () => {
                   nextLabel={'다음'}
                   breakLabel={'...'}
                   breakClassName={'break-me'}
-                  pageCount={pageCount}
+                  pageCount={bookingPageCount}
                   marginPagesDisplayed={2}
                   pageRangeDisplayed={5}
-                  onPageChange={handlePageClick}
+                  onPageChange={handleBookingPageClick}
                   containerClassName={'pagination'}
                   subContainerClassName={'pages pagination'}
                   activeClassName={'active'}

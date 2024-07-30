@@ -41,7 +41,31 @@ public class OfficeService {
         return officeMapper.getTotalGenderRatio(no);
     }
 
-    public List<Office> getOfficeStatus(Integer no) {
-        return officeMapper.getOfficeStatus(no);
+    // 신청 상태 조회
+    // public List<Office> getOfficeStatus(Integer no) {
+    //     return officeMapper.getOfficeStatus(no);
+    // }
+    public List<Office> getOfficeStatusPaged(int no, int page, int size) {
+        int offset = (page - 1) * size;
+        return officeMapper.getOfficeStatusPaged(no, offset, size);
+    }
+    public int getOfficeStatusCount(int no) {
+        return officeMapper.getOfficeStatusCount(no);
+    }
+
+    // 전체 목록 조회
+    public List<Office> getOffices(int no, int page, int size, Integer availability, String searchText) {
+        int offset = (page - 1) * size;
+        return officeMapper.getOffices(no, offset, size, availability, searchText);
+    }
+
+    // 전체 개수 조회
+    public int getOfficeCount(int no, Integer availability, String searchText) {
+        return officeMapper.getOfficeCount(no, availability, searchText);
+    }
+
+    // 오피스 no로 오피스 정보 삭제
+    public void deleteOffice(int no) {
+        officeMapper.deleteOffice(no);
     }
 }

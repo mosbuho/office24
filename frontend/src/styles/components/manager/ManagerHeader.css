@@ -24,4 +24,6 @@
     cursor: pointer;
     font-size: 16px;
     margin-right: 100px;
+    display: flex;
+    align-items: center;
 }
