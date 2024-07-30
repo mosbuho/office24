@@ -1,10 +1,7 @@
 package com.kh.backend.member;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -39,6 +36,15 @@ public class MemberService {
 
     @Value("${naver.redirect-uri}")
     private String naverRedirectUri;
+
+    @Value("${google.client-id}")
+    private String googleClientId;
+
+    @Value("${google.client-secret}")
+    private String googleClientSecret;
+
+    @Value("${google.redirect-uri}")
+    private String googleRedirectUri;
 
     public MemberService(MemberMapper memberMapper, PasswordEncoder passwordEncoder) {
         this.memberMapper = memberMapper;
@@ -249,4 +255,107 @@ public class MemberService {
         return member;
     }
 
+    public String getGoogleLoginUrl() {
+        return "https://accounts.google.com/o/oauth2/auth?client_id=" + googleClientId
+                + "&redirect_uri=" + googleRedirectUri
+                + "&response_type=code"
+                + "&scope=profile email";
+    }
+
+    public String getGoogleAccessToken(String code) {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+
+        String url = "https://oauth2.googleapis.com/token";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type", "authorization_code");
+        params.add("client_id", googleClientId);
+        params.add("client_secret", googleClientSecret);
+        params.add("redirect_uri", googleRedirectUri);
+        params.add("code", code);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+
+        ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return (String) response.getBody().get("access_token");
+        } else {
+            throw new RuntimeException(response.getBody().toString());
+        }
+    }
+    public Member getGoogleUser(String accessToken) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "https://people.googleapis.com/v1/people/me?personFields=birthdays,phoneNumbers,genders,emailAddresses,names";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, request, Map.class);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            Map<String, Object> responseBody = response.getBody();
+
+            Member member = new Member();
+            member.setId((String) responseBody.get("resourceName"));
+
+            List<Map<String, Object>> emails = (List<Map<String, Object>>) responseBody.get("emailAddresses");
+            if (emails != null && !emails.isEmpty()) {
+                member.setEmail((String) emails.get(0).get("value"));
+            }
+
+            List<Map<String, Object>> names = (List<Map<String, Object>>) responseBody.get("names");
+            if (names != null && !names.isEmpty()) {
+                member.setName((String) names.get(0).get("displayName"));
+            }
+
+            List<Map<String, Object>> genders = (List<Map<String, Object>>) responseBody.get("genders");
+            if (genders != null && !genders.isEmpty()) {
+                member.setGender("male".equals(genders.get(0).get("value")) ? "M" : "W");
+            } else {
+                member.setGender("U"); // 성별 정보가 없는 경우
+            }
+
+            List<Map<String, Object>> phones = (List<Map<String, Object>>) responseBody.get("phoneNumbers");
+            if (phones != null && !phones.isEmpty()) {
+                String phone = (String) phones.get(0).get("value");
+                member.setPhone(phone != null ? phone.replace("+82 ", "0").replace("-", "") : "");
+            }
+
+            List<Map<String, Object>> birthdays = (List<Map<String, Object>>) responseBody.get("birthdays");
+            if (birthdays != null && !birthdays.isEmpty()) {
+                Map<String, Object> date = (Map<String, Object>) birthdays.get(0).get("date");
+                if (date != null) {
+                    int year = (int) date.getOrDefault("year", 0);
+                    int month = (int) date.get("month");
+                    int day = (int) date.get("day");
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(year, month - 1, day);
+                    member.setBirth(calendar.getTime());
+                }
+            }
+
+            return member;
+        } else {
+            throw new RuntimeException(response.getBody().toString());
+        }
+    }
+
+    public Member findOrCreateGoogleUser(String code) {
+        String accessToken = getGoogleAccessToken(code);
+        Member googleUser = getGoogleUser(accessToken);
+
+        Member member = memberMapper.findByEmail(googleUser.getEmail());
+        if (member == null) {
+            String pw = "office24";
+            registerMember(googleUser.getEmail(), pw, googleUser.getName(), googleUser.getPhone(),
+                    googleUser.getEmail(), null, googleUser.getGender());
+            member = memberMapper.findByEmail(googleUser.getEmail());
+        }
+        return member;
+    }
 }

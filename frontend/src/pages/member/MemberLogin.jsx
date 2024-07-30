@@ -36,6 +36,22 @@ const SocialNaver = () => {
     );
 }
 
+const SocialGoogle = () => {
+    const handleGoogle = () => {
+        axios.get('http://localhost:8080/auth/google/login-url')
+            .then(response => {
+                const googleURL = response.data;
+                window.location.href = googleURL;
+            })
+            .catch(error => {
+            })
+    }
+
+    return(
+        <button onClick={handleGoogle} className="google-login-button">구글 로그인</button>
+    )
+}
+
 const MemberLogin = () => {
     const [formData, setFormData] = useState({
         id: '',
@@ -97,13 +113,14 @@ const MemberLogin = () => {
                     </div>
                     <div className="help-links">
                         <Link to="/member/findId">아이디 찾기</Link>
-                        <Link to="/member/findPassword">비밀번호 찾기</Link>
+                        <Link to="/member/findPw">비밀번호 찾기</Link>
                         <Link to="/member/register">회원가입</Link>
                     </div>
                     <button type="submit">Login</button>
                 </form>
                 <SocialKakao />
                 <SocialNaver />
+                <SocialGoogle/>
             </div>
         </div>
     );

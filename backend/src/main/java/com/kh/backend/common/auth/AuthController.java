@@ -1,7 +1,6 @@
 package com.kh.backend.common.auth;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -111,10 +110,26 @@ public class AuthController {
             response.sendRedirect("http://localhost:5173/login?message=error");
         }
     }
+    @GetMapping("/google/login-url")
+    public ResponseEntity<String> getGoogleLoginUrl() {
+        String googleLoginURl = memberService.getGoogleLoginUrl();
+        return ResponseEntity.ok(googleLoginURl);
+    }
+
+    @GetMapping("/google/callback")
+    public void googleCallback(@RequestParam String code, HttpServletResponse response) throws IOException {
+        try {
+            Member member = memberService.findOrCreateGoogleUser(code);
+            response.sendRedirect("http://localhost:5173/login?message=success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("http://localhost:5173/login?message=error");
+        }
+    }
     @GetMapping("/idExist")
     public ResponseEntity<?> idExist(@RequestParam String phone) {
         List<String> ids = memberService.idExist(phone);
-        if (ids != null) {
+        if (ids != null && !ids.isEmpty()) {
             return new ResponseEntity<>(ids, HttpStatus.OK);
         } else {
             return ResponseEntity.badRequest().body("아이디가 존재하지 않습니다.");

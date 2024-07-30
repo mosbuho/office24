@@ -12,7 +12,6 @@ const MemberFindId = () => {
         verificationCode: '',
         isVerified: false
     });
-    const [ids, setIds] = useState(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -72,16 +71,13 @@ const MemberFindId = () => {
         })
             .then(response => {
                 if (response.status === 200 && Array.isArray(response.data)) {
-                    setIds(response.data);
+                    navigate("/member/findIdProc", {state: {ids: response.data}});
                 } else if (response.status === 200 && response.data.ids) {
-                    setIds(response.data.ids);
-                } else {
-                    setIds([]);
+                    navigate("/member/findIdProc", {state: {ids: response.data.ids}});
                 }
             })
             .catch(error => {
                 alert("아이디가 존재하지 않습니다.");
-                setIds([]);
             });
     };
 
@@ -139,22 +135,6 @@ const MemberFindId = () => {
                         <button type="button" className="find-id-btn" onClick={findIdByPhone}>
                             아이디 찾기
                         </button>
-                        {ids !== null && (
-                            <div className="user-id-result">
-                                {ids.length > 0 ? (
-                                    <>
-                                        <span className="info-message-success">찾은 아이디</span>
-                                        <ul>
-                                            {ids.map((id, index) => (
-                                                <li key={index}>{id}</li>
-                                            ))}
-                                        </ul>
-                                    </>
-                                ) : (
-                                    <span className="info-message">아이디를 찾을 수 없습니다.</span>
-                                )}
-                            </div>
-                        )}
                     </div>
                 )}
                 <div className="additional-links">
