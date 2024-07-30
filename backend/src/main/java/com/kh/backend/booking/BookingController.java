@@ -17,7 +17,7 @@ public class BookingController {
 
     @GetMapping("/manager/booking/{no}")
     public ResponseEntity<Map<String, Object>> getBookingsByManager(
-            @PathVariable Long no,
+            @PathVariable Integer no,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int size) {
         Map<String, Object> result = bookingService.getBookingsByManager(no, page, size);

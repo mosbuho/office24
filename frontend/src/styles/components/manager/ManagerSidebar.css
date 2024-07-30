@@ -36,7 +36,9 @@
 .managerSidebar_container .sidebar_button {
     width: 100%;
     padding: 15px 20px;
+    text-align: center;
     text-decoration: none;
+    font-size: 15px;
     color: #2c3e50;
     display: block;
     transition: background-color 0.3s;

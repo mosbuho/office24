@@ -9,7 +9,7 @@ import java.util.Map;
 @Mapper
 public interface BookingMapper {
     
-    List<Map<String, Object>> selectBookingsByManager(@Param("no") Long no, @Param("limit") int limit, @Param("offset") int offset);
+    List<Map<String, Object>> selectBookingsByManager(@Param("no") Integer no, @Param("limit") int limit, @Param("offset") int offset);
 
-    int countBookingsByManager(@Param("no") Long no);
+    int countBookingsByManager(@Param("no") Integer no);
 }

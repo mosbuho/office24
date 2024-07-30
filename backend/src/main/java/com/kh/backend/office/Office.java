@@ -2,14 +2,12 @@ package com.kh.backend.office;
 
 import java.util.Date;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class Office {
-    private Long no;
-    private Long managerNo;
+    private int no;
+    private int managerNo;
     private String title;
     private String address;
     private String zipCode;
@@ -19,6 +17,6 @@ public class Office {
     private Long price;
     private Long capacity;
     private String titleImg;
-    private Boolean availability;
+    private int availability;
     private Date regDate;
 }

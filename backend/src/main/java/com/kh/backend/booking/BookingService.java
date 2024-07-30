@@ -13,7 +13,7 @@ public class BookingService {
     @Autowired
     private BookingMapper bookingMapper;
 
-    public Map<String, Object> getBookingsByManager(Long managerNo, int page, int size) {
+    public Map<String, Object> getBookingsByManager(Integer managerNo, int page, int size) {
         int offset = (page - 1) * size;
         List<Map<String, Object>> bookings = bookingMapper.selectBookingsByManager(managerNo, size, offset);
         int totalBookings = bookingMapper.countBookingsByManager(managerNo);

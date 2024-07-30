@@ -5,11 +5,11 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pi
 import ManagerSidebar from '../../components/manager/ManagerSidebar';
 import ManagerHeader from '../../components/manager/ManagerHeader';
 import { LuBarChart3, LuStar } from "react-icons/lu";
-import { FaWonSign } from "react-icons/fa6";
+import { FaWonSign, FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 import ReactPaginate from 'react-paginate';
 import '../../styles/pages/manager/ManagerMain.css';
 
-const COLORS = ['#57C9A6', '#CB6E59'];
+const COLORS = ['#57C9A6', '#EEBD6F'];
 
 const ManagerMain = () => {
   const { no } = useParams();
@@ -20,6 +20,7 @@ const ManagerMain = () => {
   const [bookings, setBookings] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+  const [offices, setOffices] = useState([]);
 
   useEffect(() => {
     document.body.classList.add('manager-main-body');
@@ -46,6 +47,7 @@ const ManagerMain = () => {
       setStats(serverData);
       setMonthlyData(monthlyRevenue);
       setGenderData(genderRatio);
+      setOffices(serverData.offices);
     } catch (error) {
       console.error("Error fetching stats:", error);
     }
@@ -85,17 +87,13 @@ const ManagerMain = () => {
     fetchBookings(selectedPage);
   };
 
-  // if (loading) {
-  //   return <div>loading...</div>;
-  // }
   if (!stats) {
     return <div>Error loading data.</div>;
   }
 
   return (
     <>
-      <ManagerSidebar title={'office24'} firstChild={'대쉬보드'} secondChild={'오피스'}
-        thirdChild={'예약 관리'} fourthChild={'통계'} fifthChild={'정보수정'} />
+      <ManagerSidebar />
       <ManagerHeader />
       <div className="main-content">
         <div className="dashboard">
@@ -137,11 +135,11 @@ const ManagerMain = () => {
             <div className="chart-container">
               <h4>매출</h4><br />
               <ResponsiveContainer width="100%" height={230}>
-                <BarChart data={monthlyData} margin={{ top:10, left: 0, right: 20 }}>
+                <BarChart data={monthlyData} margin={{ top: 0, left: 0, right: 20 }}>
                   <XAxis dataKey="month" tick={{ fontSize: 10 }} tickLine={false} />
                   <YAxis tick={{ fontSize: 11 }} tickLine={false} />
                   <Tooltip contentStyle={{ fontSize: 12 }} />
-                  <Bar dataKey="revenue" fill="#4171DD" barSize={11}
+                  <Bar dataKey="revenue" fill="#4171DD" barSize={9}
                     animationDuration={1000} animationEasing="ease-out" />
                 </BarChart>
               </ResponsiveContainer>
@@ -173,48 +171,61 @@ const ManagerMain = () => {
           </div>
           <div className='bottom-content'>
             <div className='info'>
-              <h4>내 정보</h4>
+              <h4>오피스 등록 상태</h4>
+              <div className='office-status'>
+                <ul>
+                  {offices.map((office) => (
+                    <li key={office.no}>
+                      {office.title}
+                      <span className={office.availability === 1 ? 'approved' : 'pending'}>
+                        {office.availability === 1 ? '승인됨' : '대기 중'}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
             </div>
             <div className="reserve">
-            <h4>예약 내역</h4>
-            <div className="table-container">
-              <table>
-                <thead>
-                  <tr>
-                    <th>예약 번호</th>
-                    <th>예약일</th>
-                    <th>예약자명</th>
-                    <th>예약자 전화번호</th>
-                    <th>예약기간</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {bookings.map((booking) => (
-                    <tr key={booking.BOOKING_NO}>
-                      <td>{booking.BOOKING_NO}</td>
-                      <td>{booking.BOOKING_DATE}</td>
-                      <td>{booking.BOOKING_NAME}</td>
-                      <td>{booking.BOOKING_PHONE.trim()}</td> {/* 공백 제거 */}
-                      <td>{booking.START_DATE} ~ {booking.END_DATE}</td>
+              <h4>예약 내역</h4>
+              <div className="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>예약 번호</th>
+                      <th>예약일</th>
+                      <th>예약자명</th>
+                      <th>예약자 전화번호</th>
+                      <th>예약기간</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-              <ReactPaginate
-                previousLabel={'previous'}
-                nextLabel={'next'}
-                breakLabel={'...'}
-                breakClassName={'break-me'}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={5}
-                onPageChange={handlePageClick}
-                containerClassName={'pagination'}
-                subContainerClassName={'pages pagination'}
-                activeClassName={'active'}
-              />
+                  </thead>
+                  <tbody>
+                    {bookings.map((booking) => (
+                      <tr key={booking.BOOKING_NO}>
+                        <td>{booking.BOOKING_NO}</td>
+                        <td>{booking.BOOKING_DATE}</td>
+                        <td>{booking.BOOKING_NAME}</td>
+                        <td>{booking.BOOKING_PHONE.trim()}</td> {/* 공백 제거 */}
+                        <td>{booking.START_DATE} ~ {booking.END_DATE}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <ReactPaginate
+                  previousLabel={'이전'}
+                  nextLabel={'다음'}
+                  breakLabel={'...'}
+                  breakClassName={'break-me'}
+                  pageCount={pageCount}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={handlePageClick}
+                  containerClassName={'pagination'}
+                  subContainerClassName={'pages pagination'}
+                  activeClassName={'active'}
+                />
+              </div>
             </div>
-          </div>
           </div>
         </div>
       </div>
