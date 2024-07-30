@@ -16,6 +16,9 @@ public class MemberService {
         this.memberMapper = memberMapper;
         this.passwordEncoder = passwordEncoder;
     }
+    public boolean idCheck(String id) {
+        return memberMapper.findById(id) == null;
+    }
 
     @Transactional
     public void registerMember(String id, String pw, String name, String phone, String email, Date birth,
