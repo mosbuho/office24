@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.backend.office.OfficeMapper">
+    <!-- 누적 수익 -->
+    <select id="getTotalRevenue" parameterType="int" resultType="int">
+        SELECT SUM(b.price) AS total_revenue
+        FROM manager m
+        JOIN office o ON m.no = o.manager_no
+        JOIN booking b ON o.no = b.office_no
+        WHERE m.no = #{no}
+        GROUP BY m.no
+    </select>
+
+    <!-- 누적 이용 수 -->
+    <select id="getTotalUsage" parameterType="int" resultType="int">
+        SELECT COUNT(b.no) AS total_bookings
+        FROM manager m
+        JOIN office o ON m.no = o.manager_no
+        JOIN booking b ON o.no = b.office_no
+        WHERE m.no = #{no}
+        GROUP BY m.no
+    </select>
+
+    <!-- 총 평점 쿼리 -->
+    <select id="getTotalRating" parameterType="int" resultType="Double">
+        SELECT ROUND(AVG(r.rating), 2) AS total_rating
+        FROM manager m
+        JOIN office o ON m.no = o.manager_no
+        JOIN review r ON o.no = r.office_no
+        WHERE m.no = #{no}
+        GROUP BY m.no
+    </select>
+
+    <!-- 현재 이용 중인 오피스 개수 -->
+    <select id="getActiveOfficeCount" parameterType="int" resultType="int">
+        SELECT COUNT(DISTINCT o.no) AS active_office_count
+        FROM office o
+        JOIN booking b ON o.no = b.office_no
+        WHERE o.manager_no = #{no}
+        AND SYSDATE BETWEEN b.start_date AND b.end_date
+    </select>
+    
+    <!-- 월별 매출 -->
+    <select id="getMonthlyRevenue" parameterType="int" resultType="hashmap">
+            WITH months AS (
+                SELECT LEVEL AS month_num, TO_CHAR(ADD_MONTHS(TRUNC(SYSDATE, 'YYYY'), LEVEL - 1), 'MM') AS month
+                FROM DUAL
+                CONNECT BY LEVEL &lt;= 12
+            )
+            SELECT mo.month, COALESCE(SUM(b.price), 0) AS monthly_revenue
+            FROM months mo
+            LEFT JOIN office o ON o.manager_no = #{no}
+            LEFT JOIN booking b ON o.no = b.office_no AND TO_CHAR(b.start_date, 'MM') = mo.month
+            GROUP BY mo.month, mo.month_num
+            ORDER BY mo.month_num
+    </select>
+
+    <!-- 이용자 성비 -->
+    <select id="getTotalGenderRatio" parameterType="int" resultType="map">
+        SELECT mem.gender, COUNT(*) AS count
+        FROM manager m
+        JOIN office o ON m.no = o.manager_no
+        JOIN booking b ON o.no = b.office_no
+        JOIN member mem ON b.member_no = mem.no
+        WHERE m.no = #{no}
+        GROUP BY m.no, mem.gender
+    </select>
+
+    <!-- 오피스 이름, 신청 상태 -->
+    <select id="getOfficeStatus" parameterType="int" resultType="com.kh.backend.office.Office">
+        SELECT o.no, o.title, o.availability
+        FROM office o
+        JOIN manager m ON o.manager_no = m.no
+        WHERE m.no = #{no}
+    </select>
+</mapper>

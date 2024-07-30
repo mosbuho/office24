@@ -1,85 +1,236 @@
-import ManagerHeader from '../../components/manager/ManagerHeader';
+import React, { useEffect, useState } from 'react';
+import axios from '../../utils/axiosConfig';
+import { useParams } from 'react-router-dom';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, Legend } from 'recharts';
 import ManagerSidebar from '../../components/manager/ManagerSidebar';
+import ManagerHeader from '../../components/manager/ManagerHeader';
+import { LuBarChart3, LuStar } from "react-icons/lu";
+import { FaWonSign, FaArrowLeft, FaArrowRight } from "react-icons/fa6";
+import ReactPaginate from 'react-paginate';
 import '../../styles/pages/manager/ManagerMain.css';
 
-const mockData = [
-    { book_no: 1, office_no: 131, title: '하루 오피스', member_no: 876, name: '홍길동', start_date: '2024-07-22', end_date: '2024-07-25' },
-    { book_no: 2, office_no: 135, title: '오늘 오피스', member_no: 877, name: '이석진', start_date: '2024-07-22', end_date: '2024-07-25' },
-    { book_no: 3, office_no: 127, title: '내일 오피스', member_no: 278, name: '김건우', start_date: '2024-07-22', end_date: '2024-07-25' },
-];
+const COLORS = ['#57C9A6', '#EEBD6F'];
 
 const ManagerMain = () => {
+  const { no } = useParams();
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [monthlyData, setMonthlyData] = useState([]);
+  const [genderData, setGenderData] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [offices, setOffices] = useState([]);
 
-    return (
-        <>
-            {/* 사이드바 컴포넌트 */}
-            <ManagerSidebar title={'office24'} firstChild={'대쉬보드'} secondChild={'상품 관리'}
-                thirdChild={'예약 관리'} fourthChild={'통계'} fifthChild={'정보수정'} />
+  useEffect(() => {
+    document.body.classList.add('manager-main-body');
+    return () => {
+      document.body.classList.remove('manager-main-body');
+    };
+  }, []);
 
-            {/* 헤더 컴포넌트*/}
-            <ManagerHeader />
+  const fetchStats = async () => {
+    try {
+      const response = await axios.get(`/manager/office/stats/${no}`);
+      const serverData = response.data;
 
-            {/* 본문 내용 */}
-            <div className="main-content">
-                {/* 대쉬보드 전체 컨테이너*/}
-                <div className="dashboard">
-                    <div className='mini-container'>
-                        <div className='mini-stats'>1</div>
-                        <div className='mini-stats'>2</div>
-                        <div className='mini-stats'>3</div>
-                        <div className='mini-stats'>4</div>
-                    </div>
+      const monthlyRevenue = serverData.monthlyRevenue.map(item => ({
+        month: `${item.MONTH}월`,
+        revenue: item.MONTHLY_REVENUE,
+      }));
 
-                    {/* 통계 컨테이너 */}
-                    <div className="statistics">
-                        <h3>오피스 이용 통계</h3>
-                        <div className="chart-container">
-                            <canvas id="usageChart"></canvas>
-                        </div>
-                    </div>
+      const genderRatio = serverData.genderRatio.map(item => ({
+        name: item.GENDER === 'M' ? '남성' : '여성',
+        value: item.COUNT,
+      }));
 
-                    {/* 오피스 컨테이너 */}
-                    <div className="product">
-                        <h3>오피스 상품 관리</h3>
-                        <button>등록</button>
-                        <button>수정</button>
-                        <button>삭제</button>
-                    </div>
+      setStats(serverData);
+      setMonthlyData(monthlyRevenue);
+      setGenderData(genderRatio);
+      setOffices(serverData.offices);
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    }
+  };
 
-                    {/* 예약 컨테이너 */}
-                    <div className="reserve">
-                        <h3>예약 내역</h3>
-                        <div className="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>예약 번호</th>
-                                        <th>오피스 번호</th>
-                                        <th>오피스 이름</th>
-                                        <th>예약자 코드</th>
-                                        <th>예약자 이름</th>
-                                        <th>날짜</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {mockData.map((item) => (
-                                        <tr key={item.book_no}>
-                                            <td>{item.book_no}</td>
-                                            <td>{item.office_no}</td>
-                                            <td>{item.title}</td>
-                                            <td>{item.member_no}</td>
-                                            <td>{item.name}</td>
-                                            <td>{item.start_date}~{item.end_date}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+  const fetchBookings = async (selectedPage) => {
+    try {
+      const response = await axios.get(`/manager/booking/${no}`, {
+        params: {
+          page: selectedPage + 1,
+          size: 5,
+        },
+      });
+
+      const bookData = response.data.bookings.map(booking => ({
+        ...booking,
+        BOOKING_DATE: new Date(booking.BOOKING_DATE).toLocaleDateString(),
+        START_DATE: new Date(booking.START_DATE).toLocaleDateString(),
+        END_DATE: new Date(booking.END_DATE).toLocaleDateString()
+      }));
+
+      setBookings(bookData);
+      setPageCount(response.data.totalPages);
+      setCurrentPage(selectedPage);
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+    fetchBookings(0);
+  }, [no]);
+
+  const handlePageClick = (data) => {
+    const selectedPage = data.selected;
+    fetchBookings(selectedPage);
+  };
+
+  if (!stats) {
+    return <div>Error loading data.</div>;
+  }
+
+  return (
+    <>
+      <ManagerSidebar />
+      <ManagerHeader />
+      <div className="main-content">
+        <div className="dashboard">
+          <div className='mini-container'>
+            <div className='mini-stats'>
+              <div>
+                <p>누적 수익</p>
+              </div>
+              <div className='statcontent'>
+                <span>{stats.totalRevenue}</span>&nbsp;<FaWonSign size={12} color='#4171DD' />
+              </div>
             </div>
-        </>
-    );
+            <div className='mini-stats'>
+              <div>
+                <p>누적 이용자</p>
+              </div>
+              <div className='statcontent'>
+                <span>{stats.totalUsage}</span>&nbsp;🤦
+              </div>
+            </div>
+            <div className='mini-stats'>
+              <div>
+                <p>총 평점</p>
+              </div>
+              <div className='statcontent'>
+                <span>{stats.totalRating}</span>&nbsp;<LuStar color='#57C9A6' />
+              </div>
+            </div>
+            <div className='mini-stats'>
+              <div>
+                <p>이용 중</p>
+              </div>
+              <div className='statcontent'>
+                <span>{stats.totalActive}</span>&nbsp;<LuBarChart3 color='#f1b85b' />
+              </div>
+            </div>
+          </div>
+          <div className="statistics">
+            <div className="chart-container">
+              <h4>매출</h4><br />
+              <ResponsiveContainer width="100%" height={230}>
+                <BarChart data={monthlyData} margin={{ top: 0, left: 0, right: 20 }}>
+                  <XAxis dataKey="month" tick={{ fontSize: 10 }} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11 }} tickLine={false} />
+                  <Tooltip contentStyle={{ fontSize: 12 }} />
+                  <Bar dataKey="revenue" fill="#4171DD" barSize={9}
+                    animationDuration={1000} animationEasing="ease-out" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className='booking'>
+              <h4>이용자 성비</h4><br />
+              <ResponsiveContainer width="100%" height={250} margin={{ top: 0, right: 0, bottom: 0, left: 0 }} >
+                <PieChart>
+                  <Pie
+                    data={genderData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={90}
+                    innerRadius={80}
+                    fill="#8884d8"
+                    label
+                  >
+                    {genderData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend verticalAlign="bottom" height={36} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          <div className='bottom-content'>
+            <div className='info'>
+              <h4>오피스 등록 상태</h4>
+              <div className='office-status'>
+                <ul>
+                  {offices.map((office) => (
+                    <li key={office.no}>
+                      {office.title}
+                      <span className={office.availability === 1 ? 'approved' : 'pending'}>
+                        {office.availability === 1 ? '승인됨' : '대기 중'}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+            </div>
+            <div className="reserve">
+              <h4>예약 내역</h4>
+              <div className="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>예약 번호</th>
+                      <th>예약일</th>
+                      <th>예약자명</th>
+                      <th>예약자 전화번호</th>
+                      <th>예약기간</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bookings.map((booking) => (
+                      <tr key={booking.BOOKING_NO}>
+                        <td>{booking.BOOKING_NO}</td>
+                        <td>{booking.BOOKING_DATE}</td>
+                        <td>{booking.BOOKING_NAME}</td>
+                        <td>{booking.BOOKING_PHONE.trim()}</td> {/* 공백 제거 */}
+                        <td>{booking.START_DATE} ~ {booking.END_DATE}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <ReactPaginate
+                  previousLabel={'이전'}
+                  nextLabel={'다음'}
+                  breakLabel={'...'}
+                  breakClassName={'break-me'}
+                  pageCount={pageCount}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={handlePageClick}
+                  containerClassName={'pagination'}
+                  subContainerClassName={'pages pagination'}
+                  activeClassName={'active'}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default ManagerMain;

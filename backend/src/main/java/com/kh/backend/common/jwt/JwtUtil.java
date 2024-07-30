@@ -44,6 +44,7 @@ public class JwtUtil {
             Jwts.parserBuilder().setSigningKey(accessKey).build().parseClaimsJws(accessToken);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
+            System.out.println("test"+ e.getMessage());
             return false;
         }
     }

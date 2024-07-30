@@ -21,7 +21,6 @@ function App() {
         {/* 공개 라우트 */}
         <Route path="/" element={<MemberMain />} />
         <Route path="/login" element={<MemberLogin />} />
-        <Route path="/manager/login" element={<ManagerLogin />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/member/register" element={<MemberRegister />} />
         <Route path="/manager/register" element={<ManagerRegister />} />
@@ -33,7 +32,8 @@ function App() {
         <Route path="/search" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberSearch /></PrivateRoute>} />
 
         {/* 매니저 보호 라우트 */}
-        <Route path="/manager" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerMain /></PrivateRoute>} />
+        <Route path="/manager" element={<ManagerLogin />} />
+        <Route path="/manager/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerMain /></PrivateRoute>} />
 
         {/* 어드민 라우트 추가 */}
         <Route path="/admin" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMain /></PrivateRoute>} />

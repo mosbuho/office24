@@ -24,6 +24,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String accessToken = getAccessTokenFromRequest(request);
+        System.out.println(accessToken);
         if (accessToken != null && jwtUtil.validateAccessToken(accessToken)) {
             String username = jwtUtil.getUsernameFromAccessToken(accessToken);
             String role = jwtUtil.getRoleFromAccessToken(accessToken);
