@@ -13,14 +13,14 @@ const COLORS = ['#57C9A6', '#EEBD6F'];
 
 const ManagerMain = () => {
   const { no } = useParams();
-  const [stats, setStats] = useState(null);
-  const [monthlyData, setMonthlyData] = useState([]);
-  const [genderData, setGenderData] = useState([]);
-  const [bookings, setBookings] = useState([]);
+  const [stats, setStats] = useState(null); // 통계 데이터
+  const [monthlyData, setMonthlyData] = useState([]); // 월 매출 데이터
+  const [genderData, setGenderData] = useState([]); // 성비 데이터
+  const [bookings, setBookings] = useState([]); // 예약 데이터
   const [bookingPageCount, setBookingPageCount] = useState(0);
-  const [currentBookingPage, setCurrentBookingPage] = useState(0);
-  const [offices, setOffices] = useState([]);
-  const [officePageCount, setOfficePageCount] = useState(0);
+  const [currentBookingPage, setCurrentBookingPage] = useState(0); // 현재 페이지 저장
+  const [offices, setOffices] = useState([]); // 오피스 등록 상태 리스트
+  const [officePageCount, setOfficePageCount] = useState(0); 
   const [currentOfficePage, setCurrentOfficePage] = useState(0);
 
   useEffect(() => {
@@ -35,11 +35,13 @@ const ManagerMain = () => {
       const response = await axios.get(`/manager/office/stats/${no}`);
       const serverData = response.data;
 
+      // 월 매출
       const monthlyRevenue = serverData.monthlyRevenue.map(item => ({
         month: `${item.MONTH}월`,
         revenue: item.MONTHLY_REVENUE,
       }));
 
+      // 성비
       const genderRatio = serverData.genderRatio.map(item => ({
         name: item.GENDER === 'M' ? '남성' : '여성',
         value: item.COUNT,
@@ -49,7 +51,6 @@ const ManagerMain = () => {
       setMonthlyData(monthlyRevenue);
       setGenderData(genderRatio);
 
-      // Set page count for offices pagination
       setOfficePageCount(Math.ceil(serverData.offices.length / 5));
       setOffices(serverData.offices.slice(0, 5)); // 첫 페이지 오피스 데이터 설정
     } catch (error) {
@@ -57,6 +58,7 @@ const ManagerMain = () => {
     }
   };
 
+  // 오피스 등록 상태
   const fetchOfficeStatus = async (selectedPage) => {
     try {
       const response = await axios.get(`/manager/office/status/${no}`, {
@@ -74,6 +76,7 @@ const ManagerMain = () => {
     }
   };
 
+  // 예약 내역
   const fetchBookings = async (selectedPage) => {
     try {
       const response = await axios.get(`/manager/booking/${no}`, {
@@ -98,6 +101,7 @@ const ManagerMain = () => {
     }
   };
 
+  // 마운트될때
   useEffect(() => {
     fetchStats();
     fetchBookings(0);

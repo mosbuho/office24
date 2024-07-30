@@ -3,7 +3,6 @@ package com.kh.backend.office;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,17 +22,17 @@ public class OfficeController {
     @GetMapping("/manager/office/stats/{no}")
     public ResponseEntity<Map<String, Object>> getStatistics(@PathVariable int no) {
         Map<String, Object> stats = new HashMap<>();
-        stats.put("totalRevenue", officeService.getTotalRevenue(no));
-        stats.put("totalUsage", officeService.getTotalUsage(no));
-        stats.put("totalRating", officeService.getTotalRating(no));
-        stats.put("totalActive", officeService.getActiveOfficeCount(no));
+        stats.put("totalRevenue", officeService.getTotalRevenue(no));       // 누적 수익
+        stats.put("totalUsage", officeService.getTotalUsage(no));           // 누적 이용자
+        stats.put("totalRating", officeService.getTotalRating(no));         // 총 평점 (보유한 전체 오피스)
+        stats.put("totalActive", officeService.getActiveOfficeCount(no));   // 현재 이용 중인 숫자
 
-        List<Map<String, Object>> monthlyRevenue = officeService.getMonthlyRevenue(no);
-        stats.put("monthlyRevenue", monthlyRevenue);
+        List<Map<String, Object>> monthlyRevenue = officeService.getMonthlyRevenue(no); 
+        stats.put("monthlyRevenue", monthlyRevenue); // 월 매출
         List<Map<String, Object>> genderRatio = officeService.getTotalGenderRatio(no);
-        stats.put("genderRatio", genderRatio);
+        stats.put("genderRatio", genderRatio); // 이용자 성비
         Map<String, Object> officeStatus = getOfficeStatusPaged(no, 1, 100);
-        stats.put("offices", officeStatus.get("offices"));
+        stats.put("offices", officeStatus.get("offices")); // 오피스 등록 상태 (승인, 대기)
         return ResponseEntity.ok(stats);
     }
 
@@ -42,8 +41,8 @@ public class OfficeController {
     public Map<String, Object> getOfficeStatusPaged(@PathVariable int no,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int size) {
-        List<Office> offices = officeService.getOfficeStatusPaged(no, page, size);
-        int total = officeService.getOfficeStatusCount(no);
+        List<Office> offices = officeService.getOfficeStatusPaged(no, page, size); // 오피스 목록
+        int total = officeService.getOfficeStatusCount(no); // 오피스 수
 
         Map<String, Object> response = new HashMap<>();
         response.put("offices", offices);
@@ -60,8 +59,8 @@ public class OfficeController {
             @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) Integer availability,
             @RequestParam(required = false) String searchText) {
 
-        List<Office> offices = officeService.getOffices(no, page, size, availability, searchText);
-        int total = officeService.getOfficeCount(no, availability, searchText);
+        List<Office> offices = officeService.getOffices(no, page, size, availability, searchText); // 조건에 맞는 오피스 목록
+        int total = officeService.getOfficeCount(no, availability, searchText); // 조건에 맞는 오피스 수
 
         Map<String, Object> response = new HashMap<>();
         response.put("offices", offices);
@@ -79,16 +78,4 @@ public class OfficeController {
         return ResponseEntity.ok().build();
     }
 
-    // 입력받은 office 객체에서 특정 필드만 포함하여 Map<String, Object>로 반환
-    private List<Map<String, Object>> convertOfficesToMap(List<Office> offices) {
-        return offices.stream()
-                .map(office -> {
-                    Map<String, Object> officeMap = new HashMap<>();
-                    officeMap.put("no", office.getNo());
-                    officeMap.put("title", office.getTitle());
-                    officeMap.put("availability", office.getAvailability());
-                    return officeMap;
-                })
-                .collect(Collectors.toList());
-    }
 }

@@ -13,6 +13,7 @@ const ManagerOffice = () => {
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [searchText, setSearchText] = useState('');
+  const [searchInput, setSearchInput] = useState('');
   const [availability, setAvailability] = useState('all');
 
   const fetchOffices = useCallback(async (page) => {
@@ -34,9 +35,10 @@ const ManagerOffice = () => {
     }
   }, [no, availability, searchText]);
 
+  // 마운트, 상태, 검색어에 따라
   useEffect(() => {
     fetchOffices(1);
-  }, [no, availability, fetchOffices]);
+  }, [no, availability, searchText, fetchOffices]);
 
   useEffect(() => {
     document.body.classList.add('manager-office-body');
@@ -45,27 +47,33 @@ const ManagerOffice = () => {
     };
   }, []);
 
+  // 선택된 페이지 데이터
   const handlePageClick = (data) => {
     const selectedPage = data.selected + 1;
     fetchOffices(selectedPage);
   };
 
+  // 탭 누르면 상태 업데이트 (전체, 서비스 중, 대기 중)
   const handleTabClick = (availabilityStatus) => {
     setAvailability(availabilityStatus);
   };
 
-  useEffect(() => {
-    fetchOffices(1);
-  }, [availability]);
-
-  const handleSearch = () => {
-    fetchOffices(1);
+  // 검색 입력값을 저장
+  const handleSearchInputChange = (e) => {
+    setSearchInput(e.target.value);
   };
 
+  // 검색어 상태 업데이트하고 데이터요청
+  const handleSearch = () => {
+    setSearchText(searchInput);
+  };
+
+  // 신규 등록 페이지로 이동 버튼
   const handleRegisterClick = () => {
     navigate(`/manager/office/register/${no}`);
   };
 
+  // 삭제
   const handleDeleteClick = async (officeNo) => {
     try {
       await axios.delete(`/manager/office/delete/${officeNo}`, { withCredentials: true });
@@ -93,8 +101,8 @@ const ManagerOffice = () => {
           <div className='search'>
             <input
               type="text"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
+              value={searchInput}
+              onChange={handleSearchInputChange}
               placeholder="오피스 이름으로 검색"
             />
             <button onClick={handleSearch}>검색</button>
@@ -108,9 +116,8 @@ const ManagerOffice = () => {
                 <th>번호</th>
                 <th>이름</th>
                 <th>주소</th>
-                <th>우편번호</th>
-                <th>가격</th>
                 <th>수용인원</th>
+                <th>가격(원)</th>
                 <th>상태</th>
                 <th>등록일</th>
                 <th></th>
@@ -122,10 +129,13 @@ const ManagerOffice = () => {
                   <td>{office.no}</td>
                   <td>{office.title}</td>
                   <td>{office.address}</td>
-                  <td>{office.zipCode}</td>
-                  <td>{office.price}</td>
                   <td>{office.capacity}</td>
-                  <td>{office.availability === 1 ? '승인됨' : '대기 중'}</td>
+                  <td>{office.price}</td>
+                  <td>
+                    <span className={office.availability === 1 ? 'approved' : 'pending'}>
+                      {office.availability === 1 ? '승인됨' : '대기 중'}
+                    </span>
+                  </td>
                   <td>{new Date(office.regDate).toLocaleDateString()}</td>
                   <td>
                     <button>수정</button>
