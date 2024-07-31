@@ -25,7 +25,7 @@ const ManagerLogin = () => {
     return (
         <div className="managerLogin-container">
             <div className='log-container'>
-                <div className="logo">office24</div>
+                <div className="logo">OFFICE24</div>
                 <div className="login-tabs">
                     <div className="active">오피스 관리자</div>
                 </div>

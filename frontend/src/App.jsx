@@ -13,6 +13,7 @@ import AdminLogin from './pages/admin/AdminLogin';
 import ManagerRegister from './pages/manager/ManagerRegister';
 import AdminMain from './pages/admin/AdminMain';
 import PrivateRoute from './components/common/PrivateRoute';
+import ManagerOffice from './pages/manager/ManagerOffice';
 import MemberFindId from "./pages/member/MemberFindId.jsx";
 import MemberFindIdResult from "./pages/member/MemberFindIResult.jsx";
 
@@ -38,6 +39,7 @@ function App() {
         {/* 매니저 보호 라우트 */}
         <Route path="/manager" element={<ManagerLogin />} />
         <Route path="/manager/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerMain /></PrivateRoute>} />
+        <Route path="/manager/office/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOffice /></PrivateRoute>} />
 
         {/* 어드민 라우트 추가 */}
         <Route path="/admin" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMain /></PrivateRoute>} />
