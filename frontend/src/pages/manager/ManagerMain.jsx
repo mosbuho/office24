@@ -125,7 +125,7 @@ const ManagerMain = () => {
     <>
       <ManagerSidebar />
       <ManagerHeader />
-      <div className="main-content">
+      <div className="managerMain-container">
         <div className="dashboard">
           <div className='mini-container'>
             <div className='mini-stats'>

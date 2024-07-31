@@ -5,7 +5,7 @@ body.manager-main-body {
     box-sizing: border-box;
 }
 
-.main-content {
+.managerMain-container {
     margin-left: 20%;
     margin-top: 70px;
     margin-bottom: 10px;
@@ -15,7 +15,7 @@ body.manager-main-body {
     box-sizing: border-box;
 }
 
-.main-content {
+.managerMain-container {
     .dashboard {
         display: flex;
         flex-direction: column;
