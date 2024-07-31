@@ -1,5 +1,7 @@
 package com.kh.backend.member;
 
+import com.kh.backend.office.Office;
+import com.kh.backend.office.OfficeMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +15,11 @@ import java.util.Map;
 public class MemberController {
 
     private final MemberService memberService;
+    private final OfficeMapper officeMapper;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, OfficeMapper officeMapper) {
         this.memberService = memberService;
+        this.officeMapper = officeMapper;
     }
 
     @GetMapping("/idCheck")
@@ -51,12 +55,20 @@ public class MemberController {
     public ResponseEntity<?> resetPw(@RequestBody Map<String, String> map) {
         String pw = map.get("pw");
         String id = map.get("id");
-        System.out.println("pw="+pw);
-        System.out.println("id="+id);
-
+        
         boolean result = memberService.resetPw(pw, id);
         if (result) {
             return ResponseEntity.ok(null);
+        } else {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+    @GetMapping("/office/{no}")
+    public ResponseEntity<?> getOffice(@PathVariable int no) {
+        Office office = officeMapper.getOffice(no);
+
+        if (office != null) {
+            return ResponseEntity.ok(office);
         } else {
             return ResponseEntity.badRequest().body(null);
         }

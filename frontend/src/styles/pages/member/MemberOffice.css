@@ -1,0 +1,118 @@
+.office-detail-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background-color: #f2f2f2;
+    box-sizing: border-box;
+}
+
+.office-detail-page-container .office-detail-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: auto 1fr;
+    gap: 20px;
+    max-width: 1200px;
+    width: 100%;
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.office-detail-page-container .office-logo-container {
+    grid-column: 1 / 3;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 20px;
+}
+
+.office-detail-page-container .back-button {
+    font-size: 18px;
+    cursor: pointer;
+    color: #6363d2;
+    font-family: 'Arial', sans-serif;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.office-detail-page-container .back-button:hover {
+    text-decoration: underline;
+}
+
+.office-detail-page-container .office-logo {
+    font-size: 50px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #6363d2;
+    cursor: pointer;
+    font-family: 'Arial', sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.office-detail-page-container .office-image-container {
+    grid-column: 1;
+    grid-row: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.office-detail-page-container .office-image {
+    width: 500px;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.office-detail-page-container .office-info {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px;
+    padding-left: 200px;
+    padding-bottom: 100px;
+}
+
+.office-detail-page-container .office-info .office-name {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 0;
+    color: #4a4a9d;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+.office-detail-page-container .office-info .office-address,
+.office-detail-page-container .office-info .office-zipcode,
+.office-detail-page-container .office-info .office-description,
+.office-detail-page-container .office-info .office-price,
+.office-detail-page-container .office-info .office-max-capacity {
+    margin: 5px 0;
+    font-size: 18px;
+    font-family: 'Verdana', sans-serif;
+    color: #333;
+}
+
+.office-detail-page-container .office-info .office-reserve-button {
+    background-color: #6363d2;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s, transform 0.3s;
+    align-self: flex-start;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.office-detail-page-container .office-info .office-reserve-button:hover {
+    background-color: #4a4a9d;
+    transform: scale(1.05);
+}

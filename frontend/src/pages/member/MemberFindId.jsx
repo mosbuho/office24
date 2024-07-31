@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const MemberFindId = () => {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({phone: ''});
+    const [formData, setFormData] = useState({ phone: '' });
     const [verification, setVerification] = useState({
         isCodeSent: false,
         verificationCode: '',
@@ -71,9 +71,9 @@ const MemberFindId = () => {
         })
             .then(response => {
                 if (response.status === 200 && Array.isArray(response.data)) {
-                    navigate("/member/findIdResult", {state: {ids: response.data}});
+                    navigate("/member/findIdResult", { state: { ids: response.data } });
                 } else if (response.status === 200 && response.data.ids) {
-                    navigate("/member/findIdResult", {state: {ids: response.data.ids}});
+                    navigate("/member/findIdResult", { state: { ids: response.data.ids } });
                 }
             })
             .catch(error => {
@@ -86,13 +86,13 @@ const MemberFindId = () => {
     };
 
     return (
-        <div className="find-id-page">
-            <div className="find-id-form">
-                <div className="logo" onClick={logoClick}>OFFICE24</div>
+        <div className="member-find-id-page">
+            <div className="member-find-id-form">
+                <div className="member-find-id-logo" onClick={logoClick}>OFFICE24</div>
                 <h2>아이디 찾기</h2>
-                <div className="form-group phone-group">
+                <div className="member-find-id-form-group">
                     <label htmlFor="phone">휴대전화번호</label>
-                    <div className="input-group">
+                    <div className="member-find-id-input-group">
                         <input
                             type="text"
                             id="phone"
@@ -103,16 +103,16 @@ const MemberFindId = () => {
                             required
                             placeholder="'-' 를 제외한 11자리 숫자"
                         />
-                        <button type="button" className="check-btn" onClick={sendVerificationCode}>
+                        <button type="button" className="member-find-id-check-btn" onClick={sendVerificationCode}>
                             번호 인증
                         </button>
                     </div>
-                    <span id="phoneInfo" className="info-message"></span>
+                    <span id="phoneInfo" className="member-find-id-info-message"></span>
                 </div>
                 {verification.isCodeSent && (
-                    <div className="form-group verify-group">
+                    <div className="member-find-id-form-group">
                         <label htmlFor="verificationCode">인증 코드</label>
-                        <div className="input-group">
+                        <div className="member-find-id-input-group">
                             <input
                                 type="text"
                                 id="verificationCode"
@@ -121,27 +121,27 @@ const MemberFindId = () => {
                                 onChange={handleVerificationChange}
                                 required
                             />
-                            <button type="button" className="check-btn" onClick={verifyCode}>
+                            <button type="button" className="member-find-id-check-btn" onClick={verifyCode}>
                                 인증
                             </button>
                         </div>
                         {verification.isVerified && (
-                            <span className="info-message-success">번호 인증이 완료되었습니다.</span>
+                            <span className="member-find-id-info-message-success">번호 인증이 완료되었습니다.</span>
                         )}
                     </div>
                 )}
                 {verification.isVerified && (
                     <div>
-                        <button type="button" className="find-id-btn" onClick={findIdByPhone}>
+                        <button type="button" className="member-find-id-find-id-btn" onClick={findIdByPhone}>
                             아이디 찾기
                         </button>
                     </div>
                 )}
-                <div className="additional-links">
-                    <Link to="/member/resetPw" className="link-button">
+                <div className="member-find-id-additional-links">
+                    <Link to="/member/resetPw" className="member-find-id-link-button">
                         비밀번호 재설정
                     </Link>
-                    <Link to="/login" className="link-button">
+                    <Link to="/login" className="member-find-id-link-button">
                         로그인 화면으로
                     </Link>
                 </div>
