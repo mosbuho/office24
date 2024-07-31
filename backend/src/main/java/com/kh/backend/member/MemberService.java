@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.*;
@@ -15,6 +16,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @Service
 public class MemberService {
     private final MemberMapper memberMapper;
@@ -374,5 +376,15 @@ public class MemberService {
         }
         return member;
     }
-
+    public boolean resetPw(String pw, String id)    {
+        log.info("Method called");
+        log.debug("Variable value: {}");
+        try {
+            memberMapper.resetPw(passwordEncoder.encode(pw), id);
+            return true;
+        } catch (Exception e)   {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

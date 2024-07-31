@@ -14,6 +14,7 @@ import ManagerRegister from './pages/manager/ManagerRegister';
 import AdminMain from './pages/admin/AdminMain';
 import PrivateRoute from './components/common/PrivateRoute';
 import MemberFindId from "./pages/member/MemberFindId.jsx";
+import MemberResetPw from "./pages/member/MemberResetPw.jsx";
 import MemberFindIdResult from "./pages/member/MemberFindIResult.jsx";
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route path="/manager/register" element={<ManagerRegister />} />
         <Route path="/member/findId" element={<MemberFindId/>}/>
         <Route path="/member/findIdResult" element={<MemberFindIdResult/>}/>
+        <Route path="/member/resetPw" element={<MemberResetPw/>}/>
 
         {/* 멤버 보호 라우트 */}
         <Route path="/member/update" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberUpdate /></PrivateRoute>} />

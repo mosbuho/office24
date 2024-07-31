@@ -24,8 +24,8 @@ const MemberFindIdResult = () => {
                     )}
                 </ul>
                 <div className="button-container">
-                    <Link to="/member/findPw" className="link-button">
-                        비밀번호 찾기
+                    <Link to="/member/resetPw" className="link-button">
+                        비밀번호 재설정
                     </Link>
                     <Link to="/login" className="link-button">
                         로그인 화면으로

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/member")
@@ -26,6 +27,14 @@ public class MemberController {
         }
     }
 
+    @GetMapping("/checkId")
+    public ResponseEntity<?> checkId(@RequestParam String id) {
+        if (!memberService.idCheck(id)) {
+            return ResponseEntity.ok(null);
+        } else {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
     @PostMapping("/register")
     public ResponseEntity<?> registerMember(@RequestBody Member member) {
         try {
@@ -36,6 +45,20 @@ public class MemberController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/resetPw")
+    public ResponseEntity<?> resetPw(@RequestBody Map<String, String> map) {
+        String pw = map.get("pw");
+        String id = map.get("id");
+        System.out.println("pw="+pw);
+        System.out.println("id="+id);
+
+        boolean result = memberService.resetPw(pw, id);
+        if (result) {
+            return ResponseEntity.ok(null);
+        } else {
+            return ResponseEntity.badRequest().body(null);
         }
     }
 }
