@@ -8,8 +8,10 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface StatisticsMapper {
     Map<String, Object> getAccumulate();
-
+    
     List<Map<String, Object>> getAgeGroup();
+    
+    List<Map<String, Object>> getSidoGroup();
 
-    List<Map<String, Object>> getOfficeSidoGroup();
+    List<Map<String, Object>> getMemberGroup();
 }

@@ -24,7 +24,12 @@ public class StatisticsController {
     }
 
     @GetMapping("/admin/sidogroup")
-    public List<Map<String, Object>> getOfficeSidoGroup() {
-        return statisticsService.getOfficeSidoGroup();
+    public List<Map<String, Object>> getSidoGroup() {
+        return statisticsService.getSidoGroup();
+    }
+
+    @GetMapping("/admin/membergroup")
+    public List<Map<String, Object>> getMemberGroup() {
+        return statisticsService.getMemberGroup();
     }
 }

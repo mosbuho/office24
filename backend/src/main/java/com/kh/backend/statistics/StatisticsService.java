@@ -20,7 +20,11 @@ public class StatisticsService {
         return statisticsMapper.getAgeGroup();
     }
 
-    public List<Map<String, Object>> getOfficeSidoGroup() {
-        return statisticsMapper.getOfficeSidoGroup();
+    public List<Map<String, Object>> getSidoGroup() {
+        return statisticsMapper.getSidoGroup();
+    }
+
+    public List<Map<String, Object>> getMemberGroup() {
+        return statisticsMapper.getMemberGroup();
     }
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../utils/axiosConfig';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip, Legend, Line, ComposedChart } from 'recharts';
 import { PieChart, Pie } from 'recharts';
 import '../../styles/pages/admin/AdminMain.css';
 import { FaAngleUp, FaAngleDown } from "react-icons/fa";
@@ -26,7 +26,7 @@ const formatAmount = (amount) => {
     } else {
         return `$${amount}`;
     }
-};
+}
 
 const formatNumber = (number) => {
     return number.toLocaleString('ko-KR');
@@ -34,8 +34,9 @@ const formatNumber = (number) => {
 
 const AdminMain = () => {
     const [accumulate, setAccumulate] = useState(null);
-    const [ageGroup, setAgeGroup] = useState([]);
+    const [ageGroup, setAgeGroup] = useState(null);
     const [sidoGroup, setSidoGroup] = useState(null);
+    const [memberGroup, setMemberGroup] = useState(null);
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -77,50 +78,41 @@ const AdminMain = () => {
                     value: parseFloat((item.OFFICE_COUNT / totalOffices * 100).toFixed(2)),
                 }));
                 setSidoGroup(formattedSidoGroup);
-                console.log(formattedSidoGroup);
-            } catch (error) {
-                console.log(error);
-            }
+
+                const resMemberGroup = await axios.get('http://localhost:8080/admin/membergroup');
+                const months = [
+                    '2024-01', '2024-02', '2024-03', '2024-04', '2024-05',
+                    '2024-06', '2024-07', '2024-08', '2024-09', '2024-10',
+                    '2024-11', '2024-12'
+                ];
+
+                const formattedMemberGroup = months.map(month => ({
+                    name: `${month.slice(-2)}월`,
+                    가입: 0,
+                    탈퇴: 0,
+                    이용자: 0
+                }));
+
+                resMemberGroup.data.forEach(item => {
+                    const monthIndex = months.indexOf(item.YEAR_MONTH);
+                    if (monthIndex !== -1) {
+                        formattedMemberGroup[monthIndex] = {
+                            name: `${item.YEAR_MONTH.slice(-2)}월`,
+                            가입: item.TOTAL_CREATE,
+                            탈퇴: item.TOTAL_DELETE,
+                            이용자: item.TREND
+                        };
+                    }
+                });
+                setMemberGroup(formattedMemberGroup);
+            } catch { }
         };
         fetchData();
     }, []);
 
-    if (!accumulate || !ageGroup || !sidoGroup) return <>test</>;
+    if (!accumulate || !ageGroup || !sidoGroup || !memberGroup) return <></>;
 
-    const salesData = [
-        { name: '1월', value: 5984 },
-        { name: '2월', value: 7894 },
-        { name: '3월', value: 4185 },
-        { name: '4월', value: 1514 },
-        { name: '5월', value: 5194 },
-        { name: '6월', value: 9519 },
-        { name: '7월', value: 7997 },
-        { name: '8월', value: 6198 },
-        { name: '9월', value: 8464 },
-        { name: '10월', value: 8974 },
-        { name: '11월', value: 9484 },
-        { name: '12월', value: 7881 },
-    ];
-
-    const COLORS = [
-        '#0088FE',
-        '#00C49F',
-        '#FFBB28',
-        '#FF8042',
-        '#A8D8EA',
-        '#D6A4A4',
-        '#6C5B7B',
-        '#B4D455',
-        '#C71585',
-        '#FF6347',
-        '#4682B4',
-        '#32CD32',
-        '#FFD700',
-        '#FF4500',
-        '#D3D3D3',
-        '#FF69B4',
-        '#8A2BE2'
-    ];
+    const colors = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A8D8EA', '#D6A4A4', '#6C5B7B', '#B4D455', '#C71585', '#FF6347', '#4682B4', '#32CD32', '#FFD700', '#FF4500', '#D3D3D3', '#FF69B4', '#8A2BE2'];
 
     return (
         <div className="admin-main-container">
@@ -202,7 +194,7 @@ const AdminMain = () => {
                 <div className="charts-container">
                     <div className="chart-card sales-chart">
                         <div className="chart-header">
-                            <h3>추이</h3>
+                            <h3>트렌드</h3>
                             <select>
                                 <option>이용자</option>
                                 <option>오피스</option>
@@ -212,19 +204,33 @@ const AdminMain = () => {
                             </select>
                         </div>
                         <ResponsiveContainer width="100%" height={300}>
-                            <BarChart data={salesData} margin={{ top: 20, right: 20, left: 20, bottom: 5 }}>
+                            <ComposedChart data={memberGroup} margin={{ top: 20, right: 20, left: 20, bottom: 5 }}>
                                 <XAxis dataKey="name" />
-                                <YAxis />
+                                <YAxis yAxisId="left" />
+                                <YAxis yAxisId="right" orientation="right" />
                                 <Tooltip />
                                 <Legend />
                                 <Bar
-                                    dataKey="value"
-                                    fill="#8884d8"
-                                    animationDuration={1000}
-                                    animationEasing="ease-out"
-                                    barSize={30}
+                                    dataKey="가입"
+                                    fill="#3cb371"
+                                    barSize={20}
+                                    yAxisId="left"
                                 />
-                            </BarChart>
+                                <Bar
+                                    dataKey="탈퇴"
+                                    fill="#db4455"
+                                    barSize={20}
+                                    yAxisId="left"
+                                />
+                                <Line
+                                    type="monotone"
+                                    dataKey="이용자"
+                                    stroke="#ffa550"
+                                    strokeWidth={2}
+                                    dot={false}
+                                    yAxisId="right"
+                                />
+                            </ComposedChart>
                         </ResponsiveContainer>
                     </div>
                     <div className="chart-card traffic-chart">
@@ -237,14 +243,13 @@ const AdminMain = () => {
                                     cy="50%"
                                     outerRadius={90}
                                     innerRadius={70}
-                                    fill="#8884d8"
                                     dataKey="value"
                                     label={({ value }) => `${value}%`}
                                     animationDuration={1000}
                                     animationEasing="ease-out"
                                 >
                                     {sidoGroup.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
                                     ))}
                                 </Pie>
                                 <Tooltip formatter={(value, name, props) => [`${value}%`, name]} />
