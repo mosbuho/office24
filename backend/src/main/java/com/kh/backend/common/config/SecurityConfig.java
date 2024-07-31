@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers("/member/idCheck", "/manager/idCheck").permitAll()
                         .requestMatchers("/member/checkId").permitAll()
                         .requestMatchers("/member/resetPw").permitAll()
+                        .requestMatchers("/member/office/**").permitAll()
                         .requestMatchers("/message/**").permitAll()
                         .requestMatchers("/manager/**").hasRole("MANAGER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")

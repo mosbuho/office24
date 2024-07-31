@@ -377,8 +377,6 @@ public class MemberService {
         return member;
     }
     public boolean resetPw(String pw, String id)    {
-        log.info("Method called");
-        log.debug("Variable value: {}");
         try {
             memberMapper.resetPw(passwordEncoder.encode(pw), id);
             return true;
