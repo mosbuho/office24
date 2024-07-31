@@ -152,6 +152,7 @@ body.manager-office-body {
         width: 270px;
     }
 
+    /* 페이징 */
     .pagination {
         display: flex;
         justify-content: center;

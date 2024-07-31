@@ -73,6 +73,11 @@ const ManagerOffice = () => {
     navigate(`/manager/office/register/${no}`);
   };
 
+  // 수정 페이지로 이동 버튼
+  const handleUpdateClick = (officeNo) => {
+    navigate(`/manager/office/update/${officeNo}`);
+  };
+
   // 삭제
   const handleDeleteClick = async (officeNo) => {
     try {
@@ -124,25 +129,31 @@ const ManagerOffice = () => {
               </tr>
             </thead>
             <tbody>
-              {offices.map((office) => (
-                <tr key={office.no}>
-                  <td>{office.no}</td>
-                  <td>{office.title}</td>
-                  <td>{office.address}</td>
-                  <td>{office.capacity}</td>
-                  <td>{office.price}</td>
-                  <td>
-                    <span className={office.availability === 1 ? 'approved' : 'pending'}>
-                      {office.availability === 1 ? '승인됨' : '대기 중'}
-                    </span>
-                  </td>
-                  <td>{new Date(office.regDate).toLocaleDateString()}</td>
-                  <td>
-                    <button>수정</button>
-                    <button onClick={() => handleDeleteClick(office.no)}>삭제</button>
-                  </td>
+              {offices.length > 0 ? (
+                offices.map((office) => (
+                  <tr key={office.no}>
+                    <td>{office.no}</td>
+                    <td>{office.title}</td>
+                    <td>{office.address}</td>
+                    <td>{office.capacity}</td>
+                    <td>{office.price}</td>
+                    <td>
+                      <span className={office.availability === 1 ? 'approved' : 'pending'}>
+                        {office.availability === 1 ? '승인됨' : '대기 중'}
+                      </span>
+                    </td>
+                    <td>{new Date(office.regDate).toLocaleDateString()}</td>
+                    <td>
+                      <button onClick={() => handleUpdateClick(office.no)}>수정</button>
+                      <button onClick={() => handleDeleteClick(office.no)}>삭제</button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: 'center' }}>검색 결과가 없습니다</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
           <ReactPaginate
