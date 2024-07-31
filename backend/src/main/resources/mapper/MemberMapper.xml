@@ -30,4 +30,7 @@
     <select id="findIdByPhone" parameterType="String" resultType="String">
         SELECT id FROM member WHERE trim(phone) = #{phone}
     </select>
+    <update id="resetPw">
+        update MEMBER set pw = #{pw} where id = #{id}
+    </update>
 </mapper>

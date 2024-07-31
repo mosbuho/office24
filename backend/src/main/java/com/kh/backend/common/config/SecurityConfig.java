@@ -46,6 +46,8 @@ public class SecurityConfig {
                         .requestMatchers("/auth/google/**").permitAll()
                         .requestMatchers("/member/register", "/manager/register").permitAll()
                         .requestMatchers("/member/idCheck", "/manager/idCheck").permitAll()
+                        .requestMatchers("/member/checkId").permitAll()
+                        .requestMatchers("/member/resetPw").permitAll()
                         .requestMatchers("/message/**").permitAll()
                         .requestMatchers("/manager/**").hasRole("MANAGER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
