@@ -13,13 +13,18 @@ public class StatisticsController {
     @Autowired
     private StatisticsService statisticsService;
 
-    @GetMapping("/admin/getStatistics")
-    public Map<String, Object> getStatistics() {
-        return statisticsService.getStatistics();
+    @GetMapping("/admin/accumulate")
+    public Map<String, Object> getAccumulate() {
+        return statisticsService.getAccumulate();
     }
 
-    @GetMapping("/admin/getAgeGroupStatistics")
-    public List<Map<String, Object>> getAgeGroupStatistics() {
-        return statisticsService.getAgeGroupStatistics();
+    @GetMapping("/admin/agegroup")
+    public List<Map<String, Object>> getAgeGroup() {
+        return statisticsService.getAgeGroup();
+    }
+
+    @GetMapping("/admin/sidogroup")
+    public List<Map<String, Object>> getOfficeSidoGroup() {
+        return statisticsService.getOfficeSidoGroup();
     }
 }

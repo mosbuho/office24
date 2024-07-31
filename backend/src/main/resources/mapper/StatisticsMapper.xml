@@ -1,28 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.backend.statistics.StatisticsMapper">
-    <select id="getStatistics" resultType="java.util.Map"> SELECT today.report_date AS
-        today_report_date, today.member_count AS today_member_count, today.manager_count AS
-        today_manager_count, today.office_count AS today_office_count, today.total_amount AS
-        today_total_amount, today.booking_count AS today_booking_count, today.review_count AS
-        today_review_count, yesterday.report_date AS yesterday_report_date, yesterday.member_count
-        AS yesterday_member_count, yesterday.manager_count AS yesterday_manager_count,
-        yesterday.office_count AS yesterday_office_count, yesterday.total_amount AS
-        yesterday_total_amount, yesterday.booking_count AS yesterday_booking_count,
-        yesterday.review_count AS yesterday_review_count, total.member_count AS total_member_count,
-        total.manager_count AS total_manager_count, total.office_count AS total_office_count,
-        total.total_amount AS total_total_amount, total.booking_count AS total_booking_count,
-        total.review_count AS total_review_count FROM (SELECT * FROM statistics WHERE report_date =
-        TRUNC(SYSDATE)) today CROSS JOIN (SELECT * FROM statistics WHERE report_date =
-        TRUNC(SYSDATE) - 1) yesterday CROSS JOIN (SELECT SUM(member_count) AS member_count,
-        SUM(manager_count) AS manager_count, SUM(office_count) AS office_count, SUM(total_amount) AS
-        total_amount, SUM(booking_count) AS booking_count, SUM(review_count) AS review_count FROM
-        statistics) total </select>
-    <select id="getAgeGroupStatistics" resultType="map"> SELECT CASE WHEN
-        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 0 AND 19 THEN '-10대' WHEN
-        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 20 AND 29 THEN '20대' WHEN
-        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 30 AND 39 THEN '30대' WHEN
-        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 40 AND 49 THEN '40대' WHEN
+    <select id="getAccumulate" resultType="map"> 
+        <![CDATA[
+        WITH today_data AS (
+            SELECT
+                TRUNC(SYSDATE) AS report_date,
+                COALESCE(SUM(mc.member_create), 0) AS member_create,
+                COALESCE(SUM(mg.manager_create), 0) AS manager_create,
+                COALESCE(SUM(ofc.office_create), 0) AS office_create,
+                COALESCE(SUM(bk.booking_create), 0) AS booking_create,
+                COALESCE(SUM(rv.review_create), 0) AS review_create,
+                COALESCE(SUM(bk.total_amount), 0) AS total_amount
+            FROM member_statistics mc
+            LEFT JOIN manager_statistics mg ON mc.report_date = mg.report_date
+            LEFT JOIN office_statistics ofc ON mc.report_date = ofc.report_date
+            LEFT JOIN booking_statistics bk ON mc.report_date = bk.report_date
+            LEFT JOIN review_statistics rv ON mc.report_date = rv.report_date
+            WHERE mc.report_date <= TRUNC(SYSDATE)
+            GROUP BY TRUNC(SYSDATE)
+        ),
+        yesterday_data AS (
+            SELECT
+                TRUNC(SYSDATE) - 1 AS report_date,
+                COALESCE(SUM(mc.member_create), 0) AS member_create,
+                COALESCE(SUM(mg.manager_create), 0) AS manager_create,
+                COALESCE(SUM(ofc.office_create), 0) AS office_create,
+                COALESCE(SUM(bk.booking_create), 0) AS booking_create,
+                COALESCE(SUM(rv.review_create), 0) AS review_create,
+                COALESCE(SUM(bk.total_amount), 0) AS total_amount
+            FROM member_statistics mc
+            LEFT JOIN manager_statistics mg ON mc.report_date = mg.report_date
+            LEFT JOIN office_statistics ofc ON mc.report_date = ofc.report_date
+            LEFT JOIN booking_statistics bk ON mc.report_date = bk.report_date
+            LEFT JOIN review_statistics rv ON mc.report_date = rv.report_date
+            WHERE mc.report_date <= TRUNC(SYSDATE) - 1
+            GROUP BY TRUNC(SYSDATE) - 1
+        )
+        SELECT
+            t.report_date AS today_report_date,
+            t.member_create AS today_member_create,
+            t.manager_create AS today_manager_create,
+            t.office_create AS today_office_create,
+            t.booking_create AS today_booking_create,
+            t.review_create AS today_review_create,
+            t.total_amount AS today_total_amount,
+            y.report_date AS yesterday_report_date,
+            y.member_create AS yesterday_member_create,
+            y.manager_create AS yesterday_manager_create,
+            y.office_create AS yesterday_office_create,
+            y.booking_create AS yesterday_booking_create,
+            y.review_create AS yesterday_review_create,
+            y.total_amount AS yesterday_total_amount
+        FROM today_data t
+        LEFT JOIN yesterday_data y ON t.report_date = TRUNC(SYSDATE)
+        ]]>
+    </select>
+    <select id="getAgeGroup" resultType="map"> SELECT CASE WHEN TRUNC(MONTHS_BETWEEN(SYSDATE, birth)
+        / 12) BETWEEN 0 AND 19 THEN '-10대' WHEN TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN
+        20 AND 29 THEN '20대' WHEN TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 30 AND 39 THEN
+        '30대' WHEN TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 40 AND 49 THEN '40대' WHEN
         TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 50 AND 59 THEN '50대' WHEN
         TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 60 AND 69 THEN '60대' ELSE '70대+' END AS
         ageGroup, gender, COUNT(*) AS count FROM member GROUP BY CASE WHEN
@@ -33,4 +70,6 @@
         TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 50 AND 59 THEN '50대' WHEN
         TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 60 AND 69 THEN '60대' ELSE '70대+' END,
         gender </select>
+    <select id="getOfficeSidoGroup" resultType="map"> SELECT SIDO, COUNT(*) AS OFFICE_COUNT FROM
+        OFFICE GROUP BY SIDO </select>
 </mapper>

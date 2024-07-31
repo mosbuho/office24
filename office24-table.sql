@@ -56,6 +56,7 @@ create table office (
 	title        varchar2(255) not null,     	 	                    -- 이름 (6자 이상 12자 이하 한글x)
 	address      varchar2(255) not null,     	 	                    -- 주소
 	zip_code     varchar2(20) not null,      		                    -- 우편 번호
+	sido         varchar2(6) not null,                                  -- 시/도 (통계용)
 	latitude     float not null,             	 	                    -- 좌표 (위도)
 	longitude    float not null,              		                    -- 좌표 (경도)
 	content      varchar2(4000) not null,              		            -- 상세설명
@@ -133,16 +134,73 @@ create table booking (
 	constraint chk_date check ( start_date <= end_date )                -- 예약 조건
 );
 
------------------------------------------------------------------------------------------
+-----------------------------------statistics--------------------------------------------
 
-create table statistics (
-	report_date   date primary key,                                     -- 날짜
-	member_count  number default 0,                                     -- 누적 멤버 수
-	manager_count number default 0,                                     -- 누적 매니저 수
-	office_count  number default 0,                                     -- 누적 오피스 수
-	total_amount  number default 0,                                     -- 누적 매출
-	booking_count number default 0,                                     -- 누적 예약 수
-	review_count  number default 0                                      -- 누적 리뷰 수
+create table member_statistics (
+	report_date   date primary key,
+	member_create number default 0,
+	member_delete number default 0
 );
 
 -----------------------------------------------------------------------------------------
+
+create table manager_statistics (
+	report_date    date primary key,
+	manager_create number default 0,
+	manager_delete number default 0
+);
+
+-----------------------------------------------------------------------------------------
+
+create table office_statistics (
+	report_date   date primary key,
+	office_create number default 0,
+	office_delete number default 0
+);
+
+-----------------------------------------------------------------------------------------
+
+create table booking_statistics (
+	report_date    date primary key,
+	total_amount   number default 0,
+	booking_create number default 0,
+	booking_delete number default 0
+);
+
+-----------------------------------------------------------------------------------------
+
+create table review_statistics (
+	report_date   date primary key,
+	review_create number default 0,
+	review_delete number default 0
+);
+
+-----------------------------------------------------------------------------------------
+
+
+
+drop table member;
+drop table manager;
+drop table admin;
+drop table office;
+drop table office_image;
+drop table notice;
+drop table review;
+drop table booking;
+drop table member_statistics;
+drop table manager_statistics;
+drop table office_statistics;
+drop table review_statistics;
+drop table booking_statistics;
+
+
+
+drop sequence member_seq;
+drop sequence manager_seq;
+drop sequence admin_seq;
+drop sequence office_seq;
+drop sequence office_image_seq;
+drop sequence notice_seq;
+drop sequence review_seq;
+drop sequence wish_seq;
+drop sequence booking_seq;

@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../utils/axiosConfig';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip, Legend } from 'recharts';
 import { PieChart, Pie } from 'recharts';
 import '../../styles/pages/admin/AdminMain.css';
 import { FaAngleUp, FaAngleDown } from "react-icons/fa";
 import { LuLogOut } from "react-icons/lu";
 import { removeTokens } from '../../utils/auth';
 
-
 const calculateChange = (current, previous) => {
-    if (previous === 0) return 'N/A';
+    if (previous === 0) return { change: '0.00%', className: 'no-change' };
     const change = ((current - previous) / previous) * 100;
-    return `${change.toFixed(2)}%`;
+    return { change: `${change.toFixed(2)}%`, className: change === 0 ? 'no-change' : (change > 0 ? 'positive' : 'negative') };
 };
-
 
 const formatAmount = (amount) => {
     if (amount >= 1e9) {
@@ -35,8 +33,9 @@ const formatNumber = (number) => {
 };
 
 const AdminMain = () => {
-    const [totals, setTotals] = useState(null);
+    const [accumulate, setAccumulate] = useState(null);
     const [ageGroup, setAgeGroup] = useState([]);
+    const [sidoGroup, setSidoGroup] = useState(null);
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -47,71 +46,61 @@ const AdminMain = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const resTotals = await axios.get('http://localhost:8080/admin/getStatistics');
-                setTotals(resTotals.data);
-                const resAgeGroup = await axios.get('http://localhost:8080/admin/getAgeGroupStatistics');
-                const mapData = resAgeGroup.data;
+                const resAccumulate = await axios.get('http://localhost:8080/admin/accumulate');
+                setAccumulate(resAccumulate.data);
+
+                const resAgeGroup = await axios.get('http://localhost:8080/admin/agegroup');
                 const ageOrder = ['-10대', '20대', '30대', '40대', '50대', '60대', '70대+'];
                 const initialData = ageOrder.map(ageGroup => ({
                     ageGroup,
                     M: '0.00',
                     W: '0.00'
                 }));
-                const totalCount = mapData.reduce((sum, item) => sum + item.COUNT, 0);
-                const updatedData = mapData.reduce((acc, item) => {
+                const ageGroupMap = resAgeGroup.data.reduce((sum, item) => sum + item.COUNT, 0);
+                const formattedAgeGroup = resAgeGroup.data.reduce((acc, item) => {
                     const ageGroup = item.AGEGROUP;
                     const gender = item.GENDER;
-                    const percentage = (item.COUNT / totalCount * 100).toFixed(2);
+                    const percentage = (item.COUNT / ageGroupMap * 100).toFixed(2);
                     const existing = acc.find(data => data.ageGroup === ageGroup);
                     if (existing) {
                         existing[gender] = percentage;
                     }
-
                     return acc;
                 }, initialData);
-                updatedData.sort((a, b) => ageOrder.indexOf(a.ageGroup) - ageOrder.indexOf(b.ageGroup));
-                setAgeGroup(updatedData);
-            } catch {
-                console.error('통계 데이터 불러오는 중 에러 발생');
+                formattedAgeGroup.sort((a, b) => ageOrder.indexOf(a.ageGroup) - ageOrder.indexOf(b.ageGroup));
+                setAgeGroup(formattedAgeGroup);
+
+                const resSidoGroup = await axios.get("http://localhost:8080/admin/sidogroup");
+                const totalOffices = resSidoGroup.data.reduce((sum, item) => sum + item.OFFICE_COUNT, 0);
+                const formattedSidoGroup = resSidoGroup.data.map(item => ({
+                    name: item.SIDO,
+                    value: parseFloat((item.OFFICE_COUNT / totalOffices * 100).toFixed(2)),
+                }));
+                setSidoGroup(formattedSidoGroup);
+                console.log(formattedSidoGroup);
+            } catch (error) {
+                console.log(error);
             }
         };
-
         fetchData();
     }, []);
 
-    if (!totals) return <></>;
-
-    const generateRandomData = (labels, total) => {
-        let remaining = total;
-        const data = labels.map((label, index) => {
-            const value = index === labels.length - 1
-                ? remaining
-                : getRandomValue(1, remaining - (labels.length - index - 1));
-            remaining -= value;
-            return { name: label, value };
-        });
-        return data;
-    };
-
-    const getRandomValue = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    if (!accumulate || !ageGroup || !sidoGroup) return <>test</>;
 
     const salesData = [
-        { name: '1월', value: getRandomValue(2000, 6000) },
-        { name: '2월', value: getRandomValue(2000, 6000) },
-        { name: '3월', value: getRandomValue(2000, 6000) },
-        { name: '4월', value: getRandomValue(2000, 6000) },
-        { name: '5월', value: getRandomValue(2000, 6000) },
-        { name: '6월', value: getRandomValue(2000, 6000) },
-        { name: '7월', value: getRandomValue(2000, 6000) },
-        { name: '8월', value: getRandomValue(2000, 6000) },
-        { name: '9월', value: getRandomValue(2000, 6000) },
-        { name: '10월', value: getRandomValue(2000, 6000) },
-        { name: '11월', value: getRandomValue(2000, 6000) },
-        { name: '12월', value: getRandomValue(2000, 6000) },
+        { name: '1월', value: 5984 },
+        { name: '2월', value: 7894 },
+        { name: '3월', value: 4185 },
+        { name: '4월', value: 1514 },
+        { name: '5월', value: 5194 },
+        { name: '6월', value: 9519 },
+        { name: '7월', value: 7997 },
+        { name: '8월', value: 6198 },
+        { name: '9월', value: 8464 },
+        { name: '10월', value: 8974 },
+        { name: '11월', value: 9484 },
+        { name: '12월', value: 7881 },
     ];
-
-    const areaLabels = ['서울', '경기', '강원', '경상', '충청', '전라', '제주'];
-    const areaData = generateRandomData(areaLabels, 100);
 
     const COLORS = [
         '#0088FE',
@@ -122,7 +111,15 @@ const AdminMain = () => {
         '#D6A4A4',
         '#6C5B7B',
         '#B4D455',
-        '#C71585'
+        '#C71585',
+        '#FF6347',
+        '#4682B4',
+        '#32CD32',
+        '#FFD700',
+        '#FF4500',
+        '#D3D3D3',
+        '#FF69B4',
+        '#8A2BE2'
     ];
 
     return (
@@ -149,50 +146,56 @@ const AdminMain = () => {
                 <div className="stats-grid">
                     <div className="stat-card">
                         <h3>누적 이용자 수</h3>
-                        <p className="stat-value">{formatNumber(totals.TOTAL_MEMBER_COUNT)}명</p>
-                        <span className={`stat-change ${totals.TODAY_MEMBER_COUNT > totals.YESTERDAY_MEMBER_COUNT ? 'positive' : 'negative'}`}>
-                            {totals.TOTAL_MEMBER_COUNT > totals.YESTERDAY_MEMBER_COUNT ? <FaAngleUp /> : <FaAngleDown />}
-                            {calculateChange(totals.TODAY_MEMBER_COUNT, totals.YESTERDAY_MEMBER_COUNT)}
+                        <p className="stat-value">{formatNumber(accumulate.TODAY_MEMBER_CREATE)}명</p>
+                        <span className={`stat-change ${calculateChange(accumulate.TODAY_MEMBER_CREATE, accumulate.YESTERDAY_MEMBER_CREATE).className}`}>
+                            {calculateChange(accumulate.TODAY_MEMBER_CREATE, accumulate.YESTERDAY_MEMBER_CREATE).className === 'positive' ? <FaAngleUp /> :
+                                (calculateChange(accumulate.TODAY_MEMBER_CREATE, accumulate.YESTERDAY_MEMBER_CREATE).className === 'negative' ? <FaAngleDown /> : null)}
+                            {calculateChange(accumulate.TODAY_MEMBER_CREATE, accumulate.YESTERDAY_MEMBER_CREATE).change}
                         </span>
                     </div>
                     <div className="stat-card">
                         <h3>누적 매니저 수</h3>
-                        <p className="stat-value">{formatNumber(totals.TOTAL_MANAGER_COUNT)}명</p>
-                        <span className={`stat-change ${totals.TODAY_MANAGER_COUNT > totals.YESTERDAY_MANAGER_COUNT ? 'positive' : 'negative'}`}>
-                            {totals.TODAY_MANAGER_COUNT > totals.YESTERDAY_MANAGER_COUNT ? <FaAngleUp /> : <FaAngleDown />}
-                            {calculateChange(totals.TODAY_MANAGER_COUNT, totals.YESTERDAY_MANAGER_COUNT)}
+                        <p className="stat-value">{formatNumber(accumulate.TODAY_MANAGER_CREATE)}명</p>
+                        <span className={`stat-change ${calculateChange(accumulate.TODAY_MANAGER_CREATE, accumulate.YESTERDAY_MANAGER_CREATE).className}`}>
+                            {calculateChange(accumulate.TODAY_MANAGER_CREATE, accumulate.YESTERDAY_MANAGER_CREATE).className === 'positive' ? <FaAngleUp /> :
+                                (calculateChange(accumulate.TODAY_MANAGER_CREATE, accumulate.YESTERDAY_MANAGER_CREATE).className === 'negative' ? <FaAngleDown /> : null)}
+                            {calculateChange(accumulate.TODAY_MANAGER_CREATE, accumulate.YESTERDAY_MANAGER_CREATE).change}
                         </span>
                     </div>
                     <div className="stat-card">
                         <h3>누적 오피스 수</h3>
-                        <p className="stat-value">{formatNumber(totals.TOTAL_OFFICE_COUNT)}개</p>
-                        <span className={`stat-change ${totals.TODAY_OFFICE_COUNT > totals.YESTERDAY_OFFICE_COUNT ? 'positive' : 'negative'}`}>
-                            {totals.TODAY_OFFICE_COUNT > totals.YESTERDAY_OFFICE_COUNT ? <FaAngleUp /> : <FaAngleDown />}
-                            {calculateChange(totals.TODAY_OFFICE_COUNT, totals.YESTERDAY_OFFICE_COUNT)}
+                        <p className="stat-value">{formatNumber(accumulate.TODAY_OFFICE_CREATE)}개</p>
+                        <span className={`stat-change ${calculateChange(accumulate.TODAY_OFFICE_CREATE, accumulate.YESTERDAY_OFFICE_CREATE).className}`}>
+                            {calculateChange(accumulate.TODAY_OFFICE_CREATE, accumulate.YESTERDAY_OFFICE_CREATE).className === 'positive' ? <FaAngleUp /> :
+                                (calculateChange(accumulate.TODAY_OFFICE_CREATE, accumulate.YESTERDAY_OFFICE_CREATE).className === 'negative' ? <FaAngleDown /> : null)}
+                            {calculateChange(accumulate.TODAY_OFFICE_CREATE, accumulate.YESTERDAY_OFFICE_CREATE).change}
                         </span>
                     </div>
                     <div className="stat-card">
                         <h3>누적 거래 금액</h3>
-                        <p className="stat-value">{formatAmount(totals.TOTAL_TOTAL_AMOUNT)}</p>
-                        <span className={`stat-change ${totals.TODAY_TOTAL_AMOUNT > totals.YESTERDAY_TOTAL_AMOUNT ? 'positive' : 'negative'}`}>
-                            {totals.TODAY_TOTAL_AMOUNT > totals.YESTERDAY_TOTAL_AMOUNT ? <FaAngleUp /> : <FaAngleDown />}
-                            {calculateChange(totals.TODAY_TOTAL_AMOUNT, totals.YESTERDAY_TOTAL_AMOUNT)}
+                        <p className="stat-value">{formatAmount(accumulate.TODAY_TOTAL_AMOUNT)}</p>
+                        <span className={`stat-change ${calculateChange(accumulate.TODAY_TOTAL_AMOUNT, accumulate.YESTERDAY_TOTAL_AMOUNT).className}`}>
+                            {calculateChange(accumulate.TODAY_TOTAL_AMOUNT, accumulate.YESTERDAY_TOTAL_AMOUNT).className === 'positive' ? <FaAngleUp /> :
+                                (calculateChange(accumulate.TODAY_TOTAL_AMOUNT, accumulate.YESTERDAY_TOTAL_AMOUNT).className === 'negative' ? <FaAngleDown /> : null)}
+                            {calculateChange(accumulate.TODAY_TOTAL_AMOUNT, accumulate.YESTERDAY_TOTAL_AMOUNT).change}
                         </span>
                     </div>
                     <div className="stat-card">
                         <h3>누적 예약 건수</h3>
-                        <p className="stat-value">{formatNumber(totals.TOTAL_BOOKING_COUNT)}건</p>
-                        <span className={`stat-change ${totals.TODAY_BOOKING_COUNT > totals.YESTERDAY_BOOKING_COUNT ? 'positive' : 'negative'}`}>
-                            {totals.TODAY_BOOKING_COUNT > totals.YESTERDAY_BOOKING_COUNT ? <FaAngleUp /> : <FaAngleDown />}
-                            {calculateChange(totals.TODAY_BOOKING_COUNT, totals.YESTERDAY_BOOKING_COUNT)}
+                        <p className="stat-value">{formatNumber(accumulate.TODAY_BOOKING_CREATE)}건</p>
+                        <span className={`stat-change ${calculateChange(accumulate.TODAY_BOOKING_CREATE, accumulate.YESTERDAY_BOOKING_CREATE).className}`}>
+                            {calculateChange(accumulate.TODAY_BOOKING_CREATE, accumulate.YESTERDAY_BOOKING_CREATE).className === 'positive' ? <FaAngleUp /> :
+                                (calculateChange(accumulate.TODAY_BOOKING_CREATE, accumulate.YESTERDAY_BOOKING_CREATE).className === 'negative' ? <FaAngleDown /> : null)}
+                            {calculateChange(accumulate.TODAY_BOOKING_CREATE, accumulate.YESTERDAY_BOOKING_CREATE).change}
                         </span>
                     </div>
                     <div className="stat-card">
                         <h3>누적 리뷰 수</h3>
-                        <p className="stat-value">{formatNumber(totals.TOTAL_REVIEW_COUNT)}개</p>
-                        <span className={`stat-change ${totals.TODAY_REVIEW_COUNT > totals.YESTERDAY_REVIEW_COUNT ? 'positive' : 'negative'}`}>
-                            {totals.TODAY_REVIEW_COUNT > totals.YESTERDAY_REVIEW_COUNT ? <FaAngleUp /> : <FaAngleDown />}
-                            {calculateChange(totals.TODAY_REVIEW_COUNT, totals.YESTERDAY_REVIEW_COUNT)}
+                        <p className="stat-value">{formatNumber(accumulate.TODAY_REVIEW_CREATE)}개</p>
+                        <span className={`stat-change ${calculateChange(accumulate.TODAY_REVIEW_CREATE, accumulate.YESTERDAY_REVIEW_CREATE).className}`}>
+                            {calculateChange(accumulate.TODAY_REVIEW_CREATE, accumulate.YESTERDAY_REVIEW_CREATE).className === 'positive' ? <FaAngleUp /> :
+                                (calculateChange(accumulate.TODAY_REVIEW_CREATE, accumulate.YESTERDAY_REVIEW_CREATE).className === 'negative' ? <FaAngleDown /> : null)}
+                            {calculateChange(accumulate.TODAY_REVIEW_CREATE, accumulate.YESTERDAY_REVIEW_CREATE).change}
                         </span>
                     </div>
                 </div>
@@ -229,20 +232,22 @@ const AdminMain = () => {
                         <ResponsiveContainer width="100%" height={300}>
                             <PieChart>
                                 <Pie
-                                    data={areaData}
+                                    data={sidoGroup}
                                     cx="50%"
                                     cy="50%"
-                                    outerRadius={80}
+                                    outerRadius={90}
+                                    innerRadius={70}
                                     fill="#8884d8"
                                     dataKey="value"
-                                    label
+                                    label={({ value }) => `${value}%`}
                                     animationDuration={1000}
                                     animationEasing="ease-out"
                                 >
-                                    {areaData.map((entry, index) => (
+                                    {sidoGroup.map((entry, index) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Pie>
+                                <Tooltip formatter={(value, name, props) => [`${value}%`, name]} />
                             </PieChart>
                         </ResponsiveContainer>
                     </div>

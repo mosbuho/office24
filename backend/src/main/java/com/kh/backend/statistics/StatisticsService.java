@@ -12,11 +12,15 @@ public class StatisticsService {
     @Autowired
     private StatisticsMapper statisticsMapper;
 
-    public Map<String, Object> getStatistics() {
-        return statisticsMapper.getStatistics();
+    public Map<String, Object> getAccumulate() {
+        return statisticsMapper.getAccumulate();
     }
 
-    public List<Map<String, Object>> getAgeGroupStatistics() {
-        return statisticsMapper.getAgeGroupStatistics();
+    public List<Map<String, Object>> getAgeGroup() {
+        return statisticsMapper.getAgeGroup();
+    }
+
+    public List<Map<String, Object>> getOfficeSidoGroup() {
+        return statisticsMapper.getOfficeSidoGroup();
     }
 }

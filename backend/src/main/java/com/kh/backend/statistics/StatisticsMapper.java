@@ -7,7 +7,9 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface StatisticsMapper {
-    Map<String, Object> getStatistics();
+    Map<String, Object> getAccumulate();
 
-    List<Map<String, Object>> getAgeGroupStatistics();
+    List<Map<String, Object>> getAgeGroup();
+
+    List<Map<String, Object>> getOfficeSidoGroup();
 }
