@@ -1,4 +1,6 @@
 import React, { useEffect, useReducer, useState } from "react";
+import { FaMapLocationDot } from "react-icons/fa6";
+import KakaoMap from "../../components/member/KakaoMap";
 import MemberFooter from "../../components/member/MemberFooter";
 import MemberHeader from "../../components/member/MemberHeader";
 import OfficeItem from "../../components/member/OfficeItem";
@@ -301,88 +303,20 @@ const SearchResultMockData = [
     xCoordinate: 127.061389,
     yCoordinate: 37.655556,
   },
-  {
-    id: 25,
-    title: "강동 비즈니스 허브",
-    rating: "4.5",
-    noOfRating: "44",
-    description: "강동 비즈니스 허브",
-    location: "강동",
-    pricePerDay: "10000",
-    officeImgURL: "/demooffice25.webp",
-    xCoordinate: 127.132778,
-    yCoordinate: 37.530278,
-  },
-  {
-    id: 26,
-    title: "동대문 패션 비즈니스 센터",
-    rating: "4.3",
-    noOfRating: "36",
-    description: "동대문 패션 비즈니스 센터",
-    location: "동대문",
-    pricePerDay: "12000",
-    officeImgURL: "/demooffice26.webp",
-    xCoordinate: 127.009722,
-    yCoordinate: 37.566667,
-  },
-  {
-    id: 27,
-    title: "영등포 금융 비즈니스 센터",
-    rating: "4.7",
-    noOfRating: "58",
-    description: "영등포 금융 비즈니스 센터",
-    location: "영등포",
-    pricePerDay: "15000",
-    officeImgURL: "/demooffice27.webp",
-    xCoordinate: 126.905556,
-    yCoordinate: 37.516389,
-  },
-  {
-    id: 28,
-    title: "성북 대학가 스터디룸",
-    rating: "4.1",
-    noOfRating: "25",
-    description: "성북 대학가 스터디룸",
-    location: "성북",
-    pricePerDay: "8000",
-    officeImgURL: "/demooffice28.webp",
-    xCoordinate: 127.016667,
-    yCoordinate: 37.589722,
-  },
-  {
-    id: 29,
-    title: "중랑 창업 인큐베이터",
-    rating: "4.2",
-    noOfRating: "27",
-    description: "중랑 창업 인큐베이터",
-    location: "중랑",
-    pricePerDay: "9000",
-    officeImgURL: "/demooffice29.webp",
-    xCoordinate: 127.092778,
-    yCoordinate: 37.606389,
-  },
-  {
-    id: 30,
-    title: "은평 혁신파크 오피스",
-    rating: "4.4",
-    noOfRating: "41",
-    description: "은평 혁신파크 오피스",
-    location: "은평",
-    pricePerDay: "10000",
-    officeImgURL: "/demooffice30.webp",
-    xCoordinate: 126.929722,
-    yCoordinate: 37.637778,
-  },
 ];
 
 function MemberMain() {
   // state //
+  const [isMapExpanded, setIsMapExpanded] = useState(false);
+  const [isMapFullExpanded, setIsMapFullExpanded] = useState(false);
   const [isButtonVisible, setIsButtonVisible] = useState(false);
+  const [mapData, setMapData] = useState([]);
   const [popupState, dispatchPopup] = useReducer(
     popupReducer,
     initialPopupState
   );
-
+  //state:forMap//
+  const [markerPositions, setMarkerPositions] = useState([]);
   useEffect(() => {
     // event handler: Scroll 이벤트 처리  //
     const handleScroll = () => {
@@ -392,7 +326,7 @@ function MemberMain() {
 
       const distanceFromBottom = documentHeight - (scrollTop + windowHeight);
 
-      setIsButtonVisible(distanceFromBottom <= 700 && distanceFromBottom >= 10);
+      setIsButtonVisible(distanceFromBottom <= 1000);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -404,7 +338,9 @@ function MemberMain() {
     dispatchPopup({ type, message });
   };
 
-  //  function: 팝업 상태 관리 리듀서   //
+  //  event handler: 맵 사이즈 //
+  const [mapSize, setMapSize] = useState([100, 100]);
+  //  reducer: 팝업 상태 관리 리듀서   //
   function popupReducer(state, action) {
     switch (action.type) {
       // case "LOGIN":
@@ -447,20 +383,65 @@ function MemberMain() {
     }
   }
 
+  //function: 맵토글 함수//
+  const toggleMap = () => {
+    setIsMapExpanded(!isMapExpanded);
+  };
+
+  //function: 맵 풀사이즈토글 함수//
+  const toggleMapFullExpanded = () => {
+    setIsMapFullExpanded(!isMapFullExpanded);
+  };
+
+  useEffect(() => {
+    setMapData(SearchResultMockData);
+  }, []);
+
   return (
     //render 메인페이지 랜더링//
     <div className="member-main-page">
       <MemberHeader handlePopup={handlePopup} />
       <div className="main-container">
-        <div className="office-item-list">
-          {SearchResultMockData.map((item) => (
-            <OfficeItem key={item.id} {...item} />
-          ))}{" "}
-          <button className={`More-Button ${isButtonVisible ? "visible" : ""}`}>
-            더보기
-          </button>
-        </div>
+        {!isMapFullExpanded && (
+          <div style={{ margin: "auto" }}>
+            <div
+              className={`office-item-list${isMapExpanded ? " expanded" : ""}`}
+            >
+              {SearchResultMockData.map((item) => (
+                <OfficeItem key={item.id} {...item} />
+              ))}{" "}
+            </div>
+
+            <div className="item-list-button-container">
+              <button
+                className={`more-button ${isButtonVisible ? "visible" : ""}`}
+              >
+                더보기
+              </button>
+              <button className="expand-map-button" onClick={() => toggleMap()}>
+                <FaMapLocationDot />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {isMapExpanded && (
+          <div
+            className={`map-container ${
+              isMapFullExpanded ? "full-expanded" : ""
+            }`}
+          >
+            <button
+              className="map-button full-extend"
+              onClick={() => toggleMapFullExpanded()}
+            >
+              &lt; 확장
+            </button>
+            <KakaoMap mapData={mapData} />
+          </div>
+        )}
       </div>
+
       <PopupPage
         popupComponent={popupState.popupComponent}
         onClickBackground={popupState.onClickBackground}
@@ -469,5 +450,4 @@ function MemberMain() {
     </div>
   );
 }
-
 export default MemberMain;
