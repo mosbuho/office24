@@ -1,3 +1,5 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
 :root {
     /* Point colors */
     --primary-color: #6363d2;
@@ -14,6 +16,10 @@
     /* Font colors */
     --text-color: #000000;
     --text-color2: #ededed;
+}
+
+body {
+    font-family: "Pretendard";
 }
 
 input {
