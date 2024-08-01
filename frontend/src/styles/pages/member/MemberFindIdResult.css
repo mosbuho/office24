@@ -1,4 +1,4 @@
-.find-id-result-page {
+.member-find-id-result-page {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,7 +8,7 @@
     box-sizing: border-box;
 }
 
-.find-id-result-form {
+.member-find-id-result-form {
     background: #ffffff;
     padding: 40px;
     border-radius: 8px;
@@ -17,38 +17,38 @@
     text-align: center;
 }
 
-.find-id-result-form .logo {
+.member-find-id-result-form .member-find-id-result-logo {
     font-size: 36px;
     font-weight: bold;
     margin-bottom: 20px;
     color: #6363d2;
 }
 
-.find-id-result-form h2 {
+.member-find-id-result-form h2 {
     margin-bottom: 20px;
     font-size: 28px;
     color: #333;
 }
 
-.find-id-result-form ul {
+.member-find-id-result-form ul {
     list-style: none;
     padding: 0;
     margin-bottom: 20px;
 }
 
-.find-id-result-form ul li {
+.member-find-id-result-form ul li {
     font-size: 16px;
     margin-bottom: 10px;
 }
 
-.button-container {
+.member-find-id-result-button-container {
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin-top: 20px;
 }
 
-.link-button {
+.member-find-id-result-link-button {
     padding: 10px 20px;
     background-color: #6363d2;
     color: white;
@@ -58,6 +58,6 @@
     text-align: center;
 }
 
-.link-button:hover {
+.member-find-id-result-link-button:hover {
     background-color: #4a4a9d;
 }

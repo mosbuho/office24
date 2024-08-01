@@ -12,11 +12,12 @@ const SocialKakao = () => {
                 window.location.href = kakaoURL;
             })
             .catch(error => {
+                alert('카카오 로그인 URL을 가져오는 중 오류가 발생했습니다.');
             });
     };
 
     return (
-        <button onClick={handleKakao} className="kakao-login-button">카카오 로그인</button>
+        <button onClick={handleKakao} className="member-login-kakao-button">카카오 로그인</button>
     );
 };
 
@@ -28,13 +29,14 @@ const SocialNaver = () => {
                 window.location.href = naverURL;
             })
             .catch(error => {
+                alert('네이버 로그인 URL을 가져오는 중 오류가 발생했습니다.');
             });
-    }
+    };
 
     return (
-        <button onClick={handleNaver} className="naver-login-button">네이버 로그인</button>
+        <button onClick={handleNaver} className="member-login-naver-button">네이버 로그인</button>
     );
-}
+};
 
 const SocialGoogle = () => {
     const handleGoogle = () => {
@@ -44,13 +46,14 @@ const SocialGoogle = () => {
                 window.location.href = googleURL;
             })
             .catch(error => {
-            })
-    }
+                alert('구글 로그인 URL을 가져오는 중 오류가 발생했습니다.');
+            });
+    };
 
-    return(
-        <button onClick={handleGoogle} className="google-login-button">구글 로그인</button>
-    )
-}
+    return (
+        <button onClick={handleGoogle} className="member-login-google-button">구글 로그인</button>
+    );
+};
 
 const MemberLogin = () => {
     const [formData, setFormData] = useState({
@@ -93,14 +96,15 @@ const MemberLogin = () => {
                 alert(error.response?.data || '알 수 없는 오류가 발생했습니다.');
             });
     };
+
     const logoClick = () => {
         navigate("/")
-    }
+    };
 
     return (
-        <div className="login-page">
+        <div className="member-login-page">
             <div className="member-login-form">
-                <div className="logo" onClick={logoClick}>OFFICE24</div>
+                <div className="member-login-logo" onClick={logoClick}>OFFICE24</div>
                 <h2>로그인</h2>
                 <form onSubmit={handleSubmit}>
                     <div>
@@ -111,16 +115,16 @@ const MemberLogin = () => {
                         <label htmlFor="pw">비밀번호</label>
                         <input type="password" id="pw" name="pw" value={formData.pw} onChange={handleChange} required />
                     </div>
-                    <div className="help-links">
+                    <div className="member-login-help-links">
                         <Link to="/member/findId">아이디 찾기</Link>
-                        <Link to="/member/findPw">비밀번호 찾기</Link>
+                        <Link to="/member/resetPw">비밀번호 재설정</Link>
                         <Link to="/member/register">회원가입</Link>
                     </div>
-                    <button type="submit">Login</button>
+                    <button type="submit" className="member-login-submit-button">로그인</button>
                 </form>
                 <SocialKakao />
                 <SocialNaver />
-                <SocialGoogle/>
+                <SocialGoogle />
             </div>
         </div>
     );

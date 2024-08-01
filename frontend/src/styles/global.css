@@ -1,3 +1,21 @@
+:root {
+    /* Point colors */
+    --primary-color: #6363d2;
+    --secondary-color: #8989d4;
+
+    /* Background colors */
+    --background-color: #ffffff;
+
+    /* Shaded colors */
+    --shaded-color: #d5d5d5;
+    --shaded-light-color: #f7f9fd;
+    --shaded-dark-color: #5c5c5c;
+
+    /* Font colors */
+    --text-color: #000000;
+    --text-color2: #ededed;
+}
+
 input {
     outline: none;
 }
