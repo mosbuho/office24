@@ -2,65 +2,69 @@ CREATE OR REPLACE TRIGGER trg_member_insert
 AFTER INSERT ON member
 FOR EACH ROW
 BEGIN
-    MERGE INTO member_statistics mc
+    MERGE INTO member_statistics ms
     USING (SELECT TRUNC(:NEW.reg_date) AS report_date FROM dual) d
-    ON (mc.report_date = d.report_date)
+    ON (ms.report_date = d.report_date)
     WHEN MATCHED THEN
-        UPDATE SET mc.member_create = mc.member_create + 1
+        UPDATE SET ms.member_create = ms.member_create + 1
     WHEN NOT MATCHED THEN
         INSERT (report_date, member_create)
         VALUES (d.report_date, 1);
 END;
 /
 
+-----------------------------------------------------------------------------
+
 CREATE OR REPLACE TRIGGER trg_member_delete
 AFTER DELETE ON member
 FOR EACH ROW
 BEGIN
-    MERGE INTO member_statistics mc
+    MERGE INTO member_statistics ms
     USING (SELECT TRUNC(:OLD.reg_date) AS report_date FROM dual) d
-    ON (mc.report_date = d.report_date)
+    ON (ms.report_date = d.report_date)
     WHEN MATCHED THEN
-        UPDATE SET mc.member_delete = mc.member_delete + 1
+        UPDATE SET ms.member_delete = ms.member_delete + 1
     WHEN NOT MATCHED THEN
         INSERT (report_date, member_delete)
         VALUES (d.report_date, 1);
 END;
 /
 
-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE OR REPLACE TRIGGER trg_manager_insert
 AFTER INSERT ON manager
 FOR EACH ROW
 BEGIN
-    MERGE INTO manager_statistics mc
+    MERGE INTO manager_statistics mg
     USING (SELECT TRUNC(:NEW.reg_date) AS report_date FROM dual) d
-    ON (mc.report_date = d.report_date)
+    ON (mg.report_date = d.report_date)
     WHEN MATCHED THEN
-        UPDATE SET mc.manager_create = mc.manager_create + 1
+        UPDATE SET mg.manager_create = mg.manager_create + 1
     WHEN NOT MATCHED THEN
         INSERT (report_date, manager_create)
         VALUES (d.report_date, 1);
 END;
 /
 
+-----------------------------------------------------------------------------
+
 CREATE OR REPLACE TRIGGER trg_manager_delete
 AFTER DELETE ON manager
 FOR EACH ROW
 BEGIN
-    MERGE INTO manager_statistics mc
+    MERGE INTO manager_statistics mg
     USING (SELECT TRUNC(:OLD.reg_date) AS report_date FROM dual) d
-    ON (mc.report_date = d.report_date)
+    ON (mg.report_date = d.report_date)
     WHEN MATCHED THEN
-        UPDATE SET mc.manager_delete = mc.manager_delete + 1
+        UPDATE SET mg.manager_delete = mg.manager_delete + 1
     WHEN NOT MATCHED THEN
         INSERT (report_date, manager_delete)
         VALUES (d.report_date, 1);
 END;
 /
 
-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE OR REPLACE TRIGGER trg_office_insert
 AFTER INSERT ON office
@@ -77,6 +81,8 @@ BEGIN
 END;
 /
 
+-----------------------------------------------------------------------------
+
 CREATE OR REPLACE TRIGGER trg_office_delete
 AFTER DELETE ON office
 FOR EACH ROW
@@ -92,67 +98,88 @@ BEGIN
 END;
 /
 
-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE OR REPLACE TRIGGER trg_booking_insert
 AFTER INSERT ON booking
 FOR EACH ROW
 BEGIN
-    MERGE INTO booking_statistics bc
+    MERGE INTO booking_statistics bk
     USING (SELECT TRUNC(:NEW.reg_date) AS report_date FROM dual) d
-    ON (bc.report_date = d.report_date)
+    ON (bk.report_date = d.report_date)
     WHEN MATCHED THEN
-        UPDATE SET bc.booking_create = bc.booking_create + 1,
-                   bc.total_amount = bc.total_amount + :NEW.price
+        UPDATE SET bk.booking_create = bk.booking_create + 1
     WHEN NOT MATCHED THEN
-        INSERT (report_date, booking_create, total_amount)
-        VALUES (d.report_date, 1, :NEW.price);
+        INSERT (report_date, booking_create)
+        VALUES (d.report_date, 1);
+    MERGE INTO sales_statistics ss
+    USING (SELECT TRUNC(:NEW.reg_date) AS report_date FROM dual) d
+    ON (ss.report_date = d.report_date)
+    WHEN MATCHED THEN
+        UPDATE SET ss.sales_create = ss.sales_create + :NEW.price
+    WHEN NOT MATCHED THEN
+        INSERT (report_date, sales_create)
+        VALUES (d.report_date, :NEW.price);
 END;
 /
+
+-----------------------------------------------------------------------------
 
 CREATE OR REPLACE TRIGGER trg_booking_delete
 AFTER DELETE ON booking
 FOR EACH ROW
 BEGIN
-    MERGE INTO booking_statistics bc
+    MERGE INTO booking_statistics bk
     USING (SELECT TRUNC(:OLD.reg_date) AS report_date FROM dual) d
-    ON (bc.report_date = d.report_date)
+    ON (bk.report_date = d.report_date)
     WHEN MATCHED THEN
-        UPDATE SET bc.booking_delete = bc.booking_delete + 1
+        UPDATE SET bk.booking_delete = bk.booking_delete + 1
     WHEN NOT MATCHED THEN
         INSERT (report_date, booking_delete)
         VALUES (d.report_date, 1);
+    MERGE INTO sales_statistics ss
+    USING (SELECT TRUNC(:OLD.reg_date) AS report_date FROM dual) d
+    ON (ss.report_date = d.report_date)
+    WHEN MATCHED THEN
+        UPDATE SET ss.sales_delete = ss.sales_delete + :OLD.price
+    WHEN NOT MATCHED THEN
+        INSERT (report_date, sales_delete)
+        VALUES (d.report_date, :OLD.price);
 END;
 /
 
-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 CREATE OR REPLACE TRIGGER trg_review_insert
 AFTER INSERT ON review
 FOR EACH ROW
 BEGIN
-    MERGE INTO review_statistics rc
+    MERGE INTO review_statistics rv
     USING (SELECT TRUNC(:NEW.reg_date) AS report_date FROM dual) d
-    ON (rc.report_date = d.report_date)
+    ON (rv.report_date = d.report_date)
     WHEN MATCHED THEN
-        UPDATE SET rc.review_create = rc.review_create + 1
+        UPDATE SET rv.review_create = rv.review_create + 1
     WHEN NOT MATCHED THEN
         INSERT (report_date, review_create)
         VALUES (d.report_date, 1);
 END;
 /
 
+-----------------------------------------------------------------------------
+
 CREATE OR REPLACE TRIGGER trg_review_delete
 AFTER DELETE ON review
 FOR EACH ROW
 BEGIN
-    MERGE INTO review_statistics rc
+    MERGE INTO review_statistics rv
     USING (SELECT TRUNC(:OLD.reg_date) AS report_date FROM dual) d
-    ON (rc.report_date = d.report_date)
+    ON (rv.report_date = d.report_date)
     WHEN MATCHED THEN
-        UPDATE SET rc.review_delete = rc.review_delete + 1
+        UPDATE SET rv.review_delete = rv.review_delete + 1
     WHEN NOT MATCHED THEN
         INSERT (report_date, review_delete)
         VALUES (d.report_date, 1);
 END;
 /
+
+-----------------------------------------------------------------------------

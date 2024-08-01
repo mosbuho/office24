@@ -23,6 +23,7 @@ export const isAuthenticated = async () => {
     try {
         decodedToken = jwtDecode(accessToken);
     } catch {
+        removeTokens();
         return false;
     }
 

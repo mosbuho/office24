@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -28,8 +29,9 @@ public class StatisticsController {
         return statisticsService.getSidoGroup();
     }
 
-    @GetMapping("/admin/membergroup")
-    public List<Map<String, Object>> getMemberGroup() {
-        return statisticsService.getMemberGroup();
+    @GetMapping("admin/{group}")
+    public List<Map<String, Object>> getGroupData(@PathVariable String group) {
+        return statisticsService.getGroupData(group);
     }
+
 }

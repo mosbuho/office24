@@ -24,7 +24,7 @@ public class StatisticsService {
         return statisticsMapper.getSidoGroup();
     }
 
-    public List<Map<String, Object>> getMemberGroup() {
-        return statisticsMapper.getMemberGroup();
+    public List<Map<String, Object>> getGroupData(String table) {
+        return statisticsMapper.getGroupData(table.replace("group", ""));
     }
 }
