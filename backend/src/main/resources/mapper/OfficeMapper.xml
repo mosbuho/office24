@@ -35,14 +35,6 @@
         = b.office_no JOIN member mem ON b.member_no = mem.no WHERE m.no = #{no} GROUP BY m.no,
         mem.gender </select>
 
-    <!-- 오피스 이름, 신청 상태 -->
-    <!-- <select id="getOfficeStatus" parameterType="int" resultType="com.kh.backend.office.Office">
-        SELECT o.no, o.title, o.availability
-        FROM office o
-        JOIN manager m ON o.manager_no = m.no
-        WHERE m.no = #{no}
-    </select> -->
-
     <!-- 오피스 상태 목록 조회 (페이지네이션) -->
     <select id="getOfficeStatusPaged" resultType="com.kh.backend.office.Office"> SELECT * FROM (
         SELECT A.*, ROWNUM AS rnum FROM ( SELECT no, title, availability FROM office WHERE

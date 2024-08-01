@@ -126,11 +126,6 @@ const ManagerOfficeRegister = () => {
       }
     });
 
-    // FormData에 파일이 제대로 추가되었는지 확인하는 로그
-    for (let [key, value] of data.entries()) {
-      console.log(`${key}: ${value.name || value}`);
-    }
-
     try {
       const response = await axios.post(`/manager/office/register/${no}`, data, {
         headers: {

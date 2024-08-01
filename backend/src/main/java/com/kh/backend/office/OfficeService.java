@@ -86,24 +86,18 @@ public class OfficeService {
         try {
             officeMapper.insertOffice(office);
         } catch (Exception e) {
-            System.err.println("오피스 등록 중 오류 발생: " + e.getMessage());
             e.printStackTrace();
         }
         System.out.println("오피스 등록 완료. officeNo: " + office.getNo());
-
-        System.out.println("추가 이미지 리스트: " + additionalImages); // 로그
 
         // 추가 이미지 처리
         if (additionalImages != null && !additionalImages.isEmpty()) {
             for (String imageName : additionalImages) {
                 OfficeImage officeImage = new OfficeImage();
                 officeImage.setOfficeNo(office.getNo());
-                System.out.println(office.getNo());
-                System.out.println(officeImage.getOfficeNo());
                 officeImage.setName(imageName);
                 // 기타 오피스 이미지 등록
                 officeMapper.insertOfficeImage(officeImage);
-                System.out.println("기타 이미지 등록함: " + imageName);
             }
         }
     }
