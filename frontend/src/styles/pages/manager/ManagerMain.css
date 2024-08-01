@@ -5,7 +5,7 @@ body.manager-main-body {
     box-sizing: border-box;
 }
 
-.main-content {
+.managerMain-container {
     margin-left: 20%;
     margin-top: 70px;
     margin-bottom: 10px;
@@ -15,7 +15,7 @@ body.manager-main-body {
     box-sizing: border-box;
 }
 
-.main-content {
+.managerMain-container {
     .dashboard {
         display: flex;
         flex-direction: column;
@@ -267,7 +267,6 @@ body.manager-main-body {
         background-color: #F9F9F9;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         font-size: 12px;
-        cursor: pointer;
     }
 
     .statusli:nth-child(even) {

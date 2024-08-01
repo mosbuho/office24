@@ -2,6 +2,10 @@ package com.kh.backend.office;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.kh.backend.common.geocoding.GeocodingService;
+
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +14,9 @@ public class OfficeService {
 
     @Autowired
     private OfficeMapper officeMapper;
+
+    @Autowired
+    private GeocodingService geocodingService;
 
     // 누적 수익
     public Integer getTotalRevenue(Integer no) {
@@ -41,14 +48,13 @@ public class OfficeService {
         return officeMapper.getTotalGenderRatio(no);
     }
 
-    // 신청 상태 조회
-    // public List<Office> getOfficeStatus(Integer no) {
-    //     return officeMapper.getOfficeStatus(no);
-    // }
+    // 등록 상태에 따른 오피스 목록
     public List<Office> getOfficeStatusPaged(int no, int page, int size) {
         int offset = (page - 1) * size;
         return officeMapper.getOfficeStatusPaged(no, offset, size);
     }
+
+    // 등록 상태에 따른 오피스 개수
     public int getOfficeStatusCount(int no) {
         return officeMapper.getOfficeStatusCount(no);
     }
@@ -67,5 +73,32 @@ public class OfficeService {
     // 오피스 no로 오피스 정보 삭제
     public void deleteOffice(int no) {
         officeMapper.deleteOffice(no);
+    }
+
+    @Transactional
+    public void registerOffice(Office office, List<String> additionalImages) {
+        // 주소로부터 위도와 경도 추출
+        double[] latLong = geocodingService.getLatLongFromAddress(office.getAddress());
+        office.setLatitude(latLong[0]);
+        office.setLongitude(latLong[1]);
+
+        // 오피스 등록
+        try {
+            officeMapper.insertOffice(office);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("오피스 등록 완료. officeNo: " + office.getNo());
+
+        // 추가 이미지 처리
+        if (additionalImages != null && !additionalImages.isEmpty()) {
+            for (String imageName : additionalImages) {
+                OfficeImage officeImage = new OfficeImage();
+                officeImage.setOfficeNo(office.getNo());
+                officeImage.setName(imageName);
+                // 기타 오피스 이미지 등록
+                officeMapper.insertOfficeImage(officeImage);
+            }
+        }
     }
 }
