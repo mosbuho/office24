@@ -39,4 +39,10 @@ public interface OfficeMapper {
 
     // 오피스 no로 오피스 정보 삭제
     void deleteOffice(@Param("no") int no);
+
+    // 오피스 등록
+    void insertOffice(Office office);
+
+    // 기타 이미지 등록
+    void insertOfficeImage(OfficeImage officeImage);
 }

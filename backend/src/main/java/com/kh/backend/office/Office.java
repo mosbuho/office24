@@ -11,11 +11,12 @@ public class Office {
     private String title;
     private String address;
     private String zipCode;
+    private String sido;
     private Double latitude;
     private Double longitude;
     private String content;
-    private Long price;
-    private Long capacity;
+    private int price;
+    private int capacity;
     private String titleImg;
     private int availability;
     private Date regDate;

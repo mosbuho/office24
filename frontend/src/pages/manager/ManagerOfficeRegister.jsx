@@ -15,7 +15,7 @@ const ManagerOfficeRegister = () => {
   const zipcodeRef = useRef(null);
   const contentRef = useRef(null);
   const capacityRef = useRef(null);
-  const [sido, setSido] = useState('');  // useState로 sido 관리
+  const [sido, setSido] = useState('');
   const [mainImage, setMainImage] = useState(null);
   const [additionalImages, setAdditionalImages] = useState([null, null, null]);
   const [mainImagePreview, setMainImagePreview] = useState(null);
@@ -46,17 +46,16 @@ const ManagerOfficeRegister = () => {
         const zipCode = data.zonecode;
         const sido = data.sido;
 
-        // 입력 필드에 주소를 설정
         addressRef.current.value = mainAddress;
         zipcodeRef.current.value = zipCode;
-        setSido(sido);  // sido 상태 업데이트
+        setSido(sido);
       }
     }).open();
   };
 
   const compressImage = async (file) => {
     const options = {
-      maxSizeMB: 1, 
+      maxSizeMB: 5,
       useWebWorker: true,
     };
 
@@ -113,17 +112,24 @@ const ManagerOfficeRegister = () => {
     data.append('price', priceRef.current.value);
     data.append('address', addressRef.current.value);
     data.append('zipcode', zipcodeRef.current.value);
-    data.append('sido', sido);  // 상태에 저장된 sido 값 전송
+    data.append('sido', sido);
     data.append('content', contentRef.current.value);
     data.append('capacity', capacityRef.current.value);
+
     if (mainImage) {
       data.append('mainImage', mainImage);
     }
+
     additionalImages.forEach((image, index) => {
       if (image) {
-        data.append(`additionalImages[${index}]`, image);
+        data.append(`additionalImages[]`, image);
       }
     });
+
+    // FormData에 파일이 제대로 추가되었는지 확인하는 로그
+    for (let [key, value] of data.entries()) {
+      console.log(`${key}: ${value.name || value}`);
+    }
 
     try {
       const response = await axios.post(`/manager/office/register/${no}`, data, {
@@ -131,7 +137,7 @@ const ManagerOfficeRegister = () => {
           'Content-Type': 'multipart/form-data'
         }
       });
-      alert('등록 완료 : ', response.data);
+      alert(response.data);
       navigate(`/manager/office/${no}`);
     } catch (error) {
       console.error("오피스 등록 중 오류 발생:", error);
@@ -159,7 +165,7 @@ const ManagerOfficeRegister = () => {
               )}
             </div>
             <div className="other-images-preview">
-              {additionalImagesPreview.map((preview, index) => (
+              {additionalImagesPreview.slice(0, 2).map((preview, index) => (
                 preview ? (
                   <img key={index} src={preview} alt={`기타 이미지 ${index + 1}`} />
                 ) : (
@@ -175,7 +181,7 @@ const ManagerOfficeRegister = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="price">가격</label>
+              <label htmlFor="price">가격 (일 단위)</label>
               <input type="number" id="price" ref={priceRef} className="input-price" placeholder="원" />
             </div>
 
@@ -208,10 +214,6 @@ const ManagerOfficeRegister = () => {
                 <div>
                   <label htmlFor="additionalImage2">기타 이미지</label>
                   <input type="file" id="additionalImage2" className="image-upload" onChange={(e) => handleAdditionalImageChange(e, 1)} />
-                </div>
-                <div>
-                  <label htmlFor="additionalImage3">기타 이미지</label>
-                  <input type="file" id="additionalImage3" className="image-upload" onChange={(e) => handleAdditionalImageChange(e, 2)} />
                 </div>
               </div>
             </div>
