@@ -165,12 +165,12 @@ const Calendar = ({ settingStartDate, settingEndDate, startDate, endDate }) => {
         </table>
         {(showDate.year !== new Date().getFullYear() ||
           showDate.month !== new Date().getMonth()) && (
-          <div className="left">
-            <SlArrowLeft onClick={() => changeShowDate(true)} />
+          <div className="left" onClick={() => changeShowDate(true)}>
+            <SlArrowLeft />
           </div>
         )}
-        <div className="right">
-          <SlArrowRight onClick={() => changeShowDate(false)} />
+        <div className="right" onClick={() => changeShowDate(false)}>
+          <SlArrowRight />
         </div>
       </div>
       <div className="container next">
