@@ -277,13 +277,15 @@ const AdminMain = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="4">데이터가 없습니다</td>
+                                        <td colSpan="5" rowSpan="5">데이터가 없습니다</td>
                                     </tr>
                                 )}
                             </tbody>
                         </table>
-                        <button onClick={() => handlePageChange(page - 1)} disabled={page === 1}>이전 페이지</button>
-                        <button onClick={() => handlePageChange(page + 1)} disabled={!hasMoreData}>다음 페이지</button>
+                        <div className='page-buttons'>
+                            <button onClick={() => handlePageChange(page - 1)} disabled={page === 1}>이전</button>
+                            <button onClick={() => handlePageChange(page + 1)} disabled={!hasMoreData}>다음</button>
+                        </div>
                     </div>
                 </div>
             </div>
