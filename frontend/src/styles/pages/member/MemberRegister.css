@@ -7,6 +7,13 @@
     text-align: center;
 }
 
+.member-register .logo {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #6363d2;
+}
+
 .member-register h1 {
     font-size: 36px;
     font-weight: bold;
@@ -71,40 +78,6 @@
     background-color: #4a4a9d;
 }
 
-.member-register .gender-group,
-.member-register .nationality-group {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.member-register .terms-group {
-    display: flex;
-    align-items: center;
-}
-
-.member-register .terms-group label {
-    margin: 0;
-}
-
-.member-register .button1 {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 18px;
-    margin-top: 20px;
-    transition: background-color 0.3s ease;
-    background-color: #6363d2;
-    color: white;
-}
-
-.member-register .button1:hover {
-    background-color: #4a4a9d;
-}
-
-
 .member-register .form-group.phone-group .input-group {
     display: flex;
     align-items: center;
@@ -129,7 +102,6 @@
     background-color: #4a4a9d;
 }
 
-
 .member-register .form-group.verify-group .input-group {
     display: flex;
     align-items: center;
@@ -153,6 +125,24 @@
 .member-register .form-group.verify-group .input-group .check-btn:hover {
     background-color: #4a4a9d;
 }
+
 .member-register .form-group .info-message-success {
     color: blue !important;
+}
+
+.member-register .button1 {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+    background-color: #6363d2;
+    color: white;
+}
+
+.member-register .button1:hover {
+    background-color: #4a4a9d;
 }

@@ -1,0 +1,192 @@
+body.manager-office-body {
+    background-color: #F5f5f5;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.managerOffice-container {
+    margin-left: 20%;
+    margin-top: 70px;
+    margin-bottom: 10px;
+    padding: 8px;
+    background-color: #F5f5f5;
+    max-height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.managerOffice-container {
+    .headernav {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        border-bottom: 1px solid #E5E5E5;
+        margin-bottom: 10px;
+    }
+
+    .headernav ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        gap: 15px;
+        margin: 0;
+    }
+
+    .headernav li {
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        border-bottom: 1px solid transparent;
+    }
+
+    .headernav li.active,
+    .headernav li:hover {
+        border-bottom: 2px solid #2c3e50;
+    }
+
+
+    .headersearch {
+        display: flex;
+        justify-content: space-between;
+        margin: 0 11px 0px;
+    }
+
+    .headersearch .search {
+        display: flex;
+        gap: 10px;
+    }
+
+    .headersearch input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .headersearch button {
+        padding: 10px 20px;
+        background-color: #2c3e50;
+        color: #FFF;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .headersearch button:hover {
+        background-color: #355BB3;
+    }
+
+    .officeList {
+        background-color: #FFF;
+        height: 100vh;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin: 0 10px 0;
+    }
+
+    .officeList table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #FFF;
+        border-radius: 10px;
+    }
+
+    .officeList th,
+    .officeList td {
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+        font-size: 13px;
+    }
+
+    .officeList th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+        font-size: 15px;
+    }
+
+    .officeList tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .officeList tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .officeList .approved {
+        background-color: #57C9A6;
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: #FFF;
+    }
+
+    .officeList .pending {
+        background-color: #EEBD6F;
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: #FFF;
+    }
+
+    .officeList button {
+        padding: 5px 10px;
+        margin: 0 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #2c3e50;
+        color: #FFF;
+        transition: background-color 0.3s;
+    }
+
+    .officeList button:hover {
+        background-color: #355BB3;
+    }
+
+    .officeList td:nth-child(3),
+    .officeList th:nth-child(3) {
+        width: 270px;
+    }
+
+    /* 페이징 */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+        margin: 5px 0 0 0;
+        list-style: none;
+        gap: 5px;
+    }
+
+    .pagination li {
+        display: inline;
+    }
+
+
+    .pagination li a {
+        padding: 3px 9px;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s, color 0.3s;
+        font-size: 11px;
+        cursor: pointer;
+    }
+
+    .pagination li a:hover {
+        background-color: #f4f4f4;
+    }
+
+    .pagination li.active a {
+        background-color: #f4f4f4;
+        font-weight: bold;
+    }
+
+    .break-me {
+        cursor: default;
+        color: #999;
+    }
+}

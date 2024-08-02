@@ -1,41 +1,45 @@
 import React from "react";
+import { FaStar } from "react-icons/fa";
+import { PiHeartThin } from "react-icons/pi";
 import "../../styles/components/member/OfficeItem.css";
 
-const OfficeItem = () => {
+// render: 오피스 아이템 컴포넌트 //
+const OfficeItem = (itemData) => {
   return (
     <div className="office-item">
       <div className="office-item-image-box">
         <div className="office-item-like-on-image">
-          <div className="icon heart-icon"></div>
+          <PiHeartThin />
+          {/* <PiHeartStraightFill style={{ color: "red" }} /> */}
         </div>
         <div className="office-item-image">
-          <img className="img100100" src="../../../public/demooffice1.webp" />
+          <img
+            className="img100100"
+            src="/demooffice1.webp"
+            alt="오피스 이미지"
+          />
         </div>
       </div>
-      {/* end of office-item-image-box */}
+
       <div className="office-item-content">
         <div className="office-item-top">
           <div className="office-item-top-left">
-            <h1>강남역 사무실</h1>
+            <h1>{itemData.title}</h1>
           </div>
-          <div className="office-item-top-right">
-            <div className="icon-wrap-small">
-              <div className="icon star-icon"></div>
-            </div>
-            <div className="office-item-rating-values">
-              <p> 4.5 · (40)</p>
-            </div>
+          <div className="item-rating">
+            <FaStar />
+            <div className="rate">{itemData.rating}</div>
           </div>
         </div>
 
         <div className="office-item-middle">
-          <p>강남역 5Km</p>
+          <p>{itemData.location}</p>
         </div>
 
         <div className="office-item-bottom">
           <div className="office-item-price">
             <p>
-              <b>40000원/1박</b> · 50 seats
+              <b>{itemData.pricePerDay}원/1일</b>
             </p>
           </div>
         </div>

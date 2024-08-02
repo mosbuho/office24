@@ -10,17 +10,14 @@
 */
 
 .office-item {
-    background-color: white;
-    font-family: 'GimhaeGayaR';
-
-    flex: 0 0 calc(100% / 6 - 10px);
-    width: calc(100% / 6 - 10px);
-
+    flex: 0 0 calc(100% / 6 - 20px);
+    width: calc(100% / 6 - 20px);
     max-width: 45%;
     min-width: 200px;
     height: auto;
     box-sizing: border-box;
     position: relative;
+
 
     .office-item-image-box {
         position: relative;
@@ -29,22 +26,17 @@
         overflow: hidden;
     }
 
-    .img100100 {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 20px;
-    }
-
     .office-item-like-on-image {
         position: absolute;
         top: 5px;
         right: 5px;
         width: 32px;
         height: 32px;
+        z-index: 100px;
+    }
+
+    .office-item-content {
+        min-height: 80px;
     }
 
     .office-item-top {
@@ -52,17 +44,12 @@
         display: flex;
         width: 100%;
         height: fit-content;
-    }
-
-    .office-item-top-left {
-        width: 70%;
-        display: flex;
-        align-items: center;
+        justify-content: space-between;
     }
 
     .office-item-top-left h1 {
         color: #565656;
-        font-size: 1rem;
+        font-size: 1.5rem;
         margin: 0;
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -71,12 +58,6 @@
         overflow: hidden;
         text-overflow: ellipsis;
         max-height: 2.4em;
-    }
-
-    .office-item-top-right {
-        width: 30%;
-        display: flex;
-        align-items: center;
     }
 
     p {
@@ -105,12 +86,37 @@
     }
 
     .office-item-bottom {
-        margin: 5px;
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+        background-color: var(--background-color);
+        width: 100%;
     }
 
-    .icon-wrap-small {
-        width: 17px;
-        height: 17px;
+    .item-rating {
+        background-color: var(--shaded-dark-color);
+        color: var(--background-color);
+        height: 25px;
+        padding: 0 5px 0 5px;
+        border-radius: 25px;
+        text-align: center;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-self: center;
+
+        svg {
+            color: var(--background-color);
+            width: 15px;
+            height: 15px;
+            margin-right: 3px;
+        }
+
+        .rate {
+            font-size: 15px;
+            font-weight: 600;
+            margin-right: 3px;
+        }
     }
 
     .icon {
@@ -119,6 +125,17 @@
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
+    }
+
+    .img100100 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 20px;
+        z-index: 2;
     }
 
     .star-icon {
@@ -130,7 +147,7 @@
     }
 
     .heart-icon-filed {
-        background-image: url(src/assets/favorite-filled.png);
+        background-image: url(src/assets/favorite-fill.png);
     }
 
     .office-item-rating-values {
@@ -145,30 +162,44 @@
 
 }
 
-@media (max-width: 1200px) {
+svg {
+    width: 100%;
+    height: 100%;
+}
+
+@media (max-width: 1400px) {
     .office-item {
-        flex: 0 0 calc(25% - 10px);
-        max-width: calc(25% - 10px);
+        flex: 0 0 calc(25% - 20px);
+        max-width: calc(25% - 20px);
     }
 }
 
 @media (max-width: 900px) {
     .office-item {
-        flex: 0 0 calc(33.333% - 10px);
-        max-width: calc(33.333% - 10px);
+        flex: 0 0 calc(33.333% - 20px);
+        max-width: calc(33.333% - 20px);
+    }
+}
+
+@media (max-width: 700px) {
+    .office-item {
+        flex: 0 0 calc(50% - 20px);
+        max-width: calc(50% - 20px);
     }
 }
 
 @media (max-width: 600px) {
     .office-item {
-        flex: 0 0 calc(50% - 10px);
-        max-width: calc(50% - 10px);
+        flex: 100%;
+        max-width: 80%;
+        margin: auto;
     }
 }
 
-@media (max-width: 420px) {
+
+.office-item-list.expanded {
     .office-item {
-        flex: 0 0 100%;
-        max-width: 100%;
+        flex: 0 0 calc(33.333% - 20px);
+        max-width: calc(33.333% - 20px);
     }
 }

@@ -1,0 +1,160 @@
+.calendar {
+  justify-content: center;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  transform: translateY(15px);
+  animation: 0.3s appear;
+  width: 900px;
+  max-width: 90%;
+  margin: auto;
+
+  h2 {
+    color: var(--text-color);
+  }
+
+  .container {
+    width: 50%;
+    text-align: center;
+    padding: 30px;
+  }
+
+  .calendar .container h2 {
+    font-size: 17px;
+    margin-bottom: 20px;
+  }
+
+  .container table {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .weekdays {
+    color: var(--primary-color);
+    font-weight: 900;
+    cursor: default;
+  }
+
+  .sunday {
+    color: rgb(242, 81, 81);
+  }
+
+  .left,
+  .right {
+    width: 17px;
+    height: 17px;
+    position: absolute;
+    top: 46px;
+    background-color: var(--shaded-color);
+    padding: 10px 10px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .left {
+    left: 30px;
+
+  }
+
+  .right {
+    right: 30px;
+  }
+
+  .left:hover,
+  .right:hover {
+    background-color: var(--shaded-color);
+  }
+
+  .table {
+    border-collapse: collapse;
+  }
+
+  .date_row td {
+    height: 47px !important;
+    line-height: 38px !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+    color: var(--shaded-dark-color);
+    transition: 0.3s all ease-in-out;
+  }
+
+  .date_row td:hover {
+    color: var(--primary-color);
+    background-color: var(--shaded-color);
+  }
+
+  .selected {
+    background-color: var(--shaded-color);
+  }
+
+  .date_box {
+    width: 35px;
+    height: 35px;
+    text-align: center;
+    margin: auto;
+  }
+
+  .start {
+    border-radius: 50% 0 0 50%;
+  }
+
+  .end {
+    border-radius: 0 50% 50% 0;
+  }
+
+  .selected .date_box {
+    background-color: var(--primary-color);
+    color: var(--background-color) !important;
+    font-weight: 800;
+    border-radius: 50%;
+    transition: 0.3s all ease-in-out;
+  }
+
+  .included {
+    background-color: var(--shaded-color);
+    transition: 0.3s all ease-in-out;
+  }
+
+  .disabled {
+    background-color: var(--shaded-color);
+    color: var(--shaded-color) !important;
+    cursor: not-allowed !important;
+    pointer-events: none;
+  }
+
+  @media (max-width: 968px) {
+    .calendar {
+      width: 100%;
+      height: auto;
+    }
+
+    .next {
+      display: none;
+    }
+
+    .container {
+      width: 350px;
+      margin: 0 auto;
+      position: relative;
+    }
+  }
+
+  @media(max-width: 400px) {
+    .container {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
+
+  @keyframes appear {
+    0% {
+      transform: translateY(5px);
+    }
+
+    100% {
+      transform: translateY(15px);
+    }
+  }
+}

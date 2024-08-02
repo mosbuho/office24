@@ -16,7 +16,7 @@ const ManagerLogin = () => {
             const response = await axios.post('http://localhost:8080/auth/manager/login', { id, pw });
             const { accessToken, refreshToken, no } = response.data;
             setTokens(accessToken, refreshToken);
-            navigate('/manager');
+            navigate(`/manager/${no}`);
         } catch (error) {
             alert(error.response.data || '알 수 없는 오류가 발생했습니다.');
         }
@@ -25,7 +25,7 @@ const ManagerLogin = () => {
     return (
         <div className="managerLogin-container">
             <div className='log-container'>
-                <div className="logo">office24</div>
+                <div className="logo">OFFICE24</div>
                 <div className="login-tabs">
                     <div className="active">오피스 관리자</div>
                 </div>

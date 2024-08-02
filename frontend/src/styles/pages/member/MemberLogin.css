@@ -1,0 +1,131 @@
+.member-login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.member-login-form {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
+}
+
+.member-login-logo {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #6363d2;
+}
+
+.member-login-form h2 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #333;
+}
+
+.member-login-form div {
+    margin-bottom: 20px;
+}
+
+.member-login-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #555;
+    text-align: left;
+}
+
+.member-login-form input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.member-login-submit-button {
+    width: 100%;
+    padding: 14px;
+    background-color: #6363d2;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.member-login-submit-button:hover {
+    background-color: #4a4a9d;
+}
+
+.member-login-help-links {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.member-login-help-links a {
+    margin: 0 10px;
+    color: #6363d2;
+    text-decoration: none;
+}
+
+.member-login-help-links a:hover {
+    text-decoration: underline;
+}
+
+.member-login-kakao-button {
+    width: 100%;
+    padding: 14px;
+    background-color: #fee500 !important;
+    border: none;
+    border-radius: 4px;
+    color: #000;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.member-login-kakao-button:hover {
+    background-color: #ffd700 !important;
+}
+
+.member-login-naver-button {
+    width: 100%;
+    padding: 14px;
+    background-color: #03C75A !important;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.member-login-naver-button:hover {
+    background-color: #028a4c !important;
+}
+
+.member-login-google-button {
+    width: 100%;
+    padding: 14px;
+    background-color: #4b4545 !important;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.member-login-google-button:hover {
+    background-color: #302b2b !important;
+}
