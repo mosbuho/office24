@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { isAuthenticated } from '../../utils/auth';
+import { isAuthenticated, removeTokens } from '../../utils/auth';
 import { jwtDecode } from 'jwt-decode';
 
 const handleRedirect = (pathname) => {
@@ -31,6 +31,7 @@ const PrivateRoute = ({ children, requiredRole }) => {
     }
 
     if (!authStatus) {
+        removeTokens();
         return handleRedirect(location.pathname);
     }
 

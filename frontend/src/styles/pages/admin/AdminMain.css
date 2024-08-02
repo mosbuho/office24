@@ -84,8 +84,8 @@
   }
 
   .chart-card,
-  .referrals,
-  .latest-projects,
+  .notices,
+  .offices,
   .stat-card {
     background-color: #fff;
     padding: 20px;
@@ -93,7 +93,8 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
-  .latest-projects {
+  .offices,
+  .notices {
     display: flex;
     flex-direction: column;
     height: 350px;
@@ -105,25 +106,16 @@
     gap: 20px;
   }
 
-  .referrals ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  .referrals li {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
-  }
-
-  .latest-projects table {
+  .offices table,
+  .notices table {
     width: 100%;
     border-collapse: collapse;
   }
 
-  .latest-projects th,
-  .latest-projects td {
+  .offices th,
+  .offices td,
+  .notices th,
+  .notices td {
     text-align: left;
     padding: 10px;
     border-bottom: 1px solid #eee;
@@ -186,5 +178,6 @@
     background: #474747;
     padding: 5px 10px;
     color: white;
+    cursor: pointer;
   }
 }

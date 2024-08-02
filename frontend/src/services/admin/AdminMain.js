@@ -88,15 +88,30 @@ export const fetchGroupData = async (groupState, setGroupState, group) => {
     setGroupState(formattedGroup);
 };
 
-export const fetchNotAvailabilityOffice = async (page, setNotAvailabilityOffices, fetchedPages, setFetchedPages) => {
-    if (fetchedPages.has(page)) return;
+
+export const fetchNotAvailabilityOffice = async (officePage, setNotAvailabilityOffices, fetchedOfficePages, setfetchedOfficePages) => {
+    if (fetchedOfficePages.has(officePage)) return;
 
     const response = await axios.get('http://localhost:8080/admin/notavailability', {
-        params: { page: page, size: 5 }
+        params: { page: officePage, size: 5 }
     });
     setNotAvailabilityOffices(prev => ({
         ...prev,
-        [page]: response.data
+        [officePage]: response.data
     }));
-    setFetchedPages(prev => new Set(prev).add(page));
+    setfetchedOfficePages(prev => new Set(prev).add(officePage));
+};
+
+export const fetchNotices = async (noticePage, setNotices, fetchedNoticePages, setfetchedNoticePages) => {
+    if (fetchedNoticePages.has(noticePage)) return;
+    
+    const response = await axios.get('http://localhost:8080/admin/notice', {
+        params: { page: noticePage, size: 5 }
+    });
+    console.log(response.data);
+    setNotices(prev => ({
+        ...prev,
+        [noticePage]: response.data
+    }));
+    setfetchedNoticePages(prev => new Set(prev).add(noticePage));
 };

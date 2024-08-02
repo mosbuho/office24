@@ -7,7 +7,7 @@ import { removeTokens } from '../../utils/auth';
 import Header from '../../components/admin/AdminHeader';
 import Sidebar from '../../components/admin/AdminSidebar';
 import StatCard from '../../components/admin/AdminStatCard';
-import { fetchAccumulate, fetchAgeGroup, fetchSidoGroup, fetchGroupData, fetchNotAvailabilityOffice } from '../../services/admin/AdminMain';
+import { fetchAccumulate, fetchAgeGroup, fetchSidoGroup, fetchGroupData, fetchNotAvailabilityOffice, fetchNotices } from '../../services/admin/AdminMain';
 
 const calculateChange = (current, previous) => {
     if (previous === 0) return { change: '0.00%', className: 'no-change' };
@@ -42,9 +42,15 @@ const AdminMain = () => {
     const [salesGroup, setSalesGroup] = useState(null);
     const [reviewGroup, setReviewGroup] = useState(null);
     const [selectGroup, setSelectGroup] = useState('membergroup');
+
     const [notAvailabilityOffices, setNotAvailabilityOffices] = useState({});
-    const [fetchedPages, setFetchedPages] = useState(new Set());
-    const [page, setPage] = useState(1);
+    const [fetchedOfficePages, setfetchedOfficePages] = useState(new Set());
+    const [officePage, setOfficePage] = useState(1);
+
+    const [notices, setNotices] = useState([]);
+    const [fetchedNoticePages, setfetchedNoticePages] = useState(new Set());
+    const [noticePage, setNoticePage] = useState(1);
+
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -58,23 +64,36 @@ const AdminMain = () => {
             await fetchAgeGroup(setAgeGroup);
             await fetchSidoGroup(setSidoGroup);
             await fetchGroupData(memberGroup, setMemberGroup, 'membergroup');
-
         };
         fetchData();
     }, []);
 
     useEffect(() => {
-        const fetchPageData = async () => {
-            await fetchNotAvailabilityOffice(page, setNotAvailabilityOffices, fetchedPages, setFetchedPages);
+        const fetchOfficePageData = async () => {
+            await fetchNotAvailabilityOffice(officePage, setNotAvailabilityOffices, fetchedOfficePages, setfetchedOfficePages);
         };
-        fetchPageData();
-    }, [page, fetchedPages]);
+        fetchOfficePageData();
+    }, [officePage, fetchedOfficePages]);
 
-    const currentOffices = notAvailabilityOffices[page] || [];
-    const hasMoreData = currentOffices.length === 5;
+    useEffect(() => {
+        const fetchNoticePageData = async () => {
+            await fetchNotices(noticePage, setNotices, fetchedNoticePages, setfetchedNoticePages);
+        };
+        fetchNoticePageData();
+    }, [noticePage, fetchedNoticePages]);
 
-    const handlePageChange = (newPage) => {
-        setPage(newPage);
+    const currentOffices = notAvailabilityOffices[officePage] || [];
+    const officeHasMore = currentOffices.length === 5;
+
+    const currentNotices = notices[noticePage] || [];
+    const noticeHasMore = currentNotices.length === 5;
+
+    const handleofficePageChange = (newOfficePage) => {
+        setOfficePage(newOfficePage);
+    };
+
+    const handleNoticePageChange = (newNoticePage) => {
+        setNoticePage(newNoticePage);
     };
 
     if (!accumulate || !ageGroup || !sidoGroup || !selectGroup) return <></>;
@@ -241,18 +260,36 @@ const AdminMain = () => {
                     </div>
                 </div>
                 <div className="bottom-section">
-                    <div className="referrals">
+                    <div className="notices">
                         <h3>공지사항</h3>
-                        <ul>
-                            <li>공지1</li>
-                            <li>125</li>
-                            <li>1235</li>
-                            <li>2153</li>
-                            <li>1235</li>
-                            <li>1235</li>
-                        </ul>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>제목</th>
+                                    <th>게시일</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {currentNotices.length > 0 ? (
+                                    currentNotices.map((notice, index) => (
+                                        <tr key={notice.NO || `${noticePage}-${index}`}>
+                                            <td>{notice.TITLE}</td>
+                                            <td>{new Date(notice.REG_DATE).toISOString().split('T')[0]}</td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="5" rowSpan="2">데이터가 없습니다</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                        <div className='page-buttons'>
+                            <button onClick={() => handleNoticePageChange(noticePage - 1)} disabled={noticePage === 1}>이전</button>
+                            <button onClick={() => handleNoticePageChange(noticePage + 1)} disabled={!noticeHasMore}>다음</button>
+                        </div>
                     </div>
-                    <div className="latest-projects">
+                    <div className="offices">
                         <h3>승인 대기 오피스</h3>
                         <table>
                             <thead>
@@ -267,7 +304,7 @@ const AdminMain = () => {
                             <tbody>
                                 {currentOffices.length > 0 ? (
                                     currentOffices.map((office, index) => (
-                                        <tr key={office.id || `${page}-${index}`}>
+                                        <tr key={office.no || `${officePage}-${index}`}>
                                             <td>{office.title}</td>
                                             <td>{office.managerName}</td>
                                             <td>{office.address}</td>
@@ -283,8 +320,8 @@ const AdminMain = () => {
                             </tbody>
                         </table>
                         <div className='page-buttons'>
-                            <button onClick={() => handlePageChange(page - 1)} disabled={page === 1}>이전</button>
-                            <button onClick={() => handlePageChange(page + 1)} disabled={!hasMoreData}>다음</button>
+                            <button onClick={() => handleofficePageChange(officePage - 1)} disabled={officePage === 1}>이전</button>
+                            <button onClick={() => handleofficePageChange(officePage + 1)} disabled={!officeHasMore}>다음</button>
                         </div>
                     </div>
                 </div>
