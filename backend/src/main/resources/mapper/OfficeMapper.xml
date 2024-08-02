@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.backend.office.OfficeMapper">
+    <select id="getOfficeNotAvailability" parameterType="map"
+        resultType="com.kh.backend.office.Office">
+        <![CDATA[
+        SELECT * 
+        FROM (
+            SELECT a.title, a.address, a.price, a.reg_date, m.name AS managerName, ROWNUM rnum
+            FROM (
+                SELECT o.title, o.address, o.price, o.reg_date, o.manager_no
+                FROM office o
+                WHERE o.availability = 0
+                ORDER BY o.reg_date DESC
+            ) a
+            JOIN manager m ON a.manager_no = m.no
+            WHERE ROWNUM <= #{end}
+        )
+        WHERE rnum >= #{start}
+        ]]>
+    </select>
+</mapper>

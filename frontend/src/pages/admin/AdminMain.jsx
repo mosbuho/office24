@@ -7,7 +7,7 @@ import { removeTokens } from '../../utils/auth';
 import Header from '../../components/admin/AdminHeader';
 import Sidebar from '../../components/admin/AdminSidebar';
 import StatCard from '../../components/admin/AdminStatCard';
-import { fetchAccumulate, fetchAgeGroup, fetchSidoGroup, fetchGroupData } from '../../services/admin/AdminMain';
+import { fetchAccumulate, fetchAgeGroup, fetchSidoGroup, fetchGroupData, fetchNotAvailabilityOffice } from '../../services/admin/AdminMain';
 
 const calculateChange = (current, previous) => {
     if (previous === 0) return { change: '0.00%', className: 'no-change' };
@@ -42,6 +42,9 @@ const AdminMain = () => {
     const [salesGroup, setSalesGroup] = useState(null);
     const [reviewGroup, setReviewGroup] = useState(null);
     const [selectGroup, setSelectGroup] = useState('membergroup');
+    const [notAvailabilityOffices, setNotAvailabilityOffices] = useState({});
+    const [fetchedPages, setFetchedPages] = useState(new Set());
+    const [page, setPage] = useState(1);
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -51,17 +54,28 @@ const AdminMain = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                await fetchAccumulate(setAccumulate);
-                await fetchAgeGroup(setAgeGroup);
-                await fetchSidoGroup(setSidoGroup);
-                await fetchGroupData(memberGroup, setMemberGroup, 'membergroup');
-            } catch {
-                console.log("통계 불러오는 중 에러 발생");
-            }
+            await fetchAccumulate(setAccumulate);
+            await fetchAgeGroup(setAgeGroup);
+            await fetchSidoGroup(setSidoGroup);
+            await fetchGroupData(memberGroup, setMemberGroup, 'membergroup');
+
         };
         fetchData();
     }, []);
+
+    useEffect(() => {
+        const fetchPageData = async () => {
+            await fetchNotAvailabilityOffice(page, setNotAvailabilityOffices, fetchedPages, setFetchedPages);
+        };
+        fetchPageData();
+    }, [page, fetchedPages]);
+
+    const currentOffices = notAvailabilityOffices[page] || [];
+    const hasMoreData = currentOffices.length === 5;
+
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
+    };
 
     if (!accumulate || !ageGroup || !sidoGroup || !selectGroup) return <></>;
 
@@ -185,12 +199,12 @@ const AdminMain = () => {
                         <ResponsiveContainer width="100%" height={300}>
                             <ComposedChart data={currentGroupData} margin={{ top: 20, right: 20, left: 20, bottom: 5 }}>
                                 <XAxis dataKey="name" tickFormatter={(value) => value.toLocaleString('ko-KR')} />
-                                <YAxis yAxisId="left" tickFormatter={(value) => value.toLocaleString('ko-KR')} />
+                                <YAxis tickFormatter={(value) => value.toLocaleString('ko-KR')} />
                                 <Tooltip formatter={(value) => value.toLocaleString('ko-KR')} />
                                 <Legend />
-                                <Bar dataKey={chartLabels.label1} fill="#3cb371" barSize={20} yAxisId="left" />
-                                <Bar dataKey={chartLabels.label2} fill="#db4455" barSize={20} yAxisId="left" />
-                                <Line type="monotone" dataKey={chartLabels.label3} stroke="#ffa550" strokeWidth={2} dot={false} yAxisId="left" />
+                                <Bar dataKey={chartLabels.label1} fill="#3cb371" barSize={20} />
+                                <Bar dataKey={chartLabels.label2} fill="#db4455" barSize={20} />
+                                <Line type="monotone" dataKey={chartLabels.label3} stroke="#ffa550" dot={false} />
                             </ComposedChart>
                         </ResponsiveContainer>
                     </div>
@@ -228,13 +242,14 @@ const AdminMain = () => {
                 </div>
                 <div className="bottom-section">
                     <div className="referrals">
-                        <h3>신고 내역</h3>
+                        <h3>공지사항</h3>
                         <ul>
-                            <li>경<span>4,518건</span></li>
-                            <li>125<span>4,252건</span></li>
-                            <li>1235<span>3,481건</span></li>
-                            <li>2153<span>3,172건</span></li>
-                            <li>1235<span>2,791건</span></li>
+                            <li>공지1</li>
+                            <li>125</li>
+                            <li>1235</li>
+                            <li>2153</li>
+                            <li>1235</li>
+                            <li>1235</li>
                         </ul>
                     </div>
                     <div className="latest-projects">
@@ -242,48 +257,37 @@ const AdminMain = () => {
                         <table>
                             <thead>
                                 <tr>
-                                    <th>오피스명</th>
+                                    <th>오피스 이름</th>
+                                    <th>신청인</th>
                                     <th>주소</th>
-                                    <th>매니저 이름</th>
-                                    <th>매니저 연락처</th>
-                                    <th>신청일</th>
+                                    <th>가격</th>
+                                    <th>등록일</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>김건우네 집</td>
-                                    <td>우리집 경기도 남양주 481-7</td>
-                                    <td>김건우</td>
-                                    <td>010-7126-8047</td>
-                                    <td>2024-07-30</td>
-                                </tr>
-                                <tr>
-                                    <td>석진이형 롯데캐슬 72번째 방</td>
-                                    <td>우리집은 엄청 크고 으리으리하다 347-1</td>
-                                    <td>이석진</td>
-                                    <td>010-4491-6181</td>
-                                    <td>2024-07-27</td>
-                                </tr>
-                                <tr>
-                                    <td>건우집 2</td>
-                                    <td>우리집 경기도 서울 보다 집값 낮음 181-12</td>
-                                    <td>김건우</td>
-                                    <td>010-7126-8047</td>
-                                    <td>2024-07-25</td>
-                                </tr>
-                                <tr>
-                                    <td>석진이형 Room-3</td>
-                                    <td>주소 할거 떨어졌다 석진이형 집 롯데캐슬 80-1</td>
-                                    <td>김건우</td>
-                                    <td>010-7126-8047</td>
-                                    <td>2024-06-07</td>
-                                </tr>
+                                {currentOffices.length > 0 ? (
+                                    currentOffices.map((office, index) => (
+                                        <tr key={office.id || `${page}-${index}`}>
+                                            <td>{office.title}</td>
+                                            <td>{office.managerName}</td>
+                                            <td>{office.address}</td>
+                                            <td>{office.price.toLocaleString()}원</td>
+                                            <td>{new Date(office.reg_date).toISOString().split('T')[0]}</td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="4">데이터가 없습니다</td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
+                        <button onClick={() => handlePageChange(page - 1)} disabled={page === 1}>이전 페이지</button>
+                        <button onClick={() => handlePageChange(page + 1)} disabled={!hasMoreData}>다음 페이지</button>
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
