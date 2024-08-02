@@ -69,18 +69,33 @@
     <!-- 오피스 등록 -->
     <insert id="insertOffice" parameterType="com.kh.backend.office.Office">
         <!-- 시퀀스에서 미리 no 값을 가져오기 -->
-        <selectKey keyProperty="no" order="BEFORE" resultType="int">
-            SELECT office_seq.nextval FROM dual
-        </selectKey>
-    
-        INSERT INTO office (no, manager_no, title, address, zip_code, sido, latitude,
-        longitude, content, price, capacity, title_img)
-        VALUES (#{no}, #{managerNo}, #{title}, #{address}, #{zipCode}, #{sido}, #{latitude}, 
-        #{longitude}, #{content}, #{price}, #{capacity}, #{titleImg})
-    </insert>
+        <selectKey
+            keyProperty="no" order="BEFORE" resultType="int"> SELECT office_seq.nextval FROM dual </selectKey>
+        INSERT INTO office (no, manager_no, title, address, zip_code, sido, latitude, longitude,
+        content, price, capacity, title_img) VALUES (#{no}, #{managerNo}, #{title}, #{address},
+        #{zipCode}, #{sido}, #{latitude}, #{longitude}, #{content}, #{price}, #{capacity},
+        #{titleImg}) </insert>
 
     <!-- 기타 이미지 등록 -->
-    <insert id="insertOfficeImage" parameterType="com.kh.backend.office.OfficeImage">
-        INSERT INTO office_image (office_no, name) VALUES (#{officeNo}, #{name})
-    </insert>
+    <insert id="insertOfficeImage" parameterType="com.kh.backend.office.OfficeImage"> INSERT INTO
+        office_image (office_no, name) VALUES (#{officeNo}, #{name}) </insert>
+        
+    <select id="getOfficeNotAvailability" parameterType="map"
+        resultType="com.kh.backend.office.Office">
+        <![CDATA[
+        SELECT * 
+        FROM (
+            SELECT a.title, a.address, a.price, a.reg_date, m.name AS managerName, ROWNUM rnum
+            FROM (
+                SELECT o.title, o.address, o.price, o.reg_date, o.manager_no
+                FROM office o
+                WHERE o.availability = 0
+                ORDER BY o.reg_date DESC
+            ) a
+            JOIN manager m ON a.manager_no = m.no
+            WHERE ROWNUM <= #{end}
+        )
+        WHERE rnum >= #{start}
+        ]]>
+    </select>
 </mapper>

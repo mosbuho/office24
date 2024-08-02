@@ -13,7 +13,7 @@ const AdminLogin = () => {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:8080/auth/admin/login', { id, pw });
-            const { accessToken, refreshToken, no } = response.data;
+            const { accessToken, refreshToken } = response.data;
             setTokens(accessToken, refreshToken);
             navigate('/admin');
         } catch (error) {

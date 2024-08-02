@@ -19,11 +19,11 @@ export const isAuthenticated = async () => {
     if (!accessToken) {
         return false;
     }
-
     let decodedToken;
     try {
         decodedToken = jwtDecode(accessToken);
     } catch {
+        removeTokens();
         return false;
     }
 

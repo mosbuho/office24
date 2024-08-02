@@ -8,6 +8,7 @@ import lombok.Data;
 public class Office {
     private int no;
     private int managerNo;
+    private String managerName;
     private String title;
     private String address;
     private String zipCode;
@@ -19,5 +20,5 @@ public class Office {
     private int capacity;
     private String titleImg;
     private int availability;
-    private Date regDate;
+    private Date reg_date;
 }
