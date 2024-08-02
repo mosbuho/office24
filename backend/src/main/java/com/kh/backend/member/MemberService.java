@@ -1,13 +1,19 @@
 package com.kh.backend.member;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -64,7 +72,8 @@ public class MemberService {
     }
 
     @Transactional
-    public void registerMember(String id, String pw, String name, String phone, String email, Date birth, String gender) {
+    public void registerMember(String id, String pw, String name, String phone, String email, Date birth,
+            String gender) {
         Member member = new Member();
         member.setId(id);
         member.setPw(passwordEncoder.encode(pw));
@@ -73,7 +82,6 @@ public class MemberService {
         member.setEmail(email);
         member.setBirth(birth);
         member.setGender(gender);
-
         try {
             memberMapper.insertMember(member);
         } catch (DataIntegrityViolationException e) {
@@ -86,7 +94,8 @@ public class MemberService {
     }
 
     public String getKakaoLoginUrl() {
-        return "https://kauth.kakao.com/oauth/authorize?client_id=" + kakaoClientId + "&redirect_uri=" + kakaoRedirectUri + "&response_type=code";
+        return "https://kauth.kakao.com/oauth/authorize?client_id=" + kakaoClientId + "&redirect_uri="
+                + kakaoRedirectUri + "&response_type=code";
     }
 
     public String getKakaoAccessToken(String code) {
@@ -172,7 +181,8 @@ public class MemberService {
     public String getNaverLoginUrl() {
         String clientId = naverClientId;
         String redirectUri = naverRedirectUri;
-        return "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=" + clientId + "&redirect_uri=" + redirectUri;
+        return "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=" + clientId + "&redirect_uri="
+                + redirectUri;
     }
 
     public String getNaverAccessToken(String code) {
@@ -223,7 +233,7 @@ public class MemberService {
             member.setEmail((String) responseBodyObj.get("email"));
             member.setName((String) responseBodyObj.get("name"));
             member.setGender((String) responseBodyObj.get("gender"));
-            member.setPhone(((String) responseBodyObj.get("mobile")).replace("-",""));
+            member.setPhone(((String) responseBodyObj.get("mobile")).replace("-", ""));
 
             String birth = (String) responseBodyObj.get("birthday");
             String birthYear = (String) responseBodyObj.get("birthyear");
@@ -244,7 +254,8 @@ public class MemberService {
             throw new RuntimeException(response.getBody().toString());
         }
     }
-    public Member findOrCreateNaverUser(String code) {
+
+    public void findOrCreateNaverUser(String code) {
         String accessToken = getNaverAccessToken(code);
         Member naverUser = getNaverUser(accessToken);
 
@@ -255,7 +266,6 @@ public class MemberService {
                     naverUser.getEmail(), naverUser.getBirth(), naverUser.getGender());
             member = memberMapper.findByEmail(naverUser.getEmail());
         }
-        return member;
     }
 
     public String getGoogleLoginUrl() {
@@ -264,7 +274,6 @@ public class MemberService {
                 + "&response_type=code"
                 + "&scope=profile email https://www.googleapis.com/auth/user.phonenumbers.read https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.gender.read";
     }
-
 
     public String getGoogleAccessToken(String code) {
         RestTemplate restTemplate = new RestTemplate();
@@ -363,7 +372,8 @@ public class MemberService {
             throw new RuntimeException(response.getBody().toString());
         }
     }
-    public Member findOrCreateGoogleUser(String code) {
+
+    public void findOrCreateGoogleUser(String code) {
         String accessToken = getGoogleAccessToken(code);
         Member googleUser = getGoogleUser(accessToken);
 
@@ -374,13 +384,14 @@ public class MemberService {
                     googleUser.getEmail(), googleUser.getBirth(), googleUser.getGender());
             member = memberMapper.findByEmail(googleUser.getEmail());
         }
-        return member;
+
     }
-    public boolean resetPw(String pw, String id)    {
+
+    public boolean resetPw(String pw, String id) {
         try {
             memberMapper.resetPw(passwordEncoder.encode(pw), id);
             return true;
-        } catch (Exception e)   {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

@@ -1,17 +1,20 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
-export const setTokens = (accessToken, refreshToken) => {
+export const setTokens = (accessToken, refreshToken, no) => {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
+    localStorage.setItem('no', no);
 };
 
 export const getAccessToken = () => localStorage.getItem('accessToken');
 export const getRefreshToken = () => localStorage.getItem('refreshToken');
+export const getNo = () => localStorage.getItem('no');
 
 export const removeTokens = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    localStorage.removeItem('no');
 };
 
 export const isAuthenticated = async () => {
@@ -43,8 +46,8 @@ export const refreshAccessToken = async () => {
         const response = await axios.post('http://localhost:8080/auth/refresh', {
             refreshToken: getRefreshToken(),
         });
-        const { accessToken, refreshToken } = response.data;
-        setTokens(accessToken, refreshToken);
+        const { accessToken, refreshToken, no } = response.data;
+        setTokens(accessToken, refreshToken, no);
         return accessToken;
     } catch {
         removeTokens();

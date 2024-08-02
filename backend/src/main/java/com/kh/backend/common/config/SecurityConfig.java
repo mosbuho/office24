@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -41,14 +42,14 @@ public class SecurityConfig {
                 }))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/auth/kakao/**").permitAll()
-                        .requestMatchers("/auth/naver/**").permitAll()
-                        .requestMatchers("/auth/google/**").permitAll()
+                        // .requestMatchers("/auth/kakao/**").permitAll()
+                        // .requestMatchers("/auth/naver/**").permitAll()
+                        // .requestMatchers("/auth/google/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/office/**").permitAll()
                         .requestMatchers("/member/register", "/manager/register").permitAll()
                         .requestMatchers("/member/idCheck", "/manager/idCheck").permitAll()
                         .requestMatchers("/member/checkId").permitAll()
                         .requestMatchers("/member/resetPw").permitAll()
-                        .requestMatchers("/member/office/**").permitAll()
                         .requestMatchers("/message/**").permitAll()
                         .requestMatchers("/manager/**").hasRole("MANAGER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
