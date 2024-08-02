@@ -1,6 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.backend.office.OfficeMapper">
+    <!-- 매니저 - 누적 수익 -->
+    <select id="getTotalRevenue" parameterType="int" resultType="int"> SELECT SUM(b.price) AS
+        total_revenue FROM manager m JOIN office o ON m.no = o.manager_no JOIN booking b ON o.no =
+        b.office_no WHERE m.no = #{no} GROUP BY m.no </select>
+
+    <!-- 누적 이용 수 -->
+    <select id="getTotalUsage" parameterType="int" resultType="int"> SELECT COUNT(b.no) AS
+        total_bookings FROM manager m JOIN office o ON m.no = o.manager_no JOIN booking b ON o.no =
+        b.office_no WHERE m.no = #{no} GROUP BY m.no </select>
+
+    <!-- 총 평점 쿼리 -->
+    <select id="getTotalRating" parameterType="int" resultType="Double"> SELECT ROUND(AVG(r.rating),
+        2) AS total_rating FROM manager m JOIN office o ON m.no = o.manager_no JOIN review r ON o.no
+        = r.office_no WHERE m.no = #{no} GROUP BY m.no </select>
+
+    <!-- 현재 이용 중인 오피스 개수 -->
+    <select id="getActiveOfficeCount" parameterType="int" resultType="int"> SELECT COUNT(DISTINCT
+        o.no) AS active_office_count FROM office o JOIN booking b ON o.no = b.office_no WHERE
+        o.manager_no = #{no} AND SYSDATE BETWEEN b.start_date AND b.end_date </select>
+
+    <!-- 월별 매출 -->
+    <select id="getMonthlyRevenue" parameterType="int" resultType="hashmap"> WITH months AS ( SELECT
+        LEVEL AS month_num, TO_CHAR(ADD_MONTHS(TRUNC(SYSDATE, 'YYYY'), LEVEL - 1), 'MM') AS month
+        FROM DUAL CONNECT BY LEVEL &lt;= 12 ) SELECT mo.month, COALESCE(SUM(b.price), 0) AS
+        monthly_revenue FROM months mo LEFT JOIN office o ON o.manager_no = #{no} LEFT JOIN booking
+        b ON o.no = b.office_no AND TO_CHAR(b.start_date, 'MM') = mo.month GROUP BY mo.month,
+        mo.month_num ORDER BY mo.month_num </select>
+
+    <!-- 이용자 성비 -->
+    <select id="getTotalGenderRatio" parameterType="int" resultType="map"> SELECT mem.gender,
+        COUNT(*) AS count FROM manager m JOIN office o ON m.no = o.manager_no JOIN booking b ON o.no
+        = b.office_no JOIN member mem ON b.member_no = mem.no WHERE m.no = #{no} GROUP BY m.no,
+        mem.gender </select>
+
+    <!-- 오피스 상태 목록 조회 (페이지네이션) -->
+    <select id="getOfficeStatusPaged" resultType="com.kh.backend.office.Office"> SELECT * FROM (
+        SELECT A.*, ROWNUM AS rnum FROM ( SELECT no, title, availability FROM office WHERE
+        manager_no = #{no} ORDER BY no ) A WHERE ROWNUM &lt;= #{offset} + #{limit} ) WHERE rnum &gt;
+        #{offset} </select>
+
+    <!-- 오피스 상태 전체 개수 조회 -->
+    <select id="getOfficeStatusCount" resultType="int"> SELECT COUNT(*) FROM office WHERE manager_no
+        = #{no} </select>
+
+    <!-- 오피스 목록 조회 -->
+    <select id="getOffices" resultType="com.kh.backend.office.Office"> SELECT * FROM ( SELECT A.*,
+        ROWNUM AS rnum FROM ( SELECT no, manager_no, title, address, zip_code AS zipCode, latitude,
+        longitude, content, price, capacity, title_img AS titleImg, availability, reg_date AS
+        regDate FROM office WHERE manager_no = #{no} <if test="availability != null"> AND
+        availability = #{availability} </if>
+                <if test="searchText != null and searchText != ''"> AND
+        title LIKE '%' || #{searchText} || '%' </if> ORDER BY no ) A WHERE ROWNUM &lt;= #{offset} +
+        #{limit} ) WHERE rnum &gt; #{offset} </select>
+
+    <!-- 오피스 전체 개수 조회 -->
+    <select id="getOfficeCount" resultType="int"> SELECT COUNT(*) FROM office WHERE manager_no =
+        #{no} <if test="availability != null"> AND availability = #{availability} </if>
+        <if
+            test="searchText != null and searchText != ''"> AND title LIKE '%' || #{searchText} ||
+        '%' </if>
+    </select>
+
+    <!-- 오피스 삭제 -->
+    <delete id="deleteOffice"> DELETE FROM office WHERE no = #{no} </delete>
+
+    <!-- 오피스 등록 -->
+    <insert id="insertOffice" parameterType="com.kh.backend.office.Office">
+        <!-- 시퀀스에서 미리 no 값을 가져오기 -->
+        <selectKey
+            keyProperty="no" order="BEFORE" resultType="int"> SELECT office_seq.nextval FROM dual </selectKey>
+        INSERT INTO office (no, manager_no, title, address, zip_code, sido, latitude, longitude,
+        content, price, capacity, title_img) VALUES (#{no}, #{managerNo}, #{title}, #{address},
+        #{zipCode}, #{sido}, #{latitude}, #{longitude}, #{content}, #{price}, #{capacity},
+        #{titleImg}) </insert>
+
+    <!-- 기타 이미지 등록 -->
+    <insert id="insertOfficeImage" parameterType="com.kh.backend.office.OfficeImage"> INSERT INTO
+        office_image (office_no, name) VALUES (#{officeNo}, #{name}) </insert>
+        
     <select id="getOfficeNotAvailability" parameterType="map"
         resultType="com.kh.backend.office.Office">
         <![CDATA[

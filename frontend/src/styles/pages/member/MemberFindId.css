@@ -1,0 +1,156 @@
+.member-find-id-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.member-find-id-form {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
+}
+
+.member-find-id-form .member-find-id-logo {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #6363d2;
+}
+
+.member-find-id-form h2 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #333;
+}
+
+.member-find-id-form .member-find-id-form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.member-find-id-form .member-find-id-form-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #555;
+    text-align: left;
+}
+
+.member-find-id-form .member-find-id-input-group {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.member-find-id-form .member-find-id-input-group input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+    height: 42px;
+}
+
+.member-find-id-form .member-find-id-check-btn {
+    margin-left: 10px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #6363d2;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.member-find-id-form .member-find-id-check-btn:hover {
+    background-color: #4a4a9d;
+}
+
+.member-find-id-form .member-find-id-info-message {
+    color: red;
+    position: relative;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+    text-align: left;
+}
+
+.member-find-id-form .member-find-id-info-message-success {
+    color: green;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.member-find-id-form .member-find-id-user-id-result {
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.member-find-id-form .member-find-id-find-id-btn {
+    background-color: #6363d2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.member-find-id-form .member-find-id-find-id-btn:hover {
+    background-color: #4a4a9d;
+}
+
+.member-find-id-form .member-find-id-error {
+    color: red;
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+.member-find-id-additional-links {
+    margin-top: 30px;
+}
+
+.member-find-id-additional-links .member-find-id-link-row {
+    margin-bottom: 10px;
+}
+
+.member-find-id-additional-links .member-find-id-link-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #6363d2;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+}
+
+.member-find-id-additional-links .member-find-id-link-button:hover {
+    background-color: #4a4a9d;
+}
+
+.member-find-id-user-id-result ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}

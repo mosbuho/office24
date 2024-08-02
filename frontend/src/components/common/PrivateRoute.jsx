@@ -5,7 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 
 const handleRedirect = (pathname) => {
     if (pathname.startsWith('/manager')) {
-        return <Navigate to="/manager/login" state={{ from: pathname }} replace />;
+        return <Navigate to="/manager" state={{ from: pathname }} replace />;
     } else if (pathname.startsWith('/admin')) {
         return <Navigate to="/admin/login" state={{ from: pathname }} replace />;
     } else {

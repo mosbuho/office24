@@ -30,7 +30,7 @@ instance.interceptors.response.use(
                 removeTokens();
                 const pathname = window.location.pathname;
                 if (pathname.startsWith('/manager')) {
-                    window.location.href = '/manager/login';
+                    window.location.href = '/manager';
                 } else if (pathname.startsWith('/admin')) {
                     window.location.href = '/admin/login';
                 } else {

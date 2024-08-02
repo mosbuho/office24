@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.backend.booking.BookingMapper">
+    <!-- 예약 정보들과 페이징을 위한 rownum -->
+    <select id="selectBookingsByManager" resultType="map">
+        SELECT *
+        FROM (
+            SELECT
+                b.no AS booking_no,
+                b.reg_date AS booking_date,
+                b.name AS booking_name,
+                m.phone AS booking_phone,
+                b.start_date,
+                b.end_date,
+                ROW_NUMBER() OVER (ORDER BY b.reg_date DESC) AS rn
+            FROM
+                booking b
+            JOIN
+                office o ON b.office_no = o.no
+            JOIN
+                manager mgr ON o.manager_no = mgr.no
+            JOIN
+                member m ON b.member_no = m.no
+            WHERE
+                mgr.no = #{no}
+        )
+        WHERE rn BETWEEN #{offset} + 1 AND #{offset} + #{limit}
+    </select>
+    <!-- 예약 건수 카운트 -->
+    <select id="countBookingsByManager" resultType="int">
+        SELECT COUNT(*)
+        FROM booking b
+        JOIN office o ON b.office_no = o.no
+        JOIN manager m ON o.manager_no = m.no
+        WHERE m.no = #{no}
+    </select>
+</mapper>
