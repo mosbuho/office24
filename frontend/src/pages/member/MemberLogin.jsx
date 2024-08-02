@@ -76,9 +76,9 @@ const MemberLogin = () => {
         const query = new URLSearchParams(location.search);
         const message = query.get('message');
         if (message === 'success') {
-            alert('소셜 계정으로 회원등록 성공');
+            alert('소셜 계정으로 회원 가입 되었습니다.');
         } else if (message === 'error') {
-            alert('소셜 계정으로 회원등록 실패');
+            alert('소셜 계정으로 회원 가입 도중 에러가 발생했습니다.');
         }
     }, [location]);
 
@@ -88,8 +88,8 @@ const MemberLogin = () => {
             headers: { 'Content-Type': 'application/json' }
         })
             .then(response => {
-                const { accessToken, refreshToken } = response.data;
-                setTokens(accessToken, refreshToken);
+                const { accessToken, refreshToken, no } = response.data;
+                setTokens(accessToken, refreshToken, no);
                 navigate('/');
             })
             .catch(error => {

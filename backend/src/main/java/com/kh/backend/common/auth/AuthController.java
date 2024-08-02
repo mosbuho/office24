@@ -4,16 +4,22 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import com.kh.backend.member.MemberService;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.backend.admin.Admin;
 import com.kh.backend.common.jwt.JwtUtil;
 import com.kh.backend.manager.Manager;
 import com.kh.backend.member.Member;
+import com.kh.backend.member.MemberService;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/auth")
@@ -78,6 +84,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body("아이디 또는 비밀번호가 일치하지 않습니다.");
         }
     }
+
     @GetMapping("/kakao/login-url")
     public ResponseEntity<String> getKakaoLoginUrl() {
         String kakaoLoginUrl = memberService.getKakaoLoginUrl();
@@ -87,13 +94,14 @@ public class AuthController {
     @GetMapping("/kakao/callback")
     public void kakaoCallback(@RequestParam String code, HttpServletResponse response) throws IOException {
         try {
-            Member member = memberService.findOrCreateKakaoUser(code);
+            memberService.findOrCreateKakaoUser(code);
             response.sendRedirect("http://localhost:5173/login?message=success");
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("http://localhost:5173/login?message=error");
         }
     }
+
     @GetMapping("/naver/login-url")
     public ResponseEntity<String> getNaverLoginUrl() {
         String naverLoginUrl = memberService.getNaverLoginUrl();
@@ -103,13 +111,14 @@ public class AuthController {
     @GetMapping("/naver/callback")
     public void naverCallback(@RequestParam String code, HttpServletResponse response) throws IOException {
         try {
-            Member member = memberService.findOrCreateNaverUser(code);
+            memberService.findOrCreateNaverUser(code);
             response.sendRedirect("http://localhost:5173/login?message=success");
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("http://localhost:5173/login?message=error");
         }
     }
+
     @GetMapping("/google/login-url")
     public ResponseEntity<String> getGoogleLoginUrl() {
         String googleLoginURl = memberService.getGoogleLoginUrl();
@@ -119,13 +128,14 @@ public class AuthController {
     @GetMapping("/google/callback")
     public void googleCallback(@RequestParam String code, HttpServletResponse response) throws IOException {
         try {
-            Member member = memberService.findOrCreateGoogleUser(code);
+            memberService.findOrCreateGoogleUser(code);
             response.sendRedirect("http://localhost:5173/login?message=success");
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("http://localhost:5173/login?message=error");
         }
     }
+
     @GetMapping("/idExist")
     public ResponseEntity<?> idExist(@RequestParam String phone) {
         List<String> ids = memberService.idExist(phone);

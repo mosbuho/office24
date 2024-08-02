@@ -1,13 +1,14 @@
 package com.kh.backend.office;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.backend.common.geocoding.GeocodingService;
-
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class OfficeService {
@@ -55,7 +56,7 @@ public class OfficeService {
     }
 
     // 등록 상태에 따른 오피스 개수
-    public int getOfficeStatusCount(int no) {
+    public Integer getOfficeStatusCount(int no) {
         return officeMapper.getOfficeStatusCount(no);
     }
 
@@ -66,7 +67,7 @@ public class OfficeService {
     }
 
     // 전체 개수 조회
-    public int getOfficeCount(int no, Integer availability, String searchText) {
+    public Integer getOfficeCount(int no, Integer availability, String searchText) {
         return officeMapper.getOfficeCount(no, availability, searchText);
     }
 
@@ -100,5 +101,12 @@ public class OfficeService {
                 officeMapper.insertOfficeImage(officeImage);
             }
         }
+    }
+
+    public List<Office> getOfficeNotAvailability(int page, int size) {
+        Map<String, Integer> params = new HashMap<>();
+        params.put("start", (page - 1) * size + 1);
+        params.put("end", page * size);
+        return officeMapper.getOfficeNotAvailability(params);
     }
 }

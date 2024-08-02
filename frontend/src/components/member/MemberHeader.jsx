@@ -375,8 +375,9 @@ const MemberHeader = () => {
           )}
         </div>
       </div>
-
-      <div className="fixed-logo-wrapper">OFFICE24</div>
+      <div className="fixed-logo-wrapper" onClick={() => navigate("/")}>
+        OFFICE24
+      </div>{" "}
       <div
         className="fixed-menu-wrapper"
         onClick={toggleDropdown}

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.backend.statistics.StatisticsMapper">
+    <select id="getAccumulate" resultType="map"> 
+        <![CDATA[
+        WITH today_data AS ( SELECT TRUNC(SYSDATE) AS report_date,
+        COALESCE(SUM(mc.member_create), 0) AS member_create, COALESCE(SUM(mg.manager_create), 0) AS
+        manager_create, COALESCE(SUM(ofc.office_create), 0) AS office_create,
+        COALESCE(SUM(bk.booking_create), 0) AS booking_create, COALESCE(SUM(rv.review_create), 0) AS
+        review_create, COALESCE(SUM(ss.sales_create), 0) AS sales_create FROM member_statistics mc
+        LEFT JOIN manager_statistics mg ON mc.report_date = mg.report_date LEFT JOIN
+        office_statistics ofc ON mc.report_date = ofc.report_date LEFT JOIN booking_statistics bk ON
+        mc.report_date = bk.report_date LEFT JOIN review_statistics rv ON mc.report_date =
+        rv.report_date LEFT JOIN sales_statistics ss ON mc.report_date = ss.report_date WHERE
+        mc.report_date <= TRUNC(SYSDATE) GROUP BY TRUNC(SYSDATE) ), yesterday_data AS ( SELECT
+        TRUNC(SYSDATE) - 1 AS report_date, COALESCE(SUM(mc.member_create), 0) AS member_create,
+        COALESCE(SUM(mg.manager_create), 0) AS manager_create, COALESCE(SUM(ofc.office_create), 0)
+        AS office_create, COALESCE(SUM(bk.booking_create), 0) AS booking_create,
+        COALESCE(SUM(rv.review_create), 0) AS review_create, COALESCE(SUM(ss.sales_create), 0) AS
+        sales_create FROM member_statistics mc LEFT JOIN manager_statistics mg ON mc.report_date =
+        mg.report_date LEFT JOIN office_statistics ofc ON mc.report_date = ofc.report_date LEFT JOIN
+        booking_statistics bk ON mc.report_date = bk.report_date LEFT JOIN review_statistics rv ON
+        mc.report_date = rv.report_date LEFT JOIN sales_statistics ss ON mc.report_date =
+        ss.report_date WHERE mc.report_date <= TRUNC(SYSDATE) - 1 GROUP BY TRUNC(SYSDATE) - 1 )
+        SELECT t.report_date AS today_report_date, t.member_create AS today_member_create,
+        t.manager_create AS today_manager_create, t.office_create AS today_office_create,
+        t.booking_create AS today_booking_create, t.review_create AS today_review_create,
+        t.sales_create AS today_sales_create, y.report_date AS yesterday_report_date,
+        y.member_create AS yesterday_member_create, y.manager_create AS yesterday_manager_create,
+        y.office_create AS yesterday_office_create, y.booking_create AS yesterday_booking_create,
+        y.review_create AS yesterday_review_create, y.sales_create AS yesterday_sales_create FROM
+        today_data t LEFT JOIN yesterday_data y ON t.report_date = TRUNC(SYSDATE)
+        ]]>
+    </select>
+
+    <select id="getAgeGroup" resultType="map"> SELECT CASE WHEN TRUNC(MONTHS_BETWEEN(SYSDATE, birth)
+        / 12) BETWEEN 0 AND 19 THEN '-10대' WHEN TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN
+        20 AND 29 THEN '20대' WHEN TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 30 AND 39 THEN
+        '30대' WHEN TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 40 AND 49 THEN '40대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 50 AND 59 THEN '50대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 60 AND 69 THEN '60대' ELSE '70대+' END AS
+        ageGroup, gender, COUNT(*) AS count FROM member GROUP BY CASE WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 0 AND 19 THEN '-10대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 20 AND 29 THEN '20대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 30 AND 39 THEN '30대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 40 AND 49 THEN '40대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 50 AND 59 THEN '50대' WHEN
+        TRUNC(MONTHS_BETWEEN(SYSDATE, birth) / 12) BETWEEN 60 AND 69 THEN '60대' ELSE '70대+' END,
+        gender </select>
+
+    <select id="getSidoGroup" resultType="map"> SELECT SIDO, COUNT(*) AS OFFICE_COUNT FROM OFFICE
+        GROUP BY SIDO </select>
+
+    <select id="getGroupData" parameterType="string" resultType="map"> SELECT TO_CHAR(report_date,
+        'YYYY-MM') AS year_month, SUM(${table}_create) AS total_create, SUM(${table}_delete) AS
+        total_delete, SUM(${table}_create) - SUM(${table}_delete) AS trend FROM ${table}_statistics
+        GROUP BY TO_CHAR(report_date, 'YYYY-MM') ORDER BY year_month </select>
+</mapper>

@@ -136,10 +136,10 @@ public class OfficeController {
                 }
             }
             // 오피스 테이블 삽입 + 오피스 이미지 테이블 삽입
-            officeService.registerOffice(office, additionalImageNames); //여기서 계속 널이 뜨네
+            officeService.registerOffice(office, additionalImageNames); // 여기서 계속 널이 뜨네
             return ResponseEntity.ok("오피스가 성공적으로 등록되었습니다.");
         } catch (Exception e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("오피스 등록 오류로 실패 : " + e.getMessage());
         }
@@ -162,9 +162,16 @@ public class OfficeController {
             image.transferTo(destination);
         } catch (IOException e) {
             System.err.println("파일 저장 중 오류 발생: " + e.getMessage());
-            throw e; 
+            throw e;
         }
 
         return imageName;
+    }
+
+    @GetMapping("/admin/notavailability")
+    public List<Office> getOfficeNotAvailability(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "5") int size) {
+        return officeService.getOfficeNotAvailability(page, size);
     }
 }
