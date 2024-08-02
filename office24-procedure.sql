@@ -56,11 +56,11 @@ END;
 ------------------------------------------------------------------------------------------------------------------------------
 
 BEGIN
-    FOR i IN 1..100 LOOP
+    FOR i IN 1..1 LOOP
         INSERT INTO manager (id, pw, name, phone, email)
         VALUES (
             'manager' || LPAD(i, 3, '0'),
-            'P@ssw0rd' || LPAD(i, 2, '0'),
+            '$2a$10$FgmS9NEBxDdbUfWjsqiGDesNfltpXEa6u..EQc1Ehh6mO7aBeNccq',
             'Manager' || LPAD(i, 2, '0'),
             '0101234567',
             'manager' || LPAD(i, 2, '0') || '@example.com'

@@ -56,7 +56,7 @@ public class OfficeService {
     }
 
     // 등록 상태에 따른 오피스 개수
-    public int getOfficeStatusCount(int no) {
+    public Integer getOfficeStatusCount(int no) {
         return officeMapper.getOfficeStatusCount(no);
     }
 
@@ -67,7 +67,7 @@ public class OfficeService {
     }
 
     // 전체 개수 조회
-    public int getOfficeCount(int no, Integer availability, String searchText) {
+    public Integer getOfficeCount(int no, Integer availability, String searchText) {
         return officeMapper.getOfficeCount(no, availability, searchText);
     }
 

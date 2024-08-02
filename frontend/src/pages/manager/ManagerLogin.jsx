@@ -9,17 +9,12 @@ const ManagerLogin = () => {
     const [pw, setPw] = useState('');
     const navigate = useNavigate();
 
-    // [로그인] 버튼
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await axios.post('http://localhost:8080/auth/manager/login', { id, pw });
-            const { accessToken, refreshToken, no } = response.data;
-            setTokens(accessToken, refreshToken);
-            navigate(`/manager/${no}`);
-        } catch (error) {
-            alert(error.response.data || '알 수 없는 오류가 발생했습니다.');
-        }
+        const response = await axios.post('http://localhost:8080/auth/manager/login', { id, pw });
+        const { accessToken, refreshToken, no } = response.data;
+        setTokens(accessToken, refreshToken, no);
+        navigate('/manager');
     };
 
     return (
