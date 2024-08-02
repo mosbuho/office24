@@ -19,6 +19,7 @@ import MemberResetPw from "./pages/member/MemberResetPw.jsx";
 import MemberFindIdResult from "./pages/member/MemberFindIResult.jsx";
 import ManagerOfficeRegister from './pages/manager/ManagerOfficeRegister.jsx';
 import MemberOffice from "./pages/member/MemberOffice.jsx";
+import ManagerOfficeUpdate from './pages/manager/ManagerOfficeUpdate.jsx';
 
 function App() {
   return (
@@ -45,7 +46,8 @@ function App() {
         {/* 매니저 보호 라우트 */}
         <Route path="/manager/" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerMain /></PrivateRoute>} />
         <Route path="/manager/office/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOffice /></PrivateRoute>} />
-        <Route path="/manager/office/register/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeRegister /></PrivateRoute>} />
+        <Route path="/manager/office/register/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeRegister/></PrivateRoute>} />
+        <Route path="/manager/office/update/:no/:officeNo" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeUpdate/></PrivateRoute>} />
 
         {/* 어드민 라우트 추가 */}
         <Route path="/admin" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMain /></PrivateRoute>} />

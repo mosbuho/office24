@@ -1,0 +1,199 @@
+body.manager-office-body {
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .managerOfficeRegister-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20%;
+    margin-top: 70px;
+    padding: 0 20px;
+    background-color: #f5f5f5;
+  }
+  
+  .managerOfficeRegister-container .headernav {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    border-bottom: 1px solid #E5E5E5;
+    margin-bottom: 20px;
+  }
+  
+  .managerOfficeRegister-container .headernav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 15px;
+    margin: 0;
+  }
+  
+  .managerOfficeRegister-container .headernav li {
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-bottom: 2px solid #2c3e50;
+  }
+  
+  .managerOfficeRegister-container .registerForm {
+    display: flex;
+    justify-content: space-around;
+    gap: 50px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .managerOfficeRegister-container .image-preview-section {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 600px;
+  }
+  
+  .managerOfficeRegister-container .main-image-preview {
+    width: 600px;
+    height: 340px;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  
+  .managerOfficeRegister-container .main-image-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+  }
+  
+  .managerOfficeRegister-container .other-images-preview {
+    display: flex;
+    justify-content: center;
+    width: 600px;
+    gap: 20px;
+  }
+  
+  .managerOfficeRegister-container .other-images-preview div,
+  .managerOfficeRegister-container .other-images-preview img {
+    width: 290px;
+    height: 150px;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  
+  .managerOfficeRegister-container .other-images-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+  }
+  
+  .managerOfficeRegister-container .form-section {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 20px;
+  }
+  
+  .managerOfficeRegister-container .form-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 5px;
+  }
+  
+  .managerOfficeRegister-container .form-group label {
+    font-weight: bold;
+    font-size: 14px;
+    margin-left: 5px;
+  }
+  
+  .managerOfficeRegister-container .form-group input,
+  .managerOfficeRegister-container .form-group textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 90%;
+  }
+  
+  .managerOfficeRegister-container .form-group textarea {
+    resize: none;
+    outline: none;
+  }
+  
+  .managerOfficeRegister-container .input-title,
+  .managerOfficeRegister-container .input-address,
+  .managerOfficeRegister-container .input-content,
+  .managerOfficeRegister-container .input-price,
+  .managerOfficeRegister-container .input-capacity,
+  .managerOfficeRegister-container .input-zipcode {
+    width: 100%;
+  }
+  
+  .managerOfficeRegister-container .searchAddress {
+    margin-left: 10px;
+    padding: 3px 15px;
+    background-color: #2c3e50;
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .managerOfficeRegister-container .images-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .managerOfficeRegister-container .images-section label {
+    padding-bottom: 10px;
+  }
+  
+  .managerOfficeRegister-container .images-section input[type=file]::file-selector-button {
+    border: 1px solid #efefef;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  
+  .managerOfficeRegister-container .images-section input[type=file]::file-selector-button:hover {
+    font-weight: bold;
+  }
+  
+  .managerOfficeRegister-container .images-section .image-upload {
+    flex: 1;
+    font-size: 11px;
+    text-align: center;
+    border: 1px dashed #ddd;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+  
+  .managerOfficeRegister-container .submit-button {
+    padding: 6px 15px;
+    background-color: #2c3e50;
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 0 auto;
+  }
+  
+  .managerOfficeRegister-container .submit-button:hover {
+    background-color: #355BB3;
+  }
+   

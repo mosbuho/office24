@@ -192,7 +192,7 @@ const ManagerMain = () => {
                     ))}
                   </Pie>
                   <Tooltip />
-                  <Legend verticalAlign="bottom" height={36} />
+                  <Legend verticalAlign="bottom" height={45} iconSize={1}/>
                 </PieChart>
               </ResponsiveContainer>
             </div>
