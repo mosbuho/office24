@@ -39,7 +39,7 @@ BEGIN
         INSERT INTO member (id, pw, name, phone, email, birth, gender)
         VALUES (
             'user' || LPAD(i, 4, '0'), 
-            'P@ssw0rd' || LPAD(i, 4, '0'),
+            '$2a$10$FgmS9NEBxDdbUfWjsqiGDesNfltpXEa6u..EQc1Ehh6mO7aBeNccq',
             'Name' || LPAD(i, 4, '0'),
             '0101234567',
             'user' || LPAD(i, 4, '0') || '@example.com',
@@ -56,7 +56,7 @@ END;
 ------------------------------------------------------------------------------------------------------------------------------
 
 BEGIN
-    FOR i IN 1..1 LOOP
+    FOR i IN 1..100 LOOP
         INSERT INTO manager (id, pw, name, phone, email)
         VALUES (
             'manager' || LPAD(i, 3, '0'),
@@ -73,11 +73,10 @@ END;
 
 BEGIN
     FOR i IN 1..100 LOOP
-        INSERT INTO notice (title, content, view_count)
+        INSERT INTO notice (title, content)
         VALUES (
             'Notice Title ' || LPAD(i, 3, '0'),
-            'This is the content of notice number ' || i,
-            TRUNC(DBMS_RANDOM.VALUE(0, 1000))
+            'This is the content of notice number ' || i
         );
     END LOOP;
 END;
@@ -90,7 +89,7 @@ BEGIN
         INSERT INTO office (title, manager_no, address, zip_code, latitude, longitude, content, price, capacity, title_img, availability, sido)
         VALUES (
             '오피스 ' || i,
-            43,
+            1,
             '주소 ' || i,
             LPAD(i, 5, '0'),
             TRUNC(DBMS_RANDOM.VALUE(33.0, 38.0), 4),

@@ -1,36 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.backend.member.MemberMapper">
-    <resultMap id="memberResultMap" type="com.kh.backend.member.Member">
-        <result property="id" column="id"/>
-        <result property="pw" column="pw"/>
-        <result property="name" column="name"/>
-        <result property="phone" column="phone"/>
-        <result property="email" column="email"/>
-        <result property="birth" column="birth"/>
-        <result property="gender" column="gender"/>
-    </resultMap>
-    <insert id="insertMember" parameterType="com.kh.backend.member.Member">
-        INSERT INTO member (id, pw, name, phone, email, birth, gender)
-        VALUES (    #{id, jdbcType=VARCHAR},  #{pw, jdbcType=VARCHAR},   #{name, jdbcType=VARCHAR},  #{phone, jdbcType=VARCHAR},  #{email, jdbcType=VARCHAR},
-                    #{birth, jdbcType=DATE}, #{gender, jdbcType=VARCHAR})
-    </insert>
-    <select id="findById" parameterType="String" resultMap="memberResultMap">
-        SELECT no, pw FROM member WHERE id = #{id}
+    <insert id="insertMember" parameterType="com.kh.backend.member.Member"> INSERT INTO member (id,
+        pw, name, phone, email, birth, gender) VALUES (#{id}, #{pw}, #{name}, #{phone}, #{email},
+        #{birth}, #{gender}) </insert>
+
+    <select id="findById" parameterType="String" resultType="com.kh.backend.member.Member"> SELECT
+        no, pw FROM member WHERE id = #{id} </select>
+
+    <select id="findByEmail" parameterType="String" resultType="com.kh.backend.member.Member">
+        SELECT * FROM member WHERE email = #{email} </select>
+
+    <select id="findByPhone" parameterType="String" resultType="com.kh.backend.member.Member">
+        SELECT * FROM member WHERE phone = #{phone} </select>
+
+    <select id="findByIdAndPhone" parameterType="map" resultType="com.kh.backend.member.Member">
+        SELECT * FROM member WHERE id = #{id} AND phone = #{phone} </select>
+
+    <select id="findIdByPhone" parameterType="String" resultType="String"> SELECT id FROM member
+        WHERE trim(phone) = #{phone} </select>
+
+    <update id="resetPw"> UPDATE member SET pw = #{pw} WHERE id = #{id} </update>
+
+    <select id="getAllMembers" resultType="map"> 
+        <![CDATA[ 
+          SELECT * FROM (
+            SELECT m.*, ROWNUM rnum FROM (
+                SELECT no, id, name, phone, email, birth, gender, reg_date
+                FROM member
+                ORDER BY no
+            ) m
+            WHERE ROWNUM <= #{end}
+        ) WHERE rnum >= #{start}
+        ]]>
     </select>
-    <select id="findByEmail" parameterType="String" resultMap="memberResultMap">
-        SELECT * FROM member WHERE email = #{email}
-    </select>
-    <select id="findByPhone" parameterType="String" resultMap="memberResultMap">
-        SELECT * FROM member WHERE phone = #{phone}
-    </select>
-    <select id="findByIdAndPhone" parameterType="map" resultMap="memberResultMap">
-        SELECT * FROM member WHERE id = #{id} AND phone = #{phone}
-    </select>
-    <select id="findIdByPhone" parameterType="String" resultType="String">
-        SELECT id FROM member WHERE trim(phone) = #{phone}
-    </select>
-    <update id="resetPw">
-        update MEMBER set pw = #{pw} where id = #{id}
-    </update>
+    <select id="getTotalMemberCount" resultType="int"> SELECT COUNT(*) FROM member </select>
 </mapper>

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip, Legend, Line, ComposedChart } from 'recharts';
 import '../../styles/pages/admin/AdminMain.css';
-import { removeTokens } from '../../utils/auth';
 
 import Header from '../../components/admin/AdminHeader';
 import Sidebar from '../../components/admin/AdminSidebar';
@@ -51,12 +49,7 @@ const AdminMain = () => {
     const [fetchedNoticePages, setfetchedNoticePages] = useState(new Set());
     const [noticePage, setNoticePage] = useState(1);
 
-    const navigate = useNavigate();
 
-    const handleLogout = () => {
-        removeTokens();
-        navigate('/admin/login', { replace: true });
-    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -166,8 +159,8 @@ const AdminMain = () => {
     const { currentGroupData, chartLabels, groupName } = getChartData();
 
     return (
-        <div className="admin-main-container">
-            <Header onLogout={handleLogout} />
+        <div className="admin-main">
+            <Header />
             <Sidebar />
             <div className="main">
                 <div className="stats-grid">
@@ -202,7 +195,7 @@ const AdminMain = () => {
                         change={calculateChange(accumulate.TODAY_REVIEW_CREATE, accumulate.YESTERDAY_REVIEW_CREATE)}
                     />
                 </div>
-                <div className="charts-container">
+                <div className="charts">
                     <div className="chart-card sales-chart">
                         <div className="chart-header">
                             <h3>{groupName}</h3>
@@ -238,6 +231,7 @@ const AdminMain = () => {
                                     ))}
                                 </Pie>
                                 <Tooltip formatter={(value, name, props) => [`${value}%`, name]} />
+                                <Legend />
                             </PieChart>
                         </ResponsiveContainer>
                     </div>
@@ -279,7 +273,7 @@ const AdminMain = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="5" rowSpan="2">데이터가 없습니다</td>
+                                        <td rowSpan="2" className="nodata">더 이상 데이터가 없습니다</td>
                                     </tr>
                                 )}
                             </tbody>
@@ -314,7 +308,7 @@ const AdminMain = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="5" rowSpan="5">데이터가 없습니다</td>
+                                        <td rowSpan="5" className="nodata">더 이상 데이터가 없습니다</td>
                                     </tr>
                                 )}
                             </tbody>

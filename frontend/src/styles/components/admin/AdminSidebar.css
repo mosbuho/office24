@@ -1,12 +1,16 @@
-.admin-sidebar-container {
+.admin-sidebar {
+    background: #fff;
+
     ul {
         list-style-type: none;
-        padding: 0;
+        padding: 10px;
+        margin: 0;
     }
 
     li {
         padding: 10px;
         cursor: pointer;
+        margin: 10px 0;
     }
 
     li.active {

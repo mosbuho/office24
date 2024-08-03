@@ -1,0 +1,52 @@
+.admin-pagination {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.admin-pagination li {
+    margin: 0 5px;
+}
+
+.admin-pagination li:not(.disabled):hover {
+    margin: 0 5px;
+    transition: 0.3s;
+    background-color: #999999;
+    border-radius: 5px;
+}
+
+.admin-pagination a,
+.admin-pagination span {
+    display: block;
+    padding: 5px 10px;
+    text-decoration: none;
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.admin-pagination a {
+    cursor: pointer;
+}
+
+.admin-pagination .active a,
+.admin-pagination .active span {
+    background-color: #474747;
+    color: #fff;
+    border: none;
+}
+
+.admin-pagination .disabled a,
+.admin-pagination .disabled span {
+    cursor: not-allowed;
+    color: #6c757d;
+    border-color: #ddd;
+}
+
+.admin-pagination .previous a,
+.admin-pagination .next a {
+    font-weight: bold;
+}
