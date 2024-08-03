@@ -75,7 +75,7 @@ const ManagerOffice = () => {
 
   // 수정 페이지로 이동 버튼
   const handleUpdateClick = (officeNo) => {
-    navigate(`/manager/office/update/${officeNo}`);
+    navigate(`/manager/office/update/${no}/${officeNo}`);
   };
 
   // 삭제

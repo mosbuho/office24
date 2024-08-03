@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../../utils/axiosConfig';
-import { useParams } from 'react-router-dom';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, Legend } from 'recharts';
 import ManagerSidebar from '../../components/manager/ManagerSidebar';
 import ManagerHeader from '../../components/manager/ManagerHeader';
@@ -8,11 +7,12 @@ import { LuBarChart3, LuStar } from "react-icons/lu";
 import { FaWonSign } from "react-icons/fa6";
 import ReactPaginate from 'react-paginate';
 import '../../styles/pages/manager/ManagerMain.css';
+import { getNo } from '../../utils/auth';
 
 const COLORS = ['#57C9A6', '#EEBD6F'];
 
 const ManagerMain = () => {
-  const { no } = useParams();
+  const no = getNo();
   const [stats, setStats] = useState(null); // 통계 데이터
   const [monthlyData, setMonthlyData] = useState([]); // 월 매출 데이터
   const [genderData, setGenderData] = useState([]); // 성비 데이터
@@ -20,7 +20,7 @@ const ManagerMain = () => {
   const [bookingPageCount, setBookingPageCount] = useState(0);
   const [currentBookingPage, setCurrentBookingPage] = useState(0); // 현재 페이지 저장
   const [offices, setOffices] = useState([]); // 오피스 등록 상태 리스트
-  const [officePageCount, setOfficePageCount] = useState(0); 
+  const [officePageCount, setOfficePageCount] = useState(0);
   const [currentOfficePage, setCurrentOfficePage] = useState(0);
 
   useEffect(() => {
@@ -101,7 +101,6 @@ const ManagerMain = () => {
     }
   };
 
-  // 마운트될때
   useEffect(() => {
     fetchStats();
     fetchBookings(0);
@@ -193,7 +192,7 @@ const ManagerMain = () => {
                     ))}
                   </Pie>
                   <Tooltip />
-                  <Legend verticalAlign="bottom" height={36} />
+                  <Legend verticalAlign="bottom" height={45} iconSize={1}/>
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -247,7 +246,7 @@ const ManagerMain = () => {
                         <td>{booking.BOOKING_NO}</td>
                         <td>{booking.BOOKING_DATE}</td>
                         <td>{booking.BOOKING_NAME}</td>
-                        <td>{booking.BOOKING_PHONE.trim()}</td> {/* 공백 제거 */}
+                        <td>{booking.BOOKING_PHONE.trim()}</td>
                         <td>{booking.START_DATE} ~ {booking.END_DATE}</td>
                       </tr>
                     ))}

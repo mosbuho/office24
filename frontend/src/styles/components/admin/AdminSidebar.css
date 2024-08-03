@@ -1,0 +1,16 @@
+.admin-sidebar-container {
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    li.active {
+        background-color: #e0e0e0;
+        border-radius: 4px;
+    }
+}
