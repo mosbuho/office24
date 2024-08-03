@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "../../styles/components/member/MemberFooter.css";
 
-const MemberFooter = ({ handlePopup }) => {
+const MemberFooter = () => {
   const navigate = useNavigate();
 
   return (
@@ -11,7 +11,7 @@ const MemberFooter = ({ handlePopup }) => {
           <h3>지원</h3>
           <ul>
             <li>
-              <span onClick={() => handlePopup("QNA")}>도움말 센터</span>
+              <span>도움말 센터</span>
             </li>
             <li>
               <span onClick={() => navigate("/")}>Office24커버</span>

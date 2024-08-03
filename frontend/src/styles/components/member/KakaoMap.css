@@ -69,12 +69,16 @@
 }
 
 .custom-overlay:hover {
-
     .custom-marker {
         opacity: 0.8;
     }
 
     .info-window {
         display: block;
+    }
+
+    .info-window:hover {
+        opacity: 0.8;
+        ;
     }
 }

@@ -1,9 +1,11 @@
 .member-footer {
-    border-top: 2px solid var(--shaded-color);
+    box-shadow: 10px 0px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid var(--shaded-color);
     background-color: var(--shaded-light-color);
     color: var(--shaded-dark-color);
     padding: 48px 0;
     font-family: 'Arial', sans-serif;
+    width: 100%;
 
     .footer-content {
         display: flex;
@@ -58,7 +60,7 @@
         cursor: pointer;
     }
 
-    @media (max-width: 768px) {
+    @media screen and (max-width: 768px) {
         .footer-content {
             flex-direction: column;
         }

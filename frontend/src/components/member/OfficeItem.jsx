@@ -1,24 +1,34 @@
 import React from "react";
 import { FaStar } from "react-icons/fa";
 import { PiHeartThin } from "react-icons/pi";
+import { useNavigate } from "react-router-dom";
 import "../../styles/components/member/OfficeItem.css";
 
 // render: 오피스 아이템 컴포넌트 //
 const OfficeItem = (itemData) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/member/office/1");
+  };
+
   return (
-    <div className="office-item">
+    <div className="office-item" onClick={handleClick}>
       <div className="office-item-image-box">
         <div className="office-item-like-on-image">
           <PiHeartThin />
           {/* <PiHeartStraightFill style={{ color: "red" }} /> */}
         </div>
-        <div className="office-item-image">
-          <img
-            className="img100100"
-            src="/demooffice1.webp"
-            alt="오피스 이미지"
-          />
-        </div>
+        <div
+          className="office-item-image"
+          style={{
+            backgroundImage: `url(${itemData.officeImgURL})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            width: "100%",
+            height: "100%",
+          }}
+        ></div>{" "}
       </div>
 
       <div className="office-item-content">
