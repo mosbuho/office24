@@ -13,17 +13,26 @@
     flex: 0 0 calc(100% / 6 - 20px);
     width: calc(100% / 6 - 20px);
     max-width: 45%;
-    min-width: 200px;
     height: auto;
     box-sizing: border-box;
     position: relative;
-
 
     .office-item-image-box {
         position: relative;
         width: 100%;
         padding-top: 100%;
         overflow: hidden;
+    }
+
+    .office-item-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 20px;
+        z-index: -1;
     }
 
     .office-item-like-on-image {
@@ -48,7 +57,7 @@
     }
 
     .office-item-top-left h1 {
-        color: #565656;
+        color: var(--shaded-dark-color);
         font-size: 1.5rem;
         margin: 0;
         display: -webkit-box;
@@ -63,7 +72,8 @@
     p {
         margin: 0;
         font-size: 0.75rem;
-        color: #888;
+        color: var(--shaded-color);
+        font-weight: 700;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -72,7 +82,7 @@
 
     b {
         font-size: 0.77rem;
-        color: #565656;
+        color: var(--shaded-dark-color);
 
         white-space: nowrap;
         overflow: hidden;
@@ -98,6 +108,7 @@
         color: var(--background-color);
         height: 25px;
         padding: 0 5px 0 5px;
+        margin-right: 5px;
         border-radius: 25px;
         text-align: center;
         display: flex;
@@ -127,16 +138,6 @@
         background-position: center;
     }
 
-    .img100100 {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 20px;
-        z-index: 2;
-    }
 
     .star-icon {
         background-image: url(src/assets/star.png);
@@ -160,41 +161,44 @@
         font-size: 0.7rem;
     }
 
+    svg {
+        width: 100%;
+        height: 100%;
+    }
 }
 
-svg {
-    width: 100%;
-    height: 100%;
+.office-item:hover {
+    opacity: 0.8;
 }
 
-@media (max-width: 1400px) {
+@media screen and (max-width: 1400px) {
     .office-item {
         flex: 0 0 calc(25% - 20px);
         max-width: calc(25% - 20px);
     }
 }
 
-@media (max-width: 900px) {
+@media screen and (max-width: 900px) {
     .office-item {
         flex: 0 0 calc(33.333% - 20px);
         max-width: calc(33.333% - 20px);
     }
 }
 
-@media (max-width: 700px) {
+@media screen and (max-width: 700px) {
+
+    .office-item-list {
+        margin: 0;
+        padding: 0;
+    }
+
     .office-item {
+
         flex: 0 0 calc(50% - 20px);
         max-width: calc(50% - 20px);
     }
 }
 
-@media (max-width: 600px) {
-    .office-item {
-        flex: 100%;
-        max-width: 80%;
-        margin: auto;
-    }
-}
 
 
 .office-item-list.expanded {

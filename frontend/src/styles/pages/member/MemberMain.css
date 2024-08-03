@@ -60,7 +60,7 @@
         background-color: black;
     }
 
-    @media screen and (max-width: 1000px) {
+    @media screen and (max-width: 1500px) {
         .expand-map-button {
             display: none;
         }
@@ -161,4 +161,5 @@
         width: 30px;
         ;
     }
+
 }
