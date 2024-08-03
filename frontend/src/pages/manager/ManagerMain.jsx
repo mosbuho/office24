@@ -13,15 +13,13 @@ const COLORS = ['#57C9A6', '#EEBD6F'];
 
 const ManagerMain = () => {
   const no = getNo();
-  const [stats, setStats] = useState(null); // 통계 데이터
-  const [monthlyData, setMonthlyData] = useState([]); // 월 매출 데이터
-  const [genderData, setGenderData] = useState([]); // 성비 데이터
-  const [bookings, setBookings] = useState([]); // 예약 데이터
+  const [stats, setStats] = useState(null);
+  const [monthlyData, setMonthlyData] = useState([]);
+  const [genderData, setGenderData] = useState([]);
+  const [bookings, setBookings] = useState([]);
   const [bookingPageCount, setBookingPageCount] = useState(0);
-  const [currentBookingPage, setCurrentBookingPage] = useState(0); // 현재 페이지 저장
   const [offices, setOffices] = useState([]); // 오피스 등록 상태 리스트
   const [officePageCount, setOfficePageCount] = useState(0);
-  const [currentOfficePage, setCurrentOfficePage] = useState(0);
 
   useEffect(() => {
     document.body.classList.add('manager-main-body');
@@ -35,13 +33,11 @@ const ManagerMain = () => {
       const response = await axios.get(`/manager/office/stats/${no}`);
       const serverData = response.data;
 
-      // 월 매출
       const monthlyRevenue = serverData.monthlyRevenue.map(item => ({
         month: `${item.MONTH}월`,
         revenue: item.MONTHLY_REVENUE,
       }));
 
-      // 성비
       const genderRatio = serverData.genderRatio.map(item => ({
         name: item.GENDER === 'M' ? '남성' : '여성',
         value: item.COUNT,
@@ -52,7 +48,7 @@ const ManagerMain = () => {
       setGenderData(genderRatio);
 
       setOfficePageCount(Math.ceil(serverData.offices.length / 5));
-      setOffices(serverData.offices.slice(0, 5)); // 첫 페이지 오피스 데이터 설정
+      setOffices(serverData.offices.slice(0, 5));
     } catch (error) {
       console.error("Error fetching stats:", error);
     }
@@ -70,13 +66,11 @@ const ManagerMain = () => {
 
       setOffices(response.data.offices);
       setOfficePageCount(Math.ceil(response.data.total / 5));
-      setCurrentOfficePage(selectedPage);
     } catch (error) {
       console.error("Error fetching office status:", error);
     }
   };
 
-  // 예약 내역
   const fetchBookings = async (selectedPage) => {
     try {
       const response = await axios.get(`/manager/booking/${no}`, {
@@ -95,7 +89,6 @@ const ManagerMain = () => {
 
       setBookings(bookData);
       setBookingPageCount(response.data.totalPages);
-      setCurrentBookingPage(selectedPage);
     } catch (error) {
       console.error("Error fetching bookings:", error);
     }
@@ -187,7 +180,7 @@ const ManagerMain = () => {
                     fill="#8884d8"
                     label
                   >
-                    {genderData.map((entry, index) => (
+                    {genderData.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
