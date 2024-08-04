@@ -2,6 +2,7 @@ package com.kh.backend.member;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -395,5 +396,29 @@ public class MemberService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public Map<String, Object> getMembersWithPagination(int page, int size) {
+        int start = (page - 1) * size + 1;
+        int end = page * size;
+        List<Member> members = memberMapper.getAllMembers(start, end);
+        int totalCount = memberMapper.getTotalMemberCount();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("members", members);
+        response.put("totalCount", totalCount);
+        return response;
+    }
+
+    public void resetPassword(int no) {
+        memberMapper.resetPassword(no);
+    }
+
+    public void updateMember(Member member) {
+        memberMapper.updateMember(member);
+    }
+
+    public void deleteMember(int no) {
+        memberMapper.deleteMember(no);
     }
 }

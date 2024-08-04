@@ -1,66 +1,52 @@
-# 프로젝트 구조 및 설정 가이드
-
-## 프로젝트 구조
+# 프로젝트 구조 
 
 ```
 office24/
-│
 ├── backend/
-│   ├── table/
-│   │   ├── controller
-│   │   ├── entity
-│   │   ├── mapper
-│   │   └── service
-│   └── ...
+│   └── table/
+│       ├── controller
+│       ├── model
+│       ├── mapper
+│       └── service
 │
 └── frontend/
-    ├── assets/
     ├── components/
-    │   ├── member/
-    │   ├── manager/
-    │   └── admin/
-    ├── pages/
-    │   ├── member/
-    │   ├── manager/
-    │   └── admin/
+    │   ├── member/        
+    │   ├── manager/            
+    │   └── admin/            
+    ├── pages/    
+    │   ├── member/ 
+    │   └── ...           
+    ├── services/
+    │   ├── member/ 
+    │   └── ...   
+    ├── utils/
+    │   ├── member/ 
+    │   └── ...            
     └── styles/
         ├── components/
-        │   ├── member/
-        │   ├── manager/
-        │   └── admin/
+        │   ├── member/ 
+        │   └── ...     
         └── pages/
-            ├── member/
-            ├── manager/
-            └── admin/
+            ├── member/ 
+            └── ...           
 ```
 
 ### 백엔드 (Spring Boot)
 
 - controller: API 엔드포인트 정의
-- entity: 데이터베이스 모델 정의
+- model: 데이터베이스 모델 정의
 - mapper: 데이터베이스 쿼리 매핑
 - service: 비즈니스 로직 구현
 
+
 ### 프론트엔드 (React)
 
-- assets: 이미지, 폰트 등의 정적 파일
 - components: 재사용 가능한 React 컴포넌트
 - pages: 라우트에 해당하는 페이지 컴포넌트
 - styles: 전역 스타일 및 테마 설정
-
-## 의존성 설치
-
-### 백엔드 (Maven)
-
-   ```
-   mvn clean install
-   ```
-
-### 프론트엔드 (npm)
-
-   ```
-   npm install
-   ```
+- utils: 유틸리티 함수 및 헬퍼 모듈
+- services: API 호출 및 데이터 처리 로직
 
 <br>
 
@@ -69,10 +55,6 @@ office24/
 <br>
 
 # 프로젝트 브랜치 관리 절차
-
-브랜치를 나누어 프로젝트를 진행하기 위한 절차
-
-## 절차
 
 1. **이슈 등록 (팀원)**
    - **GitHub** 등 원격 저장소 관리 툴에서 새로운 이슈 등록

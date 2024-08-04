@@ -13,8 +13,9 @@ public class NoticeController {
     private NoticeService noticeService;
 
     @GetMapping("/admin/notice")
-    public List<Notice> getNotice(@RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "5") int size) {
+    public List<Notice> getNotice(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size) {
         return noticeService.getNotice(page, size);
     }
 }
