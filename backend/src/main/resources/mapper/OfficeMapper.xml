@@ -58,7 +58,7 @@
                 SELECT no, title, availability
                 FROM office
                 WHERE manager_no = #{no}
-                ORDER BY no
+                ORDER BY no desc
             ) A
             WHERE ROWNUM &lt;= #{offset} + #{limit}
         ) WHERE rnum &gt; #{offset}

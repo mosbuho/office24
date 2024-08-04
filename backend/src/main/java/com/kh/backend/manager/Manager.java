@@ -6,9 +6,11 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class Manager {
     private int no;
     @NotBlank(message = "아이디는 필수 입력 값입니다.")

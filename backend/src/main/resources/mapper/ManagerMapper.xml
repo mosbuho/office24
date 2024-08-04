@@ -2,10 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.backend.manager.ManagerMapper">
     <insert id="insertManager" parameterType="com.kh.backend.manager.Manager"> 
-        INSERT INTO manager (id, pw, name, phone, email) VALUES ( #{id}, #{pw}, #{name}, #{phone}, #{email} ) 
+        INSERT INTO manager (id, pw, name, phone, email) 
+        VALUES ( #{id}, #{pw}, #{name}, #{phone}, 
+        <if test="email != null and email != ''">#{email}</if>
+        <if test="email == null or email == ''">NULL</if> ) 
     </insert>
 
-    <select id="findById" parameterType="String" resultType="com.kh.backend.manager.Manager"> 
-        SELECT no, pw FROM manager WHERE id = #{id} 
-    </select>
+    <select id="findById" parameterType="String" resultType="com.kh.backend.manager.Manager"> SELECT
+        no, pw FROM manager WHERE id = #{id} </select>
 </mapper>

@@ -99,6 +99,7 @@ const ManagerOffice = () => {
             <li className={availability === 'all' ? 'active' : ''} onClick={() => handleTabClick('all')}>전체</li>
             <li className={availability === '1' ? 'active' : ''} onClick={() => handleTabClick('1')}>서비스 중</li>
             <li className={availability === '0' ? 'active' : ''} onClick={() => handleTabClick('0')}>대기 중</li>
+            <li className={availability === '2' ? 'active' : ''} onClick={() => handleTabClick('2')}>미승인</li>
           </ul>
         </div>
         <div className='headersearch'>
@@ -121,7 +122,7 @@ const ManagerOffice = () => {
                 <th>이름</th>
                 <th>주소</th>
                 <th>수용인원</th>
-                <th>가격(원)</th>
+                <th>가격(일)</th>
                 <th>상태</th>
                 <th>등록일</th>
                 <th></th>
@@ -135,10 +136,21 @@ const ManagerOffice = () => {
                     <td>{office.title}</td>
                     <td>{office.address}</td>
                     <td>{office.capacity}</td>
-                    <td>{office.price}</td>
+                    <td>{office.price}원</td>
                     <td>
-                      <span className={office.availability === 1 ? 'approved' : 'pending'}>
-                        {office.availability === 1 ? '승인됨' : '대기 중'}
+                      <span className={
+                        office.availability === 1
+                          ? 'approved'
+                          : office.availability === 0
+                            ? 'pending'
+                            : 'rejected'
+                      }>
+                        {office.availability === 1
+                          ? '승인됨'
+                          : office.availability === 0
+                            ? '대기 중'
+                            : '거절됨'
+                        }
                       </span>
                     </td>
                     <td>{new Date(office.reg_date).toLocaleDateString()}</td>

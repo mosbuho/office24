@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OfficeImage {
-    private int no;          // 구분 코드
-    private int officeNo;    // 오피스 번호
-    private String name;     // 기타 이미지 이름
+    private int no;    
+    private int officeNo;
+    private String name;
 }
