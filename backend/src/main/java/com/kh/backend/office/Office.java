@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class Office {
     private int no;
-    private int managerNo;
+    private int manager_no;
     private String managerName;
     private String title;
     private String address;

@@ -8,8 +8,6 @@ import '../../styles/pages/manager/ManagerOfficeUpdate.css';
 const ManagerOfficeUpdate = () => {
   const { no, officeNo } = useParams();
   const navigate = useNavigate();
-
-  // Individual state management
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
   const [address, setAddress] = useState('');
@@ -19,7 +17,6 @@ const ManagerOfficeUpdate = () => {
   const [capacity, setCapacity] = useState('');
   const [mainImageUrl, setMainImageUrl] = useState('');
   const [additionalImageUrls, setAdditionalImageUrls] = useState(['', '']);
-
   const [mainImage, setMainImage] = useState(null);
   const [additionalImages, setAdditionalImages] = useState([null, null]);
 
@@ -30,7 +27,6 @@ const ManagerOfficeUpdate = () => {
           withCredentials: true,
         });
 
-        // Set office data
         setTitle(data.title || '');
         setPrice(data.price || '');
         setAddress(data.address || '');
@@ -99,19 +95,19 @@ const ManagerOfficeUpdate = () => {
     };
 
     if (mainImage) {
-      formData.append('mainImage', mainImage);  // 저장할 메인 이미지
-      formData.append('existingMainImage', extractFileName(mainImageUrl)); // 삭제할 메인 이미지
+      formData.append('mainImage', mainImage);
+      formData.append('existingMainImage', extractFileName(mainImageUrl));
     } else {
-      const mainImageFileName = extractFileName(mainImageUrl); // 파일 이름만 추출
+      const mainImageFileName = extractFileName(mainImageUrl);
       formData.append('existingMainImage', mainImageFileName);
     }
 
     additionalImages.forEach((image, index) => {
       if (image) {
-        formData.append('additionalImages[]', image);  // Add the actual file
+        formData.append('additionalImages[]', image);
       } else if (additionalImageUrls[index]) {
-        const additionalImageFileName = extractFileName(additionalImageUrls[index]); // 파일 이름만 추출
-        formData.append('existingAdditionalImages[]', additionalImageFileName);  // Use the existing image URL
+        const additionalImageFileName = extractFileName(additionalImageUrls[index]); 
+        formData.append('existingAdditionalImages[]', additionalImageFileName);
       }
     });
 

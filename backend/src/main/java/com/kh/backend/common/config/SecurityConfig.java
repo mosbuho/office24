@@ -41,6 +41,7 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/img/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         // .requestMatchers("/auth/kakao/**").permitAll()
                         // .requestMatchers("/auth/naver/**").permitAll()

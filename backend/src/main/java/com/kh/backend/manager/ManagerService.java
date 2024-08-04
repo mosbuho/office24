@@ -16,13 +16,8 @@ public class ManagerService {
     }
 
     @Transactional
-    public void registerManager(String id, String pw, String name, String phone, String email) {
-        Manager manager = new Manager();
-        manager.setId(id);
-        manager.setPw(passwordEncoder.encode(pw));
-        manager.setName(name);
-        manager.setPhone(phone);
-        manager.setEmail(email);
+    public void registerManager(Manager manager) {
+        manager.setPw(passwordEncoder.encode(manager.getPw()));
         try {
             managerMapper.insertManager(manager);
         } catch (DataIntegrityViolationException e) {

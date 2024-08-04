@@ -123,6 +123,7 @@ const ManagerRegister = () => {
       return;
     }
     try {
+      console.log({ id, pw, name, phone, email });
       const response = await axios.post('http://localhost:8080/manager/register', {
         id,
         pw,

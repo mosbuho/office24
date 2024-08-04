@@ -47,39 +47,38 @@ const ManagerOffice = () => {
     };
   }, []);
 
-  // 선택된 페이지 데이터
   const handlePageClick = (data) => {
     const selectedPage = data.selected + 1;
     fetchOffices(selectedPage);
   };
 
-  // 탭 누르면 상태 업데이트 (전체, 서비스 중, 대기 중)
   const handleTabClick = (availabilityStatus) => {
     setAvailability(availabilityStatus);
   };
 
-  // 검색 입력값을 저장
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
   };
 
-  // 검색어 상태 업데이트하고 데이터요청
   const handleSearch = () => {
     setSearchText(searchInput);
   };
 
-  // 신규 등록 페이지로 이동 버튼
   const handleRegisterClick = () => {
     navigate(`/manager/office/register/${no}`);
   };
 
-  // 수정 페이지로 이동 버튼
   const handleUpdateClick = (officeNo) => {
     navigate(`/manager/office/update/${no}/${officeNo}`);
   };
 
-  // 삭제
   const handleDeleteClick = async (officeNo) => {
+    const confirmed = window.confirm("정말 이 오피스를 삭제하시겠습니까?");
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
       await axios.delete(`/manager/office/delete/${officeNo}`, { withCredentials: true });
       alert("오피스가 성공적으로 삭제되었습니다.");
@@ -100,6 +99,7 @@ const ManagerOffice = () => {
             <li className={availability === 'all' ? 'active' : ''} onClick={() => handleTabClick('all')}>전체</li>
             <li className={availability === '1' ? 'active' : ''} onClick={() => handleTabClick('1')}>서비스 중</li>
             <li className={availability === '0' ? 'active' : ''} onClick={() => handleTabClick('0')}>대기 중</li>
+            <li className={availability === '2' ? 'active' : ''} onClick={() => handleTabClick('2')}>미승인</li>
           </ul>
         </div>
         <div className='headersearch'>
@@ -122,7 +122,7 @@ const ManagerOffice = () => {
                 <th>이름</th>
                 <th>주소</th>
                 <th>수용인원</th>
-                <th>가격(원)</th>
+                <th>가격(일)</th>
                 <th>상태</th>
                 <th>등록일</th>
                 <th></th>
@@ -136,13 +136,24 @@ const ManagerOffice = () => {
                     <td>{office.title}</td>
                     <td>{office.address}</td>
                     <td>{office.capacity}</td>
-                    <td>{office.price}</td>
+                    <td>{office.price}원</td>
                     <td>
-                      <span className={office.availability === 1 ? 'approved' : 'pending'}>
-                        {office.availability === 1 ? '승인됨' : '대기 중'}
+                      <span className={
+                        office.availability === 1
+                          ? 'approved'
+                          : office.availability === 0
+                            ? 'pending'
+                            : 'rejected'
+                      }>
+                        {office.availability === 1
+                          ? '승인됨'
+                          : office.availability === 0
+                            ? '대기 중'
+                            : '거절됨'
+                        }
                       </span>
                     </td>
-                    <td>{new Date(office.regDate).toLocaleDateString()}</td>
+                    <td>{new Date(office.reg_date).toLocaleDateString()}</td>
                     <td>
                       <button onClick={() => handleUpdateClick(office.no)}>수정</button>
                       <button onClick={() => handleDeleteClick(office.no)}>삭제</button>
