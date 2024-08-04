@@ -409,8 +409,8 @@ public class MemberService {
         return response;
     }
 
-    public void resetPassword(int no) {
-        memberMapper.resetPassword(no);
+    public void resetMemberPw(int no) {
+        memberMapper.resetMemberPw(no);
     }
 
     public void updateMember(Member member) {

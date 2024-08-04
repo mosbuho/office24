@@ -24,9 +24,9 @@ public interface MemberMapper {
 
     int getTotalMemberCount(@Param("f") String f, @Param("q") String q);
 
-    void resetPassword(int memberId);
+    void resetMemberPw(int no);
 
     void updateMember(Member member);
 
-    void deleteMember(int memberId);
+    void deleteMember(int no);
 }

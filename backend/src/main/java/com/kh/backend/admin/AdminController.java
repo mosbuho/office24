@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kh.backend.manager.Manager;
+import com.kh.backend.manager.ManagerService;
 import com.kh.backend.member.Member;
 import com.kh.backend.member.MemberService;
 
@@ -22,6 +24,8 @@ import com.kh.backend.member.MemberService;
 public class AdminController {
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private ManagerService managerService;
 
     @GetMapping("/member")
     public Map<String, Object> getAllMembers(
@@ -33,9 +37,9 @@ public class AdminController {
     }
 
     @PostMapping("/member/{no}/reset-pw")
-    public ResponseEntity<String> resetPassword(@PathVariable("no") int no) {
+    public ResponseEntity<String> resetMemberPw(@PathVariable("no") int no) {
         try {
-            memberService.resetPassword(no);
+            memberService.resetMemberPw(no);
             return ResponseEntity.ok(null);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
@@ -57,6 +61,46 @@ public class AdminController {
     public ResponseEntity<String> deleteMember(@PathVariable("no") int no) {
         try {
             memberService.deleteMember(no);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/manager")
+    public Map<String, Object> getAllManagers(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "30") int size,
+            @RequestParam(required = false) String f,
+            @RequestParam(required = false) String q) {
+        return managerService.getManagersWithPagination(page, size, f, q);
+    }
+
+    @PostMapping("/manager/{no}/reset-pw")
+    public ResponseEntity<String> resetManagerPw(@PathVariable("no") int no) {
+        try {
+            managerService.resetManagerPw(no);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @PutMapping("/manager/{no}")
+    public ResponseEntity<String> updateManager(@PathVariable("no") int no, @RequestBody Manager manager) {
+        try {
+            manager.setNo(no);
+            managerService.updateManager(manager);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @DeleteMapping("/manager/{no}")
+    public ResponseEntity<String> deleteManager(@PathVariable("no") int no) {
+        try {
+            managerService.deleteManager(no);
             return ResponseEntity.ok(null);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
