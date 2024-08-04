@@ -22,20 +22,14 @@
 
     <update id="resetPw"> UPDATE member SET pw = #{pw} WHERE id = #{id} </update>
 
-    <select id="getAllMembers" resultType="map"> 
-        <![CDATA[ 
-          SELECT * FROM (
-            SELECT m.*, ROWNUM rnum FROM (
-                SELECT no, id, name, phone, email, birth, gender, reg_date
-                FROM member
-                ORDER BY no
-            ) m
-            WHERE ROWNUM <= #{end}
-        ) WHERE rnum >= #{start}
-        ]]>
-    </select>
+    <select id="getAllMembers" resultType="map"> SELECT * FROM ( SELECT m.*, ROWNUM rnum FROM (
+        SELECT no, id, name, phone, email, birth, gender, reg_date FROM member <if
+            test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if>
+        ORDER BY no ) m WHERE ROWNUM &lt;= #{end} ) WHERE rnum >= #{start} </select>
 
-    <select id="getTotalMemberCount" resultType="int"> SELECT COUNT(*) FROM member </select>
+    <select id="getTotalMemberCount" resultType="int"> SELECT COUNT(*) FROM member <if
+            test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if>
+    </select>
 
     <update id="resetPassword"> UPDATE member SET pw =
         '$2a$10$v6N1KZmqox/VYBcmvLMzie359WZ1.3PQ0f8aJOtghk0Od0gdwGSDu' WHERE no = #{no} </update>

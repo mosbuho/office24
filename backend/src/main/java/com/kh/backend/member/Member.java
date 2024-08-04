@@ -19,4 +19,5 @@ public class Member {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birth;
     private String gender;
+    private String reg_date;
 }

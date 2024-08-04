@@ -11,6 +11,8 @@ const AdminMember = () => {
     const [pageCount, setPageCount] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
     const [pageDataCache, setPageDataCache] = useState({});
+    const [f, setF] = useState('NO');
+    const [q, setQ] = useState('');
 
     const navigate = useNavigate();
 
@@ -19,19 +21,20 @@ const AdminMember = () => {
     }, []);
 
     const fetchMembers = async (page) => {
-        if (pageDataCache[page]) {
-            setMembers(pageDataCache[page]);
+        if (pageDataCache[`${f}_${q}_${page}`]) {
+            setMembers(pageDataCache[`${f}_${q}_${page}`]);
             return;
         }
-
         const response = await axios.get(`/admin/member`, {
-            params: { page, size: 30 }
+            params: {
+                page, size: 30, f, q
+            }
         });
         const { members: fetchedMembers, totalCount } = response.data;
 
         setPageDataCache(prevCache => ({
             ...prevCache,
-            [page]: fetchedMembers
+            [`${f}_${q}_${page}`]: fetchedMembers
         }));
 
         setMembers(fetchedMembers);
@@ -44,11 +47,35 @@ const AdminMember = () => {
         fetchMembers(newPage);
     };
 
+    const handleSearch = () => {
+        setCurrentPage(0); // Reset to the first page
+        setPageDataCache({}); // Invalidate cache on search
+        fetchMembers(1); // Fetch the first page with new search criteria
+    };
+
     return (
         <div className="admin-main">
             <Header />
             <Sidebar />
             <div className='main'>
+                <div className='admin-search'>
+                    <select
+                        value={f}
+                        onChange={(e) => setF(e.target.value)}
+                    >
+                        <option value="NO">번호</option>
+                        <option value="ID">아이디</option>
+                        <option value="NAME">이름</option>
+                        <option value="PHONE">핸드폰</option>
+                    </select>
+                    <input
+                        type="text"
+                        value={q}
+                        onChange={(e) => setQ(e.target.value)}
+                        placeholder="검색어 입력"
+                    />
+                    <button onClick={handleSearch}>검색</button>
+                </div>
                 <div className='admin-table'>
                     <table>
                         <thead>
@@ -56,7 +83,7 @@ const AdminMember = () => {
                                 <th>번호</th>
                                 <th>아이디</th>
                                 <th>이름</th>
-                                <th>핸드폰 번호</th>
+                                <th>핸드폰</th>
                                 <th>이메일</th>
                                 <th>생일</th>
                                 <th>성별</th>
