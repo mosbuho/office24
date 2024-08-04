@@ -22,4 +22,10 @@ public interface MemberMapper {
     List<Member> getAllMembers(@Param("start") int start, @Param("end") int end);
 
     int getTotalMemberCount();
+
+    void resetPassword(int memberId);
+
+    void updateMember(Member member);
+
+    void deleteMember(int memberId);
 }

@@ -199,7 +199,7 @@ const AdminMain = () => {
                     <div className="chart-card sales-chart">
                         <div className="chart-header">
                             <h3>{groupName}</h3>
-                            <select onChange={selectChart}>
+                            <select className='chart-change' onChange={selectChart}>
                                 <option value="membergroup">이용자</option>
                                 <option value="managergroup">매니저</option>
                                 <option value="officegroup">오피스</option>

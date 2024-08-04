@@ -1,0 +1,40 @@
+.admin-table {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-table {
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background-color: #e5e5e5;
+    }
+
+    tr {
+        text-align: center;
+    }
+
+    td {
+        cursor: pointer;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        border: 1px solid #eee;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f4f4f4;
+    }
+
+    tr:hover {
+        background-color: #dddddd;
+        transition: 0.1s;
+    }
+}

@@ -42,8 +42,9 @@
 .admin-pagination .disabled a,
 .admin-pagination .disabled span {
     cursor: not-allowed;
-    color: #6c757d;
+    color: #a5a5a5;
     border-color: #ddd;
+    transition: 0.3s;
 }
 
 .admin-pagination .previous a,

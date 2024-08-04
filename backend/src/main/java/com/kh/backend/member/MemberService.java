@@ -409,4 +409,16 @@ public class MemberService {
         response.put("totalCount", totalCount);
         return response;
     }
+
+    public void resetPassword(int no) {
+        memberMapper.resetPassword(no);
+    }
+
+    public void updateMember(Member member) {
+        memberMapper.updateMember(member);
+    }
+
+    public void deleteMember(int no) {
+        memberMapper.deleteMember(no);
+    }
 }

@@ -23,6 +23,7 @@ body {
     margin: 0;
 }
 
+select,
 input {
     outline: none;
 }

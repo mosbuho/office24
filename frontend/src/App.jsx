@@ -20,6 +20,7 @@ import MemberFindIdResult from "./pages/member/MemberFindIResult.jsx";
 import ManagerOfficeRegister from './pages/manager/ManagerOfficeRegister.jsx';
 import MemberOffice from "./pages/member/MemberOffice.jsx";
 import ManagerOfficeUpdate from './pages/manager/ManagerOfficeUpdate.jsx';
+import AdminMemberList from './pages/admin/AdminMemberList.jsx';
 import AdminMember from './pages/admin/AdminMember.jsx';
 
 function App() {
@@ -52,7 +53,8 @@ function App() {
 
         {/* 어드민 라우트 */}
         <Route path="/admin" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMain /></PrivateRoute>} />
-        <Route path="/admin/member" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMember /></PrivateRoute>} />
+        <Route path="/admin/member" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMemberList /></PrivateRoute>} />
+        <Route path="/admin/member/:no" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMember /></PrivateRoute>} />
       </Routes>
     </Router>
   );
