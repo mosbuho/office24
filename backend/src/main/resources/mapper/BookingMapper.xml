@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.backend.booking.BookingMapper">
-    <!-- 예약 정보들과 페이징을 위한 rownum -->
     <select id="selectBookingsByManager" resultType="map">
         SELECT *
         FROM (
@@ -26,7 +25,7 @@
         )
         WHERE rn BETWEEN #{offset} + 1 AND #{offset} + #{limit}
     </select>
-    <!-- 예약 건수 카운트 -->
+
     <select id="countBookingsByManager" resultType="int">
         SELECT COUNT(*)
         FROM booking b
@@ -34,4 +33,70 @@
         JOIN manager m ON o.manager_no = m.no
         WHERE m.no = #{no}
     </select>
+
+    <select id="selectDetailedBookingsByManager" resultType="map">
+        SELECT *
+        FROM (
+            SELECT
+                b.no AS booking_no,
+                o.title AS office_name,
+                m.name AS customer_name,
+                b.payment AS payment_method,
+                b.price AS payment_amount,
+                b.start_date,
+                b.end_date,
+                ROW_NUMBER() OVER (ORDER BY b.reg_date DESC) AS rn
+            FROM
+                booking b
+            JOIN
+                office o ON b.office_no = o.no
+            JOIN
+                manager mgr ON o.manager_no = mgr.no
+            JOIN
+                member m ON b.member_no = m.no
+            WHERE
+                mgr.no = #{no}
+                <if test="filter == 'recent'">
+                    AND b.end_date >= SYSDATE
+                </if>
+                <if test="filter == 'past'">
+                    AND b.end_date &lt; SYSDATE
+                </if>
+                <if test="searchText != null and searchText != ''">
+                    AND (o.title LIKE '%' || #{searchText} || '%'
+                    OR m.name LIKE '%' || #{searchText} || '%')
+                </if>
+        )
+        WHERE rn BETWEEN #{offset} + 1 AND #{offset} + #{limit}
+    </select>
+
+    <select id="countBookingsByManagerWithFilter" resultType="int">
+        SELECT COUNT(*)
+        FROM
+            booking b
+        JOIN
+            office o ON b.office_no = o.no
+        JOIN
+            manager mgr ON o.manager_no = mgr.no
+        JOIN
+            member m ON b.member_no = m.no
+        WHERE
+            mgr.no = #{no}
+            <if test="filter == 'recent'">
+                AND b.end_date >= SYSDATE
+            </if>
+            <if test="filter == 'past'">
+                AND b.end_date &lt; SYSDATE
+            </if>
+            <if test="searchText != null and searchText != ''">
+                AND (o.title LIKE '%' || #{searchText} || '%'
+                OR m.name LIKE '%' || #{searchText} || '%')
+            </if>
+    </select>
+
+    <!-- 예약 삭제 -->
+    <delete id="deleteBooking">
+        DELETE FROM booking WHERE no = #{bookingNo}
+    </delete>
+
 </mapper>

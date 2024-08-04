@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.backend.booking.BookingService;
 import com.kh.backend.office.OfficeService;
 
 @RestController
@@ -23,10 +24,12 @@ public class ManagerController {
 
     private final ManagerService managerService;
     private final OfficeService officeService;
+    private final BookingService bookingService;
 
-    public ManagerController(ManagerService managerService, OfficeService officeService) {
+    public ManagerController(ManagerService managerService, OfficeService officeService, BookingService bookingService) {
         this.managerService = managerService;
         this.officeService = officeService;
+        this.bookingService = bookingService;
     }
 
     // 회원 가입 페이지
@@ -62,6 +65,15 @@ public class ManagerController {
             @RequestParam(defaultValue = "5") int size) {
 
         return officeService.getOfficeStatusPaged(no, page, size);
+    }
+
+    @GetMapping("/booking/simple/{no}")
+    public ResponseEntity<Map<String, Object>> getBookingsByManager(
+            @PathVariable Integer no,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        Map<String, Object> result = bookingService.getBookingsByManager(no, page, size);
+        return ResponseEntity.ok(result);
     }
 
     // 오피스 관리 페이지
@@ -122,6 +134,24 @@ public class ManagerController {
 
         return officeService.updateOffice(managerNo, officeNo, title, address, zipCode, sido, content, price, capacity,
                 mainImage, existingMainImage, additionalImages, existingAdditionalImages);
+    }
+
+    // 예약 관리 페이지
+    @GetMapping("/booking/{no}")
+    public ResponseEntity<Map<String, Object>> getDetailedBookingsByManager(
+            @PathVariable Integer no,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(value = "filter", required = false) String filter,
+            @RequestParam(value = "searchText", required = false) String searchText) {
+        Map<String, Object> result = bookingService.getDetailedBookingsByManager(no, page, size, filter, searchText);
+        return ResponseEntity.ok(result);
+    }
+    
+    @DeleteMapping("/booking/delete/{bookingNo}")
+    public ResponseEntity<Void> deleteBooking(@PathVariable int bookingNo) {
+        bookingService.deleteBooking(bookingNo);
+        return ResponseEntity.ok().build();
     }
 
 }

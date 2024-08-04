@@ -73,7 +73,7 @@ const ManagerMain = () => {
 
   const fetchBookings = async (selectedPage) => {
     try {
-      const response = await axios.get(`/manager/booking/${no}`, {
+      const response = await axios.get(`/manager/booking/simple/${no}`, {
         params: {
           page: selectedPage + 1,
           size: 5,
@@ -125,7 +125,7 @@ const ManagerMain = () => {
                 <p>누적 수익</p>
               </div>
               <div className='statcontent'>
-                <span>{stats.totalRevenue}</span>&nbsp;<FaWonSign size={12} color='#4171DD' />
+                <span>{stats.totalRevenue.toLocaleString()}</span>&nbsp;<FaWonSign size={12} color='#4171DD' />
               </div>
             </div>
             <div className='mini-stats'>
