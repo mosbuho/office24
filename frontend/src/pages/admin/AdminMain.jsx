@@ -274,7 +274,7 @@ const AdminMain = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td rowSpan="2" className="nodata">더 이상 데이터가 없습니다</td>
+                                        <td colSpan="2" className="nodata">데이터가 존재하지 않습니다.</td>
                                     </tr>
                                 )}
                             </tbody>
@@ -309,7 +309,7 @@ const AdminMain = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td rowSpan="5" className="nodata">더 이상 데이터가 없습니다</td>
+                                        <td colSpan="5" className="nodata">데이터가 존재하지 않습니다.</td>
                                     </tr>
                                 )}
                             </tbody>
