@@ -385,7 +385,6 @@ public class MemberService {
                     googleUser.getEmail(), googleUser.getBirth(), googleUser.getGender());
             member = memberMapper.findByEmail(googleUser.getEmail());
         }
-
     }
 
     public boolean resetPw(String pw, String id) {
@@ -398,11 +397,11 @@ public class MemberService {
         }
     }
 
-    public Map<String, Object> getMembersWithPagination(int page, int size) {
+    public Map<String, Object> getMembersWithPagination(int page, int size, String f, String q) {
         int start = (page - 1) * size + 1;
         int end = page * size;
-        List<Member> members = memberMapper.getAllMembers(start, end);
-        int totalCount = memberMapper.getTotalMemberCount();
+        List<Member> members = memberMapper.getAllMembers(start, end, f, q);
+        int totalCount = memberMapper.getTotalMemberCount(f, q);
 
         Map<String, Object> response = new HashMap<>();
         response.put("members", members);

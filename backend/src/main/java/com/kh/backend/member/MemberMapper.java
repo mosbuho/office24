@@ -19,9 +19,10 @@ public interface MemberMapper {
 
     void resetPw(String pw, String id);
 
-    List<Member> getAllMembers(@Param("start") int start, @Param("end") int end);
+    List<Member> getAllMembers(@Param("start") int start, @Param("end") int end,
+            @Param("f") String f, @Param("q") String q);
 
-    int getTotalMemberCount();
+    int getTotalMemberCount(@Param("f") String f, @Param("q") String q);
 
     void resetPassword(int memberId);
 

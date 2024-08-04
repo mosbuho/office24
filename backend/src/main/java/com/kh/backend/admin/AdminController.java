@@ -26,8 +26,10 @@ public class AdminController {
     @GetMapping("/member")
     public Map<String, Object> getAllMembers(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "30") int size) {
-        return memberService.getMembersWithPagination(page, size);
+            @RequestParam(defaultValue = "30") int size,
+            @RequestParam(required = false) String f,
+            @RequestParam(required = false) String q) {
+        return memberService.getMembersWithPagination(page, size, f, q);
     }
 
     @PostMapping("/member/{no}/reset-pw")

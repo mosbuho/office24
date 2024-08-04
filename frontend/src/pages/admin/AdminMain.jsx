@@ -211,12 +211,13 @@ const AdminMain = () => {
                         <ResponsiveContainer width="100%" height={300}>
                             <ComposedChart data={currentGroupData} margin={{ top: 20, right: 20, left: 20, bottom: 5 }}>
                                 <XAxis dataKey="name" tickFormatter={(value) => value.toLocaleString('ko-KR')} />
-                                <YAxis tickFormatter={(value) => value.toLocaleString('ko-KR')} />
+                                <YAxis yAxisId="left" tickFormatter={(value) => value.toLocaleString('ko-KR')} />
+                                <YAxis yAxisId="right" orientation="right" tickFormatter={(value) => value.toLocaleString('ko-KR')} />
                                 <Tooltip formatter={(value) => value.toLocaleString('ko-KR')} />
                                 <Legend />
-                                <Bar dataKey={chartLabels.label1} fill="#3cb371" barSize={20} />
-                                <Bar dataKey={chartLabels.label2} fill="#db4455" barSize={20} />
-                                <Line type="monotone" dataKey={chartLabels.label3} stroke="#ffa550" dot={false} />
+                                <Bar yAxisId="left" dataKey={chartLabels.label1} fill="#3cb371" barSize={20} />
+                                <Bar yAxisId="left" dataKey={chartLabels.label2} fill="#db4455" barSize={20} />
+                                <Line yAxisId="right" type="monotone" dataKey={chartLabels.label3} stroke="#ffa550" dot={false} />
                             </ComposedChart>
                         </ResponsiveContainer>
                     </div>

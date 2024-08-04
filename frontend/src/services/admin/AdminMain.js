@@ -39,10 +39,10 @@ export const fetchGroupData = async (groupState, setGroupState, group) => {
     }
 
     const response = await axios.get(`/admin/${group}`);
-    const year = new Date().getFullYear();
+    console.log(response.data);
     const months = Array.from({ length: 12 }, (_, i) => {
-        const month = String(i + 1).padStart(2, '0');
-        return `${year}-${month}`;
+        const month = i + 1;
+        return `${month}월`;
     });
 
     let labels;
@@ -65,26 +65,36 @@ export const fetchGroupData = async (groupState, setGroupState, group) => {
         case 'reviewgroup':
             labels = { label1: '신규', label2: '삭제', label3: '리뷰' };
             break;
+        default:
+            labels = { label1: 'label1', label2: 'label2', label3: 'label3' }; // 기본 레이블
     }
 
     const formattedGroup = months.map(month => ({
-        name: `${month.slice(-2)}월`,
+        name: month,
         [labels.label1]: 0,
         [labels.label2]: 0,
         [labels.label3]: 0
     }));
 
+    let cumulativeTrend = 0;
+
     response.data.forEach(item => {
-        const monthIndex = months.indexOf(item.YEAR_MONTH);
+        const yearMonth = item.YEAR_MONTH;
+        const month = parseInt(yearMonth.split('-')[1], 10);
+        const monthName = `${month}월`;
+
+        const monthIndex = months.indexOf(monthName);
         if (monthIndex !== -1) {
+            cumulativeTrend += item.TOTAL_CREATE - item.TOTAL_DELETE;
             formattedGroup[monthIndex] = {
-                name: `${item.YEAR_MONTH.slice(-1)}월`,
+                name: monthName,
                 [labels.label1]: item.TOTAL_CREATE,
                 [labels.label2]: item.TOTAL_DELETE,
-                [labels.label3]: item.TREND
+                [labels.label3]: cumulativeTrend
             };
         }
     });
+
     setGroupState(formattedGroup);
 };
 
@@ -104,7 +114,7 @@ export const fetchNotAvailabilityOffice = async (officePage, setNotAvailabilityO
 
 export const fetchNotices = async (noticePage, setNotices, fetchedNoticePages, setfetchedNoticePages) => {
     if (fetchedNoticePages.has(noticePage)) return;
-    
+
     const response = await axios.get('/admin/notice', {
         params: { page: noticePage, size: 5 }
     });
