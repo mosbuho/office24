@@ -1,18 +1,10 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaMapLocationDot } from "react-icons/fa6";
 import KakaoMap from "../../components/member/KakaoMap";
 import MemberFooter from "../../components/member/MemberFooter";
 import MemberHeader from "../../components/member/MemberHeader";
 import OfficeItem from "../../components/member/OfficeItem";
-import PopUpMSG from "../../components/member/PopUpMSG";
-import PopUpQNA from "../../components/member/PopUpQNA";
-import PopupPage from "../../components/member/PopupPage";
 import "../../styles/pages/member/MemberMain.css";
-
-const initialPopupState = {
-  type: null,
-  message: "",
-};
 
 const SearchResultMockData = [
   {
@@ -24,8 +16,8 @@ const SearchResultMockData = [
     location: "강남역",
     pricePerDay: "10000",
     officeImgURL: "/demooffice1.webp",
-    xCoordinate: 127.058392,
-    yCoordinate: 37.500454,
+    longitude: 127.058392,
+    latitude: 37.500454,
   },
   {
     id: 2,
@@ -36,8 +28,8 @@ const SearchResultMockData = [
     location: "홍대입구",
     pricePerDay: "12000",
     officeImgURL: "/demooffice2.webp",
-    xCoordinate: 126.923774,
-    yCoordinate: 37.557534,
+    longitude: 126.9237741555385,
+    latitude: 37.5575341555385,
   },
   {
     id: 3,
@@ -48,8 +40,8 @@ const SearchResultMockData = [
     location: "판교",
     pricePerDay: "15000",
     officeImgURL: "/demooffice3.webp",
-    xCoordinate: 127.10864,
-    yCoordinate: 37.402111,
+    longitude: 127.108641555385,
+    latitude: 37.4021111555385,
   },
   {
     id: 4,
@@ -59,9 +51,9 @@ const SearchResultMockData = [
     description: "역삼동 비즈니스 센터",
     location: "역삼동",
     pricePerDay: "13000",
-    officeImgURL: "/demooffice4.webp",
-    xCoordinate: 127.036346,
-    yCoordinate: 37.501362,
+    officeImgURL: "/demooffice2.webp",
+    longitude: 127.0363461555385,
+    latitude: 37.5013621555385,
   },
   {
     id: 5,
@@ -71,9 +63,9 @@ const SearchResultMockData = [
     description: "신촌 스터디룸",
     location: "신촌",
     pricePerDay: "8000",
-    officeImgURL: "/demooffice5.webp",
-    xCoordinate: 126.936893,
-    yCoordinate: 37.555976,
+    officeImgURL: "/demooffice1.webp",
+    longitude: 126.9368931555385,
+    latitude: 37.5559761555385,
   },
   {
     id: 6,
@@ -83,9 +75,9 @@ const SearchResultMockData = [
     description: "종로 공유 오피스",
     location: "종로",
     pricePerDay: "11000",
-    officeImgURL: "/demooffice6.webp",
-    xCoordinate: 126.981611,
-    yCoordinate: 37.572025,
+    officeImgURL: "/demooffice3.webp",
+    longitude: 126.9816111555385,
+    latitude: 37.5720251555385,
   },
   {
     id: 7,
@@ -95,9 +87,9 @@ const SearchResultMockData = [
     description: "성수동 창업 공간",
     location: "성수동",
     pricePerDay: "9000",
-    officeImgURL: "/demooffice7.webp",
-    xCoordinate: 127.055723,
-    yCoordinate: 37.544323,
+    officeImgURL: "/demooffice1.webp",
+    longitude: 127.0557231555385,
+    latitude: 37.5443231555385,
   },
   {
     id: 8,
@@ -107,9 +99,9 @@ const SearchResultMockData = [
     description: "여의도 비즈니스 센터",
     location: "여의도",
     pricePerDay: "18000",
-    officeImgURL: "/demooffice8.webp",
-    xCoordinate: 126.925381,
-    yCoordinate: 37.521624,
+    officeImgURL: "/demooffice2.webp",
+    longitude: 126.9253811555385,
+    latitude: 37.5216241555385,
   },
   {
     id: 9,
@@ -119,9 +111,9 @@ const SearchResultMockData = [
     description: "강남 디자인 스튜디오",
     location: "강남",
     pricePerDay: "14000",
-    officeImgURL: "/demooffice9.webp",
-    xCoordinate: 127.028461,
-    yCoordinate: 37.497175,
+    officeImgURL: "/demooffice3.webp",
+    longitude: 127.028461,
+    latitude: 37.497175,
   },
   {
     id: 10,
@@ -131,9 +123,9 @@ const SearchResultMockData = [
     description: "서초 법률 사무소",
     location: "서초",
     pricePerDay: "16000",
-    officeImgURL: "/demooffice10.webp",
-    xCoordinate: 127.007695,
-    yCoordinate: 37.483577,
+    officeImgURL: "/demooffice1.webp",
+    longitude: 127.0076951555385,
+    latitude: 37.4835771555385,
   },
   {
     id: 11,
@@ -143,9 +135,9 @@ const SearchResultMockData = [
     description: "광화문 비즈니스 라운지",
     location: "광화문",
     pricePerDay: "17000",
-    officeImgURL: "/demooffice11.webp",
-    xCoordinate: 126.976882,
-    yCoordinate: 37.572768,
+    officeImgURL: "/demooffice1.webp",
+    longitude: 126.9768821555385,
+    latitude: 37.5727681555385,
   },
   {
     id: 12,
@@ -155,9 +147,9 @@ const SearchResultMockData = [
     description: "이태원 글로벌 오피스",
     location: "이태원",
     pricePerDay: "11000",
-    officeImgURL: "/demooffice12.webp",
-    xCoordinate: 126.994444,
-    yCoordinate: 37.534722,
+    officeImgURL: "/demooffice2.webp",
+    longitude: 126.9944441555385,
+    latitude: 37.5347221555385,
   },
   {
     id: 13,
@@ -167,9 +159,9 @@ const SearchResultMockData = [
     description: "명동 비즈니스 센터",
     location: "명동",
     pricePerDay: "15000",
-    officeImgURL: "/demooffice13.webp",
-    xCoordinate: 126.985833,
-    yCoordinate: 37.563889,
+    officeImgURL: "/demooffice2.webp",
+    longitude: 126.9858331555385,
+    latitude: 37.5638891555385,
   },
   {
     id: 14,
@@ -179,9 +171,9 @@ const SearchResultMockData = [
     description: "압구정 프리미엄 오피스",
     location: "압구정",
     pricePerDay: "20000",
-    officeImgURL: "/demooffice14.webp",
-    xCoordinate: 127.028611,
-    yCoordinate: 37.527222,
+    officeImgURL: "/demooffice2.webp",
+    longitude: 127.0286111555385,
+    latitude: 37.5272221555385,
   },
   {
     id: 15,
@@ -191,9 +183,9 @@ const SearchResultMockData = [
     description: "신사동 코워킹스페이스",
     location: "신사동",
     pricePerDay: "13000",
-    officeImgURL: "/demooffice15.webp",
-    xCoordinate: 127.020833,
-    yCoordinate: 37.516389,
+    officeImgURL: "/demooffice1.webp",
+    longitude: 127.0208331555385,
+    latitude: 37.5163891555385,
   },
   {
     id: 16,
@@ -203,9 +195,9 @@ const SearchResultMockData = [
     description: "잠실 스타트업 허브",
     location: "잠실",
     pricePerDay: "12000",
-    officeImgURL: "/demooffice16.webp",
-    xCoordinate: 127.100278,
-    yCoordinate: 37.513889,
+    officeImgURL: "/demooffice2.webp",
+    longitude: 127.1002781555385,
+    latitude: 37.5138891555385,
   },
   {
     id: 17,
@@ -215,9 +207,9 @@ const SearchResultMockData = [
     description: "상암동 미디어 센터",
     location: "상암동",
     pricePerDay: "14000",
-    officeImgURL: "/demooffice17.webp",
-    xCoordinate: 126.889444,
-    yCoordinate: 37.579444,
+    officeImgURL: "/demooffice3.webp",
+    longitude: 126.8894441555385,
+    latitude: 37.5794441555385,
   },
   {
     id: 18,
@@ -227,9 +219,9 @@ const SearchResultMockData = [
     description: "을지로 비즈니스 타워",
     location: "을지로",
     pricePerDay: "16000",
-    officeImgURL: "/demooffice18.webp",
-    xCoordinate: 126.992778,
-    yCoordinate: 37.566389,
+    officeImgURL: "/demooffice2.webp",
+    longitude: 126.9927781555385,
+    latitude: 37.5663891555385,
   },
   {
     id: 19,
@@ -239,9 +231,9 @@ const SearchResultMockData = [
     description: "청담동 럭셔리 오피스",
     location: "청담동",
     pricePerDay: "22000",
-    officeImgURL: "/demooffice19.webp",
-    xCoordinate: 127.053611,
-    yCoordinate: 37.525278,
+    officeImgURL: "/demooffice1.webp",
+    longitude: 127.0536111555385,
+    latitude: 37.5252781555385,
   },
   {
     id: 20,
@@ -251,9 +243,9 @@ const SearchResultMockData = [
     description: "구로 디지털단지 오피스",
     location: "구로",
     pricePerDay: "10000",
-    officeImgURL: "/demooffice20.webp",
-    xCoordinate: 126.897778,
-    yCoordinate: 37.485556,
+    officeImgURL: "/demooffice2.webp",
+    longitude: 126.8977781555385,
+    latitude: 37.4855561555385,
   },
   {
     id: 21,
@@ -263,9 +255,9 @@ const SearchResultMockData = [
     description: "마포 창업지원센터",
     location: "마포",
     pricePerDay: "9000",
-    officeImgURL: "/demooffice21.webp",
-    xCoordinate: 126.945556,
-    yCoordinate: 37.556111,
+    officeImgURL: "/demooffice3.webp",
+    longitude: 126.9455561555385,
+    latitude: 37.5561111555385,
   },
   {
     id: 22,
@@ -275,9 +267,9 @@ const SearchResultMockData = [
     description: "용산 IT 밸리 오피스",
     location: "용산",
     pricePerDay: "13000",
-    officeImgURL: "/demooffice22.webp",
-    xCoordinate: 126.965278,
-    yCoordinate: 37.532778,
+    officeImgURL: "/demooffice3.webp",
+    longitude: 126.9652781555385,
+    latitude: 37.5327781555385,
   },
   {
     id: 23,
@@ -287,9 +279,9 @@ const SearchResultMockData = [
     description: "송파 비즈니스 센터",
     location: "송파",
     pricePerDay: "11000",
-    officeImgURL: "/demooffice23.webp",
-    xCoordinate: 127.106389,
-    yCoordinate: 37.514722,
+    officeImgURL: "/demooffice2.webp",
+    longitude: 127.1063891555385,
+    latitude: 37.5147221555385,
   },
   {
     id: 24,
@@ -299,9 +291,9 @@ const SearchResultMockData = [
     description: "노원 스터디카페",
     location: "노원",
     pricePerDay: "7000",
-    officeImgURL: "/demooffice24.webp",
-    xCoordinate: 127.061389,
-    yCoordinate: 37.655556,
+    officeImgURL: "/demooffice1.webp",
+    longitude: 127.0613891555385,
+    latitude: 37.6555561555385,
   },
 ];
 
@@ -311,12 +303,7 @@ function MemberMain() {
   const [isMapFullExpanded, setIsMapFullExpanded] = useState(false);
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const [mapData, setMapData] = useState([]);
-  const [popupState, dispatchPopup] = useReducer(
-    popupReducer,
-    initialPopupState
-  );
-  //state:forMap//
-  const [markerPositions, setMarkerPositions] = useState([]);
+
   useEffect(() => {
     // event handler: Scroll 이벤트 처리  //
     const handleScroll = () => {
@@ -332,56 +319,6 @@ function MemberMain() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  //  event handler: 팝업 상태 관리 리듀서 사용을 위한 핸들러 //
-  const handlePopup = (type, message = "") => {
-    dispatchPopup({ type, message });
-  };
-
-  //  event handler: 맵 사이즈 //
-  const [mapSize, setMapSize] = useState([100, 100]);
-  //  reducer: 팝업 상태 관리 리듀서   //
-  function popupReducer(state, action) {
-    switch (action.type) {
-      // case "LOGIN":
-      //   return {
-      //     type: "LOGIN",
-      //     popupComponent: (
-      //       <LoginPopup onClose={() => dispatchPopup({ type: "CLOSE" })} />
-      //     ),
-      //   };
-      // case "REGISTER":
-      //   return {
-      //     type: "REGISTER",
-      //     popupComponent: (
-      //       <RegisterPopup onClose={() => dispatchPopup({ type: "CLOSE" })} />
-      //     ),
-      //   };
-      case "QNA":
-        return {
-          type: "QNA",
-          popupComponent: (
-            <PopUpQNA onClose={() => dispatchPopup({ type: "CLOSE" })} />
-          ),
-          onClickBackground: () => dispatchPopup({ type: "CLOSE" }),
-        };
-      case "MSG":
-        return {
-          type: "MSG",
-          popupComponent: (
-            <PopUpMSG
-              message={action.message}
-              onClose={() => dispatchPopup({ type: "CLOSE" })}
-            />
-          ),
-          onClickBackground: () => dispatchPopup({ type: "CLOSE" }),
-        };
-      case "CLOSE":
-        return initialPopupState;
-      default:
-        return state;
-    }
-  }
 
   //function: 맵토글 함수//
   const toggleMap = () => {
@@ -399,55 +336,58 @@ function MemberMain() {
 
   return (
     //render 메인페이지 랜더링//
-    <div className="member-main-page">
-      <MemberHeader handlePopup={handlePopup} />
-      <div className="main-container">
-        {!isMapFullExpanded && (
-          <div style={{ margin: "auto" }}>
-            <div
-              className={`office-item-list${isMapExpanded ? " expanded" : ""}`}
-            >
-              {SearchResultMockData.map((item) => (
-                <OfficeItem key={item.id} {...item} />
-              ))}{" "}
-            </div>
+    <>
+      <MemberHeader />
 
-            <div className="item-list-button-container">
-              <button
-                className={`more-button ${isButtonVisible ? "visible" : ""}`}
+      <div className="member-main-page">
+        <div className="main-container">
+          {!isMapFullExpanded && (
+            <div style={{ margin: "auto" }}>
+              <div
+                className={`office-item-list${
+                  isMapExpanded ? " expanded" : ""
+                }`}
               >
-                더보기
-              </button>
-              <button className="expand-map-button" onClick={() => toggleMap()}>
-                <FaMapLocationDot />
-              </button>
+                {SearchResultMockData.map((item) => (
+                  <OfficeItem key={item.id} {...item} />
+                ))}{" "}
+              </div>
+
+              <div className="item-list-button-container">
+                <button
+                  className={`more-button ${isButtonVisible ? "visible" : ""}`}
+                >
+                  더보기
+                </button>
+                <button
+                  className="expand-map-button"
+                  onClick={() => toggleMap()}
+                >
+                  <FaMapLocationDot />
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {isMapExpanded && (
-          <div
-            className={`map-container ${
-              isMapFullExpanded ? "full-expanded" : ""
-            }`}
-          >
-            <button
-              className="map-button full-extend"
-              onClick={() => toggleMapFullExpanded()}
+          {isMapExpanded && (
+            <div
+              className={`map-container ${
+                isMapFullExpanded ? "full-expanded" : ""
+              }`}
             >
-              &lt; 확장
-            </button>
-            <KakaoMap mapData={mapData} />
-          </div>
-        )}
+              <button
+                className="map-button full-extend"
+                onClick={() => toggleMapFullExpanded()}
+              >
+                {isMapFullExpanded ? "접기 >" : "< 확장"}{" "}
+              </button>
+              <KakaoMap mapData={mapData} />
+            </div>
+          )}
+        </div>
       </div>
-
-      <PopupPage
-        popupComponent={popupState.popupComponent}
-        onClickBackground={popupState.onClickBackground}
-      />
-      <MemberFooter handlePopup={handlePopup} />
-    </div>
+      <MemberFooter />
+    </>
   );
 }
 export default MemberMain;

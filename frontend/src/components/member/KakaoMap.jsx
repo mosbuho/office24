@@ -7,9 +7,13 @@ import { MdLocationOn } from "react-icons/md";
 import "../../styles/components/member/KakaoMap.css";
 
 export default function KakaoMap(props) {
-  const { mapData, onItemSelect } = props;
+  const { mapData, onItemSelect, centerMarker, centerPosition } = props;
   const [kakaoMap, setKakaoMap] = useState(null);
   const [markers, setMarkers] = useState([]);
+  const [centers, setCenters] = useState({
+    latitude: 37.50802,
+    longitude: 127.062835,
+  });
 
   const container = useRef();
 
@@ -25,6 +29,7 @@ export default function KakaoMap(props) {
     }
   };
 
+  // api key 설정//
   useEffect(() => {
     const script = document.createElement("script");
     script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${
@@ -34,7 +39,10 @@ export default function KakaoMap(props) {
 
     script.onload = () => {
       kakao.maps.load(() => {
-        const center = new kakao.maps.LatLng(37.50802, 127.062835);
+        const center = new kakao.maps.LatLng(
+          centers.latitude,
+          centers.longitude
+        );
         const options = {
           center,
           level: 3,
@@ -43,8 +51,18 @@ export default function KakaoMap(props) {
         setKakaoMap(map);
       });
     };
+    // //debug:
+    // script.onerror = () => {
+    //   console.error("Failed to load Kakao Maps script");
+    // };
+    // if (typeof kakao === "undefined") {
+    //   console.error("Kakao Maps SDK not loaded");
+    //   return;
+    // }
+    // console.log("API Key:", import.meta.env.VITE_KAKAO_API_KEY);
   }, []);
 
+  //중심이동
   useEffect(() => {
     if (kakaoMap === null) {
       return;
@@ -55,6 +73,7 @@ export default function KakaoMap(props) {
     kakaoMap.setCenter(center);
   }, [kakaoMap]);
 
+  // 상품들 마커세팅//
   useEffect(() => {
     if (kakaoMap === null || !mapData.length) {
       return;
@@ -63,10 +82,7 @@ export default function KakaoMap(props) {
     markers.forEach((marker) => marker.setMap(null));
 
     const newMarkers = mapData.map((item) => {
-      const position = new kakao.maps.LatLng(
-        item.yCoordinate,
-        item.xCoordinate
-      );
+      const position = new kakao.maps.LatLng(item.latitude, item.longitude);
 
       const customOverlay = new kakao.maps.CustomOverlay({
         position: position,

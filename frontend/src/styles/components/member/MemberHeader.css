@@ -1,7 +1,7 @@
 .header-container {
     position: fixed;
     top: 0;
-    right: 0;
+    left: 0;
     background-color: var(--background-color);
     height: 80px;
     width: 100%;
@@ -16,12 +16,12 @@
         box-shadow: 1px 5px 4px var(--shaded-color);
         transition: all 0.3s ease;
         z-index: -1;
-        height: 80px;
+        height: 75px;
     }
 
-    @media (max-width: 1000px) {
+    @media screen and (max-width: 1000px) {
         .search-container {
-            top: 80px;
+            top: 75px;
         }
     }
 
@@ -53,7 +53,7 @@
 
     .search-bar.expanded {
         width: 850px;
-        max-width: 95%;
+        max-width: calc(100% - 40px);
         padding: 0px;
         height: 66px;
         margin: 0 0 20px 0;
@@ -111,7 +111,6 @@
 
     .attendance-input-wrapper {
         width: 40%;
-
     }
 
     .search-input {
@@ -426,5 +425,44 @@
     }
 
 
+    @media screen and (max-width: 700px) {
 
+        .fixed-menu-wrapper {
+            right: 30px;
+        }
+
+        .search-bar-wrapper {
+            display: flex;
+            justify-content: center;
+            padding-bottom: 60px;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            width: 80%;
+            padding-left: 0;
+            margin: auto;
+            margin-bottom: 10px;
+        }
+
+        .check-day-input-wrapper {
+            position: absolute;
+            top: 80px;
+            right: 0px;
+            width: 30%;
+            height: 20px;
+            background-color: var(--background-color);
+            border: 1px solid var(--shaded-color);
+        }
+
+        .attendance-input-wrapper {
+            position: absolute;
+            top: 80px;
+            left: 0px;
+            width: 30%;
+            height: 20px;
+            background-color: var(--background-color);
+            border: 1px solid var(--shaded-color);
+        }
+    }
 }

@@ -126,7 +126,6 @@ const ManagerOfficeRegister = () => {
       }
     });
 
-    // FormData에 파일이 제대로 추가되었는지 확인하는 로그
     for (let [key, value] of data.entries()) {
       console.log(`${key}: ${value.name || value}`);
     }
@@ -142,6 +141,12 @@ const ManagerOfficeRegister = () => {
     } catch (error) {
       console.error("오피스 등록 중 오류 발생:", error);
       alert("오피스 등록 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleCancel = () => {
+    if (window.confirm("정말로 취소하시겠습니까? 변경사항이 저장되지 않습니다.")) {
+      navigate(`/manager/office/${no}`);
     }
   };
 
@@ -217,7 +222,10 @@ const ManagerOfficeRegister = () => {
                 </div>
               </div>
             </div>
-            <button type="submit" className="submit-button">등록</button>
+            <div className="button-group">
+              <button type="submit" className="submit-button">등록</button>
+              <button type="button" className="cancel-button" onClick={handleCancel}>취소</button>
+            </div>
           </form>
         </div>
       </div>

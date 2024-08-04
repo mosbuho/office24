@@ -132,6 +132,13 @@ body.manager-office-body {
         color: #FFF;
     }
 
+    .officeList .rejected {
+        background-color: #fd8b8b;
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: #FFF;
+    }
+
     .officeList button {
         padding: 5px 10px;
         margin: 0 5px;

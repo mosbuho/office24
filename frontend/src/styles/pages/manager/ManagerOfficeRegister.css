@@ -181,7 +181,14 @@ body.manager-office-body {
   transition: background-color 0.3s;
 }
 
-.managerOfficeRegister-container .submit-button {
+.managerOfficeRegister-container .button-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.managerOfficeRegister-container .submit-button,
+.managerOfficeRegister-container .cancel-button {
   padding: 6px 15px;
   background-color: #2c3e50;
   color: white;
@@ -193,6 +200,7 @@ body.manager-office-body {
   margin: 0 auto;
 }
 
-.managerOfficeRegister-container .submit-button:hover {
+.managerOfficeRegister-container .submit-button:hover,
+.managerOfficeRegister-container .cancel-button:hover {
   background-color: #355BB3;
 }

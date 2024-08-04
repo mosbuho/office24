@@ -259,7 +259,6 @@ const MemberHeader = () => {
                     id="check-in-day-input"
                     type="text"
                     className="search-input"
-                    placeholder="이용 날"
                     value={`${formatDate(startDate)} ~ ${formatDate(endDate)}`}
                     readOnly
                     onClick={handleCalendarClick}
@@ -271,12 +270,17 @@ const MemberHeader = () => {
                   </label>
                   <input
                     id="attendance-input"
-                    type="text"
+                    type="number"
                     className="search-input"
-                    placeholder="normal 1"
-                    value={`일반석: ${attendance} 명`}
-                    readOnly
+                    value={attendance}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === "" || parseInt(value, 10) > 0) {
+                        setAttendance(value === "" ? "" : parseInt(value, 10));
+                      }
+                    }}
                     onClick={handleAttendanceClick}
+                    min="1"
                   />
                 </div>
               </div>
