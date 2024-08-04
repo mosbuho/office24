@@ -187,7 +187,6 @@
 }
 
 @media screen and (max-width: 700px) {
-
     .office-item-list {
         margin: 0;
         padding: 0;
@@ -199,8 +198,6 @@
         max-width: calc(50% - 20px);
     }
 }
-
-
 
 .office-item-list.expanded {
     .office-item {
