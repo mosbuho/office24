@@ -1,4 +1,4 @@
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import ManagerLogin from './pages/manager/ManagerLogin';
 import ManagerMain from './pages/manager/ManagerMain';
 import MemberDelete from './pages/member/MemberDelete';
@@ -21,11 +21,12 @@ import MemberOffice from "./pages/member/MemberOffice";
 import ManagerOfficeUpdate from './pages/manager/ManagerOfficeUpdate';
 import AdminMemberList from './pages/admin/AdminMemberList';
 import AdminMember from './pages/admin/AdminMember';
+import AdminManagerList from './pages/admin/AdminManagerList';
 import AdminManager from './pages/admin/AdminManager';
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
         {/* 공개 라우트 */}
         <Route path="/" element={<MemberMain />} />
@@ -55,9 +56,10 @@ function App() {
         <Route path="/admin" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMain /></PrivateRoute>} />
         <Route path="/admin/member" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMemberList /></PrivateRoute>} />
         <Route path="/admin/member/:no" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMember /></PrivateRoute>} />
-        <Route path="/admin/manager" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminManager /></PrivateRoute>} />
+        <Route path="/admin/manager" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminManagerList /></PrivateRoute>} />
+        <Route path="/admin/manager/:no" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminManager /></PrivateRoute>} />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 export default App;

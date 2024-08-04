@@ -1,60 +1,71 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from '../../utils/axiosConfig';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../components/admin/AdminHeader';
 import Sidebar from '../../components/admin/AdminSidebar';
-import Pagination from '../../components/admin/AdminPagination';
-import AdminSearch from '../../components/admin/AdminSearch';
-import '../../styles/pages/admin/AdminTable.css';
-
+import '../../styles/pages/admin/AdminMember.css';
+import axios from '../../utils/axiosConfig';
 
 const Adminmanager = () => {
-    const [manager, setManager] = useState([]);
-    const [pageCount, setPageCount] = useState(1);
-    const [currentPage, setCurrentPage] = useState(0);
-    const [pageDataCache, setPageDataCache] = useState({});
-    const [f, setF] = useState('NO');
-    const [q, setQ] = useState('');
-
+    const location = useLocation();
     const navigate = useNavigate();
+    const { manager } = location.state;
 
-    useEffect(() => {
-        fetchManager(1);
-    }, []);
+    const [formData, setFormData] = useState({
+        NO: manager.NO,
+        ID: manager.ID,
+        NAME: manager.NAME,
+        PHONE: manager.PHONE,
+        EMAIL: manager.EMAIL,
+        REG_DATE: new Date(manager.REG_DATE).toISOString().split('T')[0]
+    });
 
-    const fetchManager = async (page) => {
-        if (pageDataCache[`${f}_${q}_${page}`]) {
-            setManager(pageDataCache[`${f}_${q}_${page}`]);
-            return;
-        }
-
-        const response = await axios.get(`/admin/manager`, {
-            params: {
-                page, size: 30, f, q
-            }
-        });
-
-        const { manager: fetchedManager, totalCount } = response.data;
-
-        setPageDataCache(prevCache => ({
-            ...prevCache,
-            [`${f}_${q}_${page}`]: fetchedManager
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [id.toUpperCase()]: value
         }));
-
-        setManager(fetchedManager);
-        setPageCount(Math.ceil(totalCount / 30));
     };
 
-    const handlePageClick = (selectedItem) => {
-        const newPage = selectedItem.selected + 1;
-        setCurrentPage(selectedItem.selected);
-        fetchManager(newPage);
+    const handlePwReset = async () => {
+        if (window.confirm('비밀번호를 초기화 하시겠습니까?')) {
+            try {
+                await axios.post(`/admin/manager/${formData.NO}/reset-pw`);
+                alert('비밀번호가 초기화 되었습니다.');
+                navigate('/admin/manager');
+            } catch {
+                alert('비밀번호 초기화를 실패했습니다. 다시 시도해 주세요.');
+            }
+        }
+    }
+
+    const handleUpdate = async () => {
+        if (window.confirm('정보를 수정하시겠습니까?')) {
+            console.log(formData);
+            try {
+                await axios.put(`/admin/manager/${formData.NO}`, {
+                    name: formData.NAME,
+                    phone: formData.PHONE,
+                    email: formData.EMAIL,
+                });
+                alert('정보가 수정되었습니다.');
+                navigate('/admin/manager');
+            } catch {
+                alert('수정을 실패했습니다. 다시 시도해 주세요.');
+            }
+        }
     };
 
-    const handleSearch = () => {
-        setCurrentPage(0);
-        setPageDataCache({});
-        fetchManager(1);
+    const handleDelete = async () => {
+        if (window.confirm('이용자를 삭제하시겠습니까?')) {
+            try {
+                await axios.delete(`/admin/manager/${formData.NO}`);
+                alert('이용자가 삭제되었습니다.');
+                navigate('/admin/manager');
+            } catch {
+                alert('삭제를 실패했습니다. 다시 시도해 주세요.');
+            }
+        }
     };
 
     return (
@@ -62,41 +73,68 @@ const Adminmanager = () => {
             <Header />
             <Sidebar />
             <div className='main'>
-                <AdminSearch f={f} setF={setF} q={q} setQ={setQ} onSearch={handleSearch} />
-                <div className='admin-table'>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>번호</th>
-                                <th>아이디</th>
-                                <th>이름</th>
-                                <th>핸드폰</th>
-                                <th>이메일</th>
-                                <th>가입일</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {manager.length === 0 ? (
-                                <tr>
-                                    <td colSpan="8">데이터가 존재하지 않습니다.</td>
-                                </tr>
-                            ) : (
-                                manager.map(manager => (
-                                    <tr key={manager.NO} onClick={() => navigate(`/admin/manager/${manager.NO}`, { state: { manager } })}>
-                                        <td>{manager.NO}</td>
-                                        <td>{manager.ID}</td>
-                                        <td>{manager.NAME}</td>
-                                        <td>{manager.PHONE}</td>
-                                        <td>{manager.EMAIL}</td>
-                                        <td>{new Date(manager.REG_DATE).toISOString().split('T')[0]}</td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                <div className='admin-member-detail'>
+                    <form>
+                        <div className="form-group">
+                            <label htmlFor="no">번호</label>
+                            <input
+                                type="text"
+                                id="no"
+                                value={formData.NO}
+                                readOnly
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="id">아이디</label>
+                            <input
+                                type="text"
+                                id="id"
+                                value={formData.ID}
+                                readOnly
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="name">이름</label>
+                            <input
+                                type="text"
+                                id="name"
+                                value={formData.NAME}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="phone">핸드폰 번호</label>
+                            <input
+                                type="text"
+                                id="phone"
+                                value={formData.PHONE}
+                                onChange={handleChange}
+                                maxLength={11}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="email">이메일</label>
+                            <input
+                                type="email"
+                                id="email"
+                                value={formData.EMAIL}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="regDate">가입일</label>
+                            <input
+                                type="date"
+                                id="regDate"
+                                value={formData.REG_DATE}
+                                readOnly
+                            />
+                        </div>
+                        <button type="button" className="pw-reset-btn" onClick={handlePwReset}>비밀번호 초기화</button>
+                        <button type="button" className="update-btn" onClick={handleUpdate}>수정</button>
+                        <button type="button" className="delete-btn" onClick={handleDelete}>삭제</button>
+                    </form>
                 </div>
-                <Pagination pageCount={pageCount} handlePageClick={handlePageClick} currentPage={currentPage}
-                />
             </div>
         </div>
     );
