@@ -107,7 +107,7 @@ const AdminOffice = () => {
                                 </tr>
                             ) : (
                                 office.map(office => (
-                                    <tr key={office.NO} onClick={() => navigate(`/admin/office/${office.NO}`, { state: { office } })}>
+                                    <tr key={office.NO} onClick={() => navigate(`/admin/office/${office.NO}`)}>
                                         <td>{office.NO}</td>
                                         <td>{office.TITLE}</td>
                                         <td>{office.ADDRESS}</td>

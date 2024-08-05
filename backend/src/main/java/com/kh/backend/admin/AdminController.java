@@ -143,4 +143,10 @@ public class AdminController {
             @RequestParam(required = false) String q) {
         return officeService.getOfficeNotAvailability(page, size);
     }
+
+    @GetMapping("/office/info/{officeNo}")
+    public ResponseEntity<Map<String, Object>> getOfficeByNo(@PathVariable int officeNo) {
+        Map<String, Object> officeInfo = officeService.getOfficeInfo(officeNo);
+        return ResponseEntity.ok(officeInfo);
+    }
 }

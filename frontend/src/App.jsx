@@ -25,6 +25,7 @@ import AdminMemberList from './pages/admin/AdminMemberList';
 import AdminManager from './pages/admin/AdminManager';
 import AdminManagerList from './pages/admin/AdminManagerList';
 import AdminOfficeList from './pages/admin/AdminOfficeList';
+import AdminOffice from './pages/admin/AdminOffice';
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
         <Route path="/admin/manager" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminManagerList /></PrivateRoute>} />
         <Route path="/admin/manager/:no" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminManager /></PrivateRoute>} />
         <Route path="/admin/office" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminOfficeList /></PrivateRoute>} />
+        <Route path="/admin/office/:no" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminOffice /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );
