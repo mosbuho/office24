@@ -59,7 +59,7 @@ const ManagerOfficeUpdate = () => {
   const handleImageChange = (e, setter) => {
     const file = e.target.files[0];
     if (file) {
-      setter(file);  // Update the actual file (used for form submission)
+      setter(file);
     }
   };
 

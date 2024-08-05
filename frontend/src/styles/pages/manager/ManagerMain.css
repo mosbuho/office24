@@ -170,7 +170,6 @@ body.manager-main-body {
         margin: 0;
     }
 
-    /* 예약리스트 */
     .table-container {
         overflow-x: auto;
         height: 300px;
@@ -243,7 +242,6 @@ body.manager-main-body {
         color: #999;
     }
 
-    /* 오피스 등록 상태 */
     .office-status {
         margin-top: 20px;
         padding: 20px;
@@ -294,7 +292,6 @@ body.manager-main-body {
         background-color: #EEBD6F;
     }
 
-    /* 오피스 등록 상태의 페이지네이션 */
     ul.office-pagination {
         display: flex;
         justify-content: center;
@@ -312,7 +309,6 @@ body.manager-main-body {
     ul.office-pagination li.previous,
     ul.office-pagination li.next {
         font-size: 11px;
-        /* 폰트 크기 지정 */
     }
 
     ul.office-pagination li.pagination-item a,

@@ -26,4 +26,21 @@
         name = #{name}, phone = #{phone}, email = #{email} WHERE no = #{no} </update>
 
     <delete id="deleteManager"> DELETE FROM manager WHERE no = #{no} </delete>
+
+    <select id="getManagerInfo" resultType="com.kh.backend.manager.Manager">
+        SELECT no, id, name, phone, email
+        FROM manager
+        WHERE no = #{no}
+    </select>
+
+    <update id="updateManagerInfo">
+        UPDATE manager
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="data.pw != null">pw = #{data.pw},</if>
+            <if test="data.name != null">name = #{data.name},</if>
+            <if test="data.phone != null">phone = #{data.phone},</if>
+            <if test="data.email != null">email = #{data.email}</if>
+        </trim>
+        WHERE no = #{data.no}
+    </update>
 </mapper>

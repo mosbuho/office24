@@ -57,4 +57,20 @@ public class ManagerService {
         managerMapper.deleteManager(no);
     }
 
+    public Manager getManagerInfo(int no) {
+        return managerMapper.getManagerInfo(no);
+    }
+
+    @Transactional
+    public void updateManagerInfo(int no, Map<String, Object> updatedData) {
+        updatedData.put("no", no);
+
+        if (updatedData.containsKey("pw")) {
+            String rawPassword = (String) updatedData.get("pw");
+            String encodedPassword = passwordEncoder.encode(rawPassword);
+            updatedData.put("pw", encodedPassword);
+        }
+        managerMapper.updateManagerInfo(updatedData);
+    }
+
 }
