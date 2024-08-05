@@ -14,6 +14,7 @@ const ManagerBooking = () => {
   const [searchText, setSearchText] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [filter, setFilter] = useState('recent');
+  const [sortOrder, setSortOrder] = useState('new');
 
   // 서버에서 받은 데이터를 변환하는 함수
   const normalizeBookingData = (data) => {
@@ -35,7 +36,8 @@ const ManagerBooking = () => {
           page: page,
           size: 10,
           filter: filter,
-          searchText: searchText
+          searchText: searchText,
+          sortOrder: sortOrder
         },
         withCredentials: true
       });
@@ -45,7 +47,7 @@ const ManagerBooking = () => {
     } catch (error) {
       console.error("예약 정보를 가져오는 중 오류 발생:", error);
     }
-  }, [no, filter, searchText]);
+  }, [no, filter, searchText, sortOrder]);
 
   useEffect(() => {
     fetchBookings(1);
@@ -112,6 +114,15 @@ const ManagerBooking = () => {
               placeholder="오피스명 또는 예약자명으로 검색"
             />
             <button onClick={handleSearch}>검색</button>
+          </div>
+          <div className='sort'>
+            <label htmlFor="sortOrder"></label>
+            <div className="sort-container">
+              <select id="sortOrder" className="custom-select" value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
+                <option value="new">최근 예약순&nbsp;</option>
+                <option value="oldest">오래된 예약순&nbsp;</option>
+              </select>
+            </div>
           </div>
         </div>
         <div className='bookingList'>

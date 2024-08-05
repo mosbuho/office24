@@ -10,7 +10,8 @@ import java.util.Map;
 public interface BookingMapper {
     List<Map<String, Object>> selectBookingsByManager(@Param("no") Integer no, @Param("limit") int limit, @Param("offset") int offset);
     int countBookingsByManager(@Param("no") Integer no);
-    List<Map<String, Object>> selectDetailedBookingsByManager(@Param("no") Integer no, @Param("limit") int limit, @Param("offset") int offset, @Param("filter") String filter, @Param("searchText") String searchText);
+    List<Map<String, Object>> selectDetailedBookingsByManager(@Param("no") Integer no, @Param("limit") int limit, @Param("offset") int offset, 
+        @Param("filter") String filter, @Param("searchText") String searchText, @Param("sortOrder") String sortOrder);
     int countBookingsByManagerWithFilter(@Param("no") Integer no, @Param("filter") String filter, @Param("searchText") String searchText);
     void deleteBooking(@Param("bookingNo") int bookingNo);
 

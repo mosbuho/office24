@@ -27,9 +27,9 @@ public class BookingService {
     }
 
     public Map<String, Object> getDetailedBookingsByManager(Integer managerNo, int page, int size, String filter,
-            String searchText) {
+            String searchText, String sortOrder) {
         int offset = (page - 1) * size;
-        List<Map<String, Object>> bookings = bookingMapper.selectDetailedBookingsByManager(managerNo, size, offset, filter, searchText);
+        List<Map<String, Object>> bookings = bookingMapper.selectDetailedBookingsByManager(managerNo, size, offset, filter, searchText, sortOrder);
         int totalBookings = bookingMapper.countBookingsByManagerWithFilter(managerNo, filter, searchText);
         int totalPages = (int) Math.ceil((double) totalBookings / size);
 

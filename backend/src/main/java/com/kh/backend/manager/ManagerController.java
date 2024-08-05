@@ -143,8 +143,9 @@ public class ManagerController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(value = "filter", required = false) String filter,
-            @RequestParam(value = "searchText", required = false) String searchText) {
-        Map<String, Object> result = bookingService.getDetailedBookingsByManager(no, page, size, filter, searchText);
+            @RequestParam(value = "searchText", required = false) String searchText,
+            @RequestParam(value = "sortOrder", required = false, defaultValue = "new") String sortOrder) {
+        Map<String, Object> result = bookingService.getDetailedBookingsByManager(no, page, size, filter, searchText, sortOrder);
         return ResponseEntity.ok(result);
     }
     

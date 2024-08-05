@@ -82,6 +82,46 @@ body.manager-booking-body {
         background-color: #355BB3;
     }
 
+    .headersearch .sort {
+        margin-right: 5px;
+        display: flex;
+        align-items: center;
+    }
+
+    .sort-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .custom-select {
+        background-color: #2d3e50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 13px;
+        cursor: pointer;
+        appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        text-align: center;
+        background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"%3E%3Cpath fill="white" d="M7 9l3 3 3-3H7z"/%3E%3C/svg%3E');
+        background-repeat: no-repeat;
+        background-position: right 1px center;
+        background-size: 30px;
+    }
+
+    .custom-select option {
+        text-align: left;
+        padding-left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .custom-select:focus {
+        outline: none;
+    }
+
+
     .bookingList {
         background-color: #FFF;
         height: 100vh;
