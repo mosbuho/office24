@@ -46,10 +46,15 @@ public interface OfficeMapper {
 
         List<Office> getOfficeNotAvailability(Map<String, Integer> params);
 
-        List<Office> adminGetAllOffices(@Param("start") int start, @Param("end") int end,
-                        @Param("f") String f, @Param("q") String q);
+        List<Office> adminGetAllOffices(@Param("start") int start,
+                        @Param("end") int end,
+                        @Param("f") String f,
+                        @Param("q") String q,
+                        @Param("availability") Integer availability);
 
-        int adminGetTotalOfficeCount(@Param("f") String f, @Param("q") String q);
+        int adminGetTotalOfficeCount(@Param("f") String f,
+                        @Param("q") String q,
+                        @Param("availability") Integer availability);
 
         void adminDeleteOffice(int no);
 }

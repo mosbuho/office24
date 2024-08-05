@@ -99,17 +99,30 @@
 
     <select id="adminGetAllOffices" resultType="map"> SELECT * FROM ( SELECT n.*, ROWNUM rnum FROM (
         SELECT o.no, m.name, m.phone, o.title, o.address, o.price, o.capacity, o.availability,
-        o.reg_date FROM office o JOIN manager m ON o.manager_no = m.no <if
-            test="f != null and q != ''"> WHERE <choose>
-                <when test="f == 'no'">o.no LIKE '%' || #{q} || '%'</when>
-                <when test="f == 'title'">o.title LIKE '%' || #{q} || '%'</when>
-                <otherwise>1=1</otherwise>
-            </choose>
-        </if> ORDER BY o.no ) n WHERE
-        ROWNUM &lt;= #{end} ) WHERE rnum >= #{start} </select>
+        o.reg_date FROM office o JOIN manager m ON o.manager_no = m.no <where>
+            <if test="f != null and q != ''">
+                <choose>
+                    <when test="f == 'no'">AND o.no LIKE '%' || #{q} || '%'</when>
+                    <when test="f == 'title'">AND o.title LIKE '%' || #{q} || '%'</when>
+                    <otherwise>1=1</otherwise>
+                </choose>
+            </if>
+                    <if
+                test="availability != null">AND o.availability = #{availability}</if>
+        </where>
+        ORDER BY o.no ) n WHERE ROWNUM &lt;= #{end} ) WHERE rnum>= #{start} </select>
 
-    <select id="adminGetTotalOfficeCount" resultType="int"> SELECT COUNT(*) FROM office <if
-            test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if>
+    <select id="adminGetTotalOfficeCount" resultType="int"> SELECT COUNT(*) FROM office <where>
+            <if test="f != null and q != ''">
+                <choose>
+                    <when test="f == 'no'">AND no LIKE '%' || #{q} || '%'</when>
+                    <when test="f == 'title'">AND title LIKE '%' || #{q} || '%'</when>
+                    <otherwise>1=1</otherwise>
+                </choose>
+            </if>
+        <if
+                test="availability != null">AND availability = #{availability}</if>
+        </where>
     </select>
 
     <delete id="adminDeleteOffice"> DELETE FROM office WHERE no = #{no} </delete>

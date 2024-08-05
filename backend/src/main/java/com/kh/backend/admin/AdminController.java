@@ -120,8 +120,9 @@ public class AdminController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "30") int size,
             @RequestParam(required = false) String f,
-            @RequestParam(required = false) String q) {
-        return officeService.adminGetOfficesWithPagination(page, size, f, q);
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) Integer availability) {
+        return officeService.adminGetOfficesWithPagination(page, size, f, q, availability);
     }
 
     @DeleteMapping("/office/{no}")

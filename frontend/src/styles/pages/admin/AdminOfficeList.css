@@ -1,0 +1,14 @@
+.admin-office-header {
+    display: flex;
+    align-items: center;
+
+    .office-filter-select {
+        text-align: center;
+        width: 80px;
+        height: 30px;
+        outline: none;
+        border-radius: 5px;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+}

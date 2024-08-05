@@ -6,31 +6,33 @@ import Sidebar from '../../components/admin/AdminSidebar';
 import Pagination from '../../components/admin/AdminPagination';
 import AdminSearch from '../../components/admin/AdminSearch';
 import '../../styles/pages/admin/AdminTable.css';
-
+import '../../styles/pages/admin/AdminOfficeList.css';
 
 const AdminOffice = () => {
     const [office, setOffice] = useState([]);
     const [pageCount, setPageCount] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
     const [pageDataCache, setPageDataCache] = useState({});
+    const [availability, setAvailability] = useState('');
     const [f, setF] = useState('no');
     const [q, setQ] = useState('');
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchoffice(1);
-    }, []);
+        fetchOffice(1);
+    }, [availability]);
 
-    const fetchoffice = async (page) => {
-        if (pageDataCache[`${f}_${q}_${page}`]) {
-            setOffice(pageDataCache[`${f}_${q}_${page}`]);
+    const fetchOffice = async (page) => {
+        const cacheKey = `${f}_${q}_${availability}_${page}`;
+        if (pageDataCache[cacheKey]) {
+            setOffice(pageDataCache[cacheKey]);
             return;
         }
 
         const response = await axios.get('/admin/office', {
             params: {
-                page, size: 30, f, q
+                page, size: 30, f, q, availability
             }
         });
 
@@ -38,7 +40,7 @@ const AdminOffice = () => {
 
         setPageDataCache(prevCache => ({
             ...prevCache,
-            [`${f}_${q}_${page}`]: fetchedoffice
+            [cacheKey]: fetchedoffice
         }));
 
         setOffice(fetchedoffice);
@@ -48,13 +50,20 @@ const AdminOffice = () => {
     const handlePageClick = (selectedItem) => {
         const newPage = selectedItem.selected + 1;
         setCurrentPage(selectedItem.selected);
-        fetchoffice(newPage);
+        fetchOffice(newPage);
     };
 
     const handleSearch = () => {
         setCurrentPage(0);
         setPageDataCache({});
-        fetchoffice(1);
+        fetchOffice(1);
+    };
+
+    const handleFilterChange = (event) => {
+        setAvailability(event.target.value);
+        setCurrentPage(0);
+        setPageDataCache({});
+        fetchOffice(1);
     };
 
     const options = [
@@ -67,7 +76,15 @@ const AdminOffice = () => {
             <Header />
             <Sidebar />
             <div className='main'>
-                <AdminSearch f={f} setF={setF} q={q} setQ={setQ} onSearch={handleSearch} options={options} />
+                <div className="admin-office-header">
+                    <AdminSearch f={f} setF={setF} q={q} setQ={setQ} onSearch={handleSearch} options={options} />
+                    <select className="office-filter-select" onChange={handleFilterChange} value={availability}>
+                        <option value=''>전체</option>
+                        <option value='1'>승인</option>
+                        <option value='0'>미승인</option>
+                        <option value='2'>반려</option>
+                    </select>
+                </div>
                 <div className='admin-table'>
                     <table>
                         <thead>
@@ -86,7 +103,7 @@ const AdminOffice = () => {
                         <tbody>
                             {office.length === 0 ? (
                                 <tr>
-                                    <td colSpan="8">데이터가 존재하지 않습니다.</td>
+                                    <td colSpan="9">데이터가 존재하지 않습니다.</td>
                                 </tr>
                             ) : (
                                 office.map(office => (
@@ -106,8 +123,7 @@ const AdminOffice = () => {
                         </tbody>
                     </table>
                 </div>
-                <Pagination pageCount={pageCount} handlePageClick={handlePageClick} currentPage={currentPage}
-                />
+                <Pagination pageCount={pageCount} handlePageClick={handlePageClick} currentPage={currentPage} />
             </div>
         </div>
     );
