@@ -20,6 +20,11 @@ import ManagerOfficeRegister from './pages/manager/ManagerOfficeRegister';
 import MemberOffice from "./pages/member/MemberOffice";
 import ManagerOfficeUpdate from './pages/manager/ManagerOfficeUpdate';
 import ManagerBooking from './pages/manager/ManagerBooking';
+import AdminMember from './pages/admin/AdminMember';
+import AdminMemberList from './pages/admin/AdminMemberList';
+import AdminManager from './pages/admin/AdminManager';
+import AdminManagerList from './pages/admin/AdminManagerList';
+import AdminOfficeList from './pages/admin/AdminOfficeList';
 
 function App() {
   return (
@@ -46,9 +51,9 @@ function App() {
         {/* 매니저 보호 */}
         <Route path="/manager/" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerMain /></PrivateRoute>} />
         <Route path="/manager/office/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOffice /></PrivateRoute>} />
-        <Route path="/manager/office/register/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeRegister/></PrivateRoute>} />
-        <Route path="/manager/office/update/:no/:officeNo" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeUpdate/></PrivateRoute>} />
-        <Route path="/manager/booking/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerBooking/></PrivateRoute>} />
+        <Route path="/manager/office/register/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeRegister /></PrivateRoute>} />
+        <Route path="/manager/office/update/:no/:officeNo" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeUpdate /></PrivateRoute>} />
+        <Route path="/manager/booking/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerBooking /></PrivateRoute>} />
 
         {/* 어드민 라우트 */}
         <Route path="/admin" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMain /></PrivateRoute>} />
@@ -56,6 +61,7 @@ function App() {
         <Route path="/admin/member/:no" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMember /></PrivateRoute>} />
         <Route path="/admin/manager" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminManagerList /></PrivateRoute>} />
         <Route path="/admin/manager/:no" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminManager /></PrivateRoute>} />
+        <Route path="/admin/office" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminOfficeList /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );

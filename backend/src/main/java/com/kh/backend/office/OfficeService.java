@@ -285,4 +285,20 @@ public class OfficeService {
 
         return imageName;
     }
+
+    public Map<String, Object> adminGetOfficesWithPagination(int page, int size, String f, String q) {
+        int start = (page - 1) * size + 1;
+        int end = page * size;
+        List<Office> office = officeMapper.adminGetAllOffices(start, end, f, q);
+        int totalCount = officeMapper.adminGetTotalOfficeCount(f, q);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("office", office);
+        response.put("totalCount", totalCount);
+        return response;
+    }
+
+    public void adminDeleteOffice(int no) {
+        officeMapper.adminDeleteOffice(no);
+    }
 }

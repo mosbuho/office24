@@ -1,5 +1,6 @@
 package com.kh.backend.admin;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,21 @@ import com.kh.backend.manager.Manager;
 import com.kh.backend.manager.ManagerService;
 import com.kh.backend.member.Member;
 import com.kh.backend.member.MemberService;
+import com.kh.backend.office.Office;
+import com.kh.backend.office.OfficeService;
 
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
+
     @Autowired
     private MemberService memberService;
+
     @Autowired
     private ManagerService managerService;
+
+    @Autowired
+    private OfficeService officeService;
 
     @GetMapping("/member")
     public Map<String, Object> getAllMembers(
@@ -105,5 +113,33 @@ public class AdminController {
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
+    }
+
+    @GetMapping("/office")
+    public Map<String, Object> getAllOffices(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "30") int size,
+            @RequestParam(required = false) String f,
+            @RequestParam(required = false) String q) {
+        return officeService.adminGetOfficesWithPagination(page, size, f, q);
+    }
+
+    @DeleteMapping("/office/{no}")
+    public ResponseEntity<String> deleteOffices(@PathVariable("no") int no) {
+        try {
+            officeService.adminDeleteOffice(no);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/notavailability")
+    public List<Office> getOfficeNotAvailability(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "5") int size,
+            @RequestParam(required = false) String f,
+            @RequestParam(required = false) String q) {
+        return officeService.getOfficeNotAvailability(page, size);
     }
 }
