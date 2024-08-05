@@ -1,4 +1,4 @@
-.admin-login-container {
+.admin-login {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -7,7 +7,7 @@
     background-color: #f8f9fa;
 }
 
-.admin-login-container .log-container {
+.admin-login .log {
     background-color: #fff;
     padding: 40px;
     border-radius: 8px;
@@ -16,20 +16,20 @@
     text-align: center;
 }
 
-.admin-login-container .logo {
+.admin-login .logo {
     font-size: 30px;
     font-weight: bold;
     color: #6363d2;
     margin-bottom: 20px;
 }
 
-.admin-login-container .login-tabs {
+.admin-login .login-tabs {
     display: flex;
     justify-content: space-around;
     margin-bottom: 20px;
 }
 
-.admin-login-container .login-tabs div {
+.admin-login .login-tabs div {
     background: none;
     border: none;
     padding: 10px 20px;
@@ -37,19 +37,19 @@
     font-size: 16px;
 }
 
-.admin-login-container .login-tabs div.active {
+.admin-login .login-tabs div.active {
     width: 200px;
     border-bottom: 1px solid #6363d2;
     font-weight: bold;
     margin-bottom: 20px;
 }
 
-.admin-login-container .login-form {
+.admin-login .login-form {
     display: flex;
     flex-direction: column;
 }
 
-.admin-login-container .login-form input {
+.admin-login .login-form input {
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
@@ -57,7 +57,7 @@
     font-size: 14px;
 }
 
-.admin-login-container .login-btn {
+.admin-login .login-btn {
     background-color: #6363d2;
     color: #fff;
     padding: 10px;

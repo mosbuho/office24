@@ -1,4 +1,4 @@
-.admin-main-container {
+.admin-main {
   display: grid;
   grid-template-areas:
     "header header"
@@ -8,21 +8,7 @@
   height: 100vh;
 }
 
-.admin-main-container {
-  .logout {
-    width: 75px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    justify-content: space-between;
-  }
-
-  .logo {
-    font-weight: bold;
-    font-size: 24px;
-    color: #6363d2;
-  }
-
+.admin-main {
   .search-input {
     padding: 5px 10px;
     border: 1px solid #ddd;
@@ -76,9 +62,9 @@
     color: red;
   }
 
-  .charts-container {
+  .charts {
     display: grid;
-    grid-template-columns: 1.5fr 0.5fr 0.5fr;
+    grid-template-columns: 2fr 1fr 1fr;
     gap: 20px;
     margin-bottom: 20px;
   }
@@ -110,15 +96,20 @@
   .notices table {
     width: 100%;
     border-collapse: collapse;
+    text-align: center;
+  }
+
+  .offices th,
+  .notices th {
+    background: #f4f4f4;
   }
 
   .offices th,
   .offices td,
   .notices th,
   .notices td {
-    text-align: left;
     padding: 10px;
-    border-bottom: 1px solid #eee;
+    border: 1px solid #eee;
   }
 
   .status {
@@ -146,13 +137,14 @@
     outline: none;
   }
 
-  select {
+  .chart-change {
     margin: 16px 0;
     padding: 5px 5px;
     outline: none;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
   }
 
   .chart-header {

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip, Legend, Line, ComposedChart } from 'recharts';
 import '../../styles/pages/admin/AdminMain.css';
-import { removeTokens } from '../../utils/auth';
 
 import Header from '../../components/admin/AdminHeader';
 import Sidebar from '../../components/admin/AdminSidebar';
@@ -51,12 +49,7 @@ const AdminMain = () => {
     const [fetchedNoticePages, setfetchedNoticePages] = useState(new Set());
     const [noticePage, setNoticePage] = useState(1);
 
-    const navigate = useNavigate();
 
-    const handleLogout = () => {
-        removeTokens();
-        navigate('/admin/login', { replace: true });
-    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -166,8 +159,8 @@ const AdminMain = () => {
     const { currentGroupData, chartLabels, groupName } = getChartData();
 
     return (
-        <div className="admin-main-container">
-            <Header onLogout={handleLogout} />
+        <div className="admin-main">
+            <Header />
             <Sidebar />
             <div className="main">
                 <div className="stats-grid">
@@ -202,11 +195,11 @@ const AdminMain = () => {
                         change={calculateChange(accumulate.TODAY_REVIEW_CREATE, accumulate.YESTERDAY_REVIEW_CREATE)}
                     />
                 </div>
-                <div className="charts-container">
+                <div className="charts">
                     <div className="chart-card sales-chart">
                         <div className="chart-header">
                             <h3>{groupName}</h3>
-                            <select onChange={selectChart}>
+                            <select className='chart-change' onChange={selectChart}>
                                 <option value="membergroup">이용자</option>
                                 <option value="managergroup">매니저</option>
                                 <option value="officegroup">오피스</option>
@@ -218,12 +211,13 @@ const AdminMain = () => {
                         <ResponsiveContainer width="100%" height={300}>
                             <ComposedChart data={currentGroupData} margin={{ top: 20, right: 20, left: 20, bottom: 5 }}>
                                 <XAxis dataKey="name" tickFormatter={(value) => value.toLocaleString('ko-KR')} />
-                                <YAxis tickFormatter={(value) => value.toLocaleString('ko-KR')} />
+                                <YAxis yAxisId="left" tickFormatter={(value) => value.toLocaleString('ko-KR')} />
+                                <YAxis yAxisId="right" orientation="right" tickFormatter={(value) => value.toLocaleString('ko-KR')} />
                                 <Tooltip formatter={(value) => value.toLocaleString('ko-KR')} />
                                 <Legend />
-                                <Bar dataKey={chartLabels.label1} fill="#3cb371" barSize={20} />
-                                <Bar dataKey={chartLabels.label2} fill="#db4455" barSize={20} />
-                                <Line type="monotone" dataKey={chartLabels.label3} stroke="#ffa550" dot={false} />
+                                <Bar yAxisId="left" dataKey={chartLabels.label1} fill="#3cb371" barSize={20} />
+                                <Bar yAxisId="left" dataKey={chartLabels.label2} fill="#db4455" barSize={20} />
+                                <Line yAxisId="right" type="monotone" dataKey={chartLabels.label3} stroke="#ffa550" dot={false} />
                             </ComposedChart>
                         </ResponsiveContainer>
                     </div>
@@ -238,6 +232,7 @@ const AdminMain = () => {
                                     ))}
                                 </Pie>
                                 <Tooltip formatter={(value, name, props) => [`${value}%`, name]} />
+                                <Legend />
                             </PieChart>
                         </ResponsiveContainer>
                     </div>
@@ -279,7 +274,7 @@ const AdminMain = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="5" rowSpan="2">데이터가 없습니다</td>
+                                        <td colSpan="2" className="nodata">데이터가 존재하지 않습니다.</td>
                                     </tr>
                                 )}
                             </tbody>
@@ -314,7 +309,7 @@ const AdminMain = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="5" rowSpan="5">데이터가 없습니다</td>
+                                        <td colSpan="5" className="nodata">데이터가 존재하지 않습니다.</td>
                                     </tr>
                                 )}
                             </tbody>

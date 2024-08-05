@@ -1,12 +1,12 @@
 import axios from '../../utils/axiosConfig';
 
 export const fetchAccumulate = async (setAccumulate) => {
-    const response = await axios.get('http://localhost:8080/admin/accumulate');
+    const response = await axios.get('/admin/accumulate');
     setAccumulate(response.data);
 };
 
 export const fetchAgeGroup = async (setAgeGroup) => {
-    const response = await axios.get('http://localhost:8080/admin/agegroup');
+    const response = await axios.get('/admin/agegroup');
     const ageOrder = ['-10대', '20대', '30대', '40대', '50대', '60대', '70대+'];
     const initialData = ageOrder.map(ageGroup => ({ ageGroup, M: '0.00', W: '0.00' }));
     const ageGroupMap = response.data.reduce((sum, item) => sum + item.COUNT, 0);
@@ -23,7 +23,7 @@ export const fetchAgeGroup = async (setAgeGroup) => {
 };
 
 export const fetchSidoGroup = async (setSidoGroup) => {
-    const resSidoGroup = await axios.get("http://localhost:8080/admin/sidogroup");
+    const resSidoGroup = await axios.get("/admin/sidogroup");
     const totalOffices = resSidoGroup.data.reduce((sum, item) => sum + item.OFFICE_COUNT, 0);
     const formattedSidoGroup = resSidoGroup.data.map(item => ({
         name: item.SIDO,
@@ -38,11 +38,11 @@ export const fetchGroupData = async (groupState, setGroupState, group) => {
         return;
     }
 
-    const response = await axios.get(`http://localhost:8080/admin/${group}`);
-    const year = new Date().getFullYear();
+    const response = await axios.get(`/admin/${group}`);
+    console.log(response.data);
     const months = Array.from({ length: 12 }, (_, i) => {
-        const month = String(i + 1).padStart(2, '0');
-        return `${year}-${month}`;
+        const month = i + 1;
+        return `${month}월`;
     });
 
     let labels;
@@ -65,26 +65,36 @@ export const fetchGroupData = async (groupState, setGroupState, group) => {
         case 'reviewgroup':
             labels = { label1: '신규', label2: '삭제', label3: '리뷰' };
             break;
+        default:
+            labels = { label1: 'label1', label2: 'label2', label3: 'label3' }; // 기본 레이블
     }
 
     const formattedGroup = months.map(month => ({
-        name: `${month.slice(-2)}월`,
+        name: month,
         [labels.label1]: 0,
         [labels.label2]: 0,
         [labels.label3]: 0
     }));
 
+    let cumulativeTrend = 0;
+
     response.data.forEach(item => {
-        const monthIndex = months.indexOf(item.YEAR_MONTH);
+        const yearMonth = item.YEAR_MONTH;
+        const month = parseInt(yearMonth.split('-')[1], 10);
+        const monthName = `${month}월`;
+
+        const monthIndex = months.indexOf(monthName);
         if (monthIndex !== -1) {
+            cumulativeTrend += item.TOTAL_CREATE - item.TOTAL_DELETE;
             formattedGroup[monthIndex] = {
-                name: `${item.YEAR_MONTH.slice(-1)}월`,
+                name: monthName,
                 [labels.label1]: item.TOTAL_CREATE,
                 [labels.label2]: item.TOTAL_DELETE,
-                [labels.label3]: item.TREND
+                [labels.label3]: cumulativeTrend
             };
         }
     });
+
     setGroupState(formattedGroup);
 };
 
@@ -92,7 +102,7 @@ export const fetchGroupData = async (groupState, setGroupState, group) => {
 export const fetchNotAvailabilityOffice = async (officePage, setNotAvailabilityOffices, fetchedOfficePages, setfetchedOfficePages) => {
     if (fetchedOfficePages.has(officePage)) return;
 
-    const response = await axios.get('http://localhost:8080/admin/notavailability', {
+    const response = await axios.get('/admin/notavailability', {
         params: { page: officePage, size: 5 }
     });
     setNotAvailabilityOffices(prev => ({
@@ -104,11 +114,10 @@ export const fetchNotAvailabilityOffice = async (officePage, setNotAvailabilityO
 
 export const fetchNotices = async (noticePage, setNotices, fetchedNoticePages, setfetchedNoticePages) => {
     if (fetchedNoticePages.has(noticePage)) return;
-    
-    const response = await axios.get('http://localhost:8080/admin/notice', {
+
+    const response = await axios.get('/admin/notice', {
         params: { page: noticePage, size: 5 }
     });
-    console.log(response.data);
     setNotices(prev => ({
         ...prev,
         [noticePage]: response.data

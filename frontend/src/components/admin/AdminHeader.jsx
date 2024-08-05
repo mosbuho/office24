@@ -1,15 +1,25 @@
 import { LuLogOut } from "react-icons/lu";
+import { useNavigate } from 'react-router-dom';
+import { removeTokens } from "../../utils/auth";
 import '../../styles/components/admin/AdminHeader.css';
 
-const Header = ({ onLogout }) => (
-    <div className="admin-header-container">
-        <div className="logo">OFFICE24</div>
-        <input type="text" placeholder="Search" className="search-input" />
-        <div className="logout" onClick={onLogout}>
-            <LuLogOut />
-            <span>로그아웃</span>
-        </div>
-    </div>
-);
+const Header = () => {
+    const navigate = useNavigate();
 
-export default Header;
+    const handleLogout = () => {
+        removeTokens();
+        navigate('/admin/login', { replace: true });
+    };
+
+    return (
+        <div className="admin-header">
+            <div className="logo">OFFICE24</div>
+            <div className="logout" onClick={handleLogout}>
+                <LuLogOut />
+                <span>로그아웃</span>
+            </div>
+        </div>
+    );
+};
+
+export default Header; 

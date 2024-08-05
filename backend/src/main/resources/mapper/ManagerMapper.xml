@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.backend.manager.ManagerMapper">
-    <insert id="insertManager" parameterType="com.kh.backend.manager.Manager"> 
-        INSERT INTO manager (id, pw, name, phone, email) 
-        VALUES ( #{id}, #{pw}, #{name}, #{phone}, 
-        <if test="email != null and email != ''">#{email}</if>
-        <if test="email == null or email == ''">NULL</if> ) 
-    </insert>
+    <insert id="insertManager" parameterType="com.kh.backend.manager.Manager"> INSERT INTO manager
+        (id, pw, name, phone, email) VALUES ( #{id}, #{pw}, #{name}, #{phone}, <if
+            test="email != null and email != ''">#{email}</if>
+        <if
+            test="email == null or email == ''">NULL</if> ) </insert>
 
     <select id="findById" parameterType="String" resultType="com.kh.backend.manager.Manager"> SELECT
         no, pw FROM manager WHERE id = #{id} </select>
+
+    <select id="getAllManagers" resultType="map"> SELECT * FROM ( SELECT m.*, ROWNUM rnum FROM (
+        SELECT no, id, name, phone, email, reg_date FROM manager <if
+            test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if> ORDER BY no ) m
+        WHERE ROWNUM &lt;= #{end} ) WHERE rnum >= #{start} </select>
+
+    <select id="getTotalManagerCount" resultType="int"> SELECT COUNT(*) FROM manager <if
+            test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if>
+    </select>
+
+    <update id="resetManagerPw"> UPDATE manager SET pw =
+        '$2a$10$v6N1KZmqox/VYBcmvLMzie359WZ1.3PQ0f8aJOtghk0Od0gdwGSDu' WHERE no = #{no} </update>
+
+    <update id="updateManager" parameterType="com.kh.backend.manager.Manager"> UPDATE manager SET
+        name = #{name}, phone = #{phone}, email = #{email} WHERE no = #{no} </update>
+
+    <delete id="deleteManager"> DELETE FROM manager WHERE no = #{no} </delete>
 </mapper>

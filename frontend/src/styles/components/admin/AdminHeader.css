@@ -1,4 +1,4 @@
-.admin-header-container {
+.admin-header {
     grid-area: header;
     display: flex;
     justify-content: space-between;
@@ -6,4 +6,20 @@
     padding: 10px 20px;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 70px;
+
+    .logout {
+        width: 75px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        justify-content: space-between;
+        margin-right: 20px;
+    }
+
+    .logo {
+        font-weight: bold;
+        font-size: 24px;
+        color: #6363d2;
+    }
 }
