@@ -19,10 +19,7 @@ import MemberFindIdResult from "./pages/member/MemberFindIResult";
 import ManagerOfficeRegister from './pages/manager/ManagerOfficeRegister';
 import MemberOffice from "./pages/member/MemberOffice";
 import ManagerOfficeUpdate from './pages/manager/ManagerOfficeUpdate';
-import AdminMemberList from './pages/admin/AdminMemberList';
-import AdminMember from './pages/admin/AdminMember';
-import AdminManagerList from './pages/admin/AdminManagerList';
-import AdminManager from './pages/admin/AdminManager';
+import ManagerBooking from './pages/manager/ManagerBooking';
 
 function App() {
   return (
@@ -49,8 +46,9 @@ function App() {
         {/* 매니저 보호 */}
         <Route path="/manager/" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerMain /></PrivateRoute>} />
         <Route path="/manager/office/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOffice /></PrivateRoute>} />
-        <Route path="/manager/office/register/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeRegister /></PrivateRoute>} />
-        <Route path="/manager/office/update/:no/:officeNo" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeUpdate /></PrivateRoute>} />
+        <Route path="/manager/office/register/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeRegister/></PrivateRoute>} />
+        <Route path="/manager/office/update/:no/:officeNo" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeUpdate/></PrivateRoute>} />
+        <Route path="/manager/booking/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerBooking/></PrivateRoute>} />
 
         {/* 어드민 라우트 */}
         <Route path="/admin" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMain /></PrivateRoute>} />

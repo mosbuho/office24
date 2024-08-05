@@ -106,7 +106,7 @@ const ManagerOfficeUpdate = () => {
       if (image) {
         formData.append('additionalImages[]', image);
       } else if (additionalImageUrls[index]) {
-        const additionalImageFileName = extractFileName(additionalImageUrls[index]); 
+        const additionalImageFileName = extractFileName(additionalImageUrls[index]);
         formData.append('existingAdditionalImages[]', additionalImageFileName);
       }
     });
@@ -124,14 +124,20 @@ const ManagerOfficeUpdate = () => {
     }
   };
 
+  const handleCancel = () => {
+    if (window.confirm("정말로 취소하시겠습니까? 변경사항이 저장되지 않습니다.")) {
+      navigate(`/manager/office/${no}`);
+    }
+  };
+
   return (
     <>
       <ManagerSidebar />
       <ManagerHeader />
-      <div className='managerOfficeRegister-container'>
+      <div className='managerOfficeUpdate-container'>
         <div className='headernav'>
           <ul>
-            <li className="active">Update Office Information</li>
+            <li className="active">오피스 수정</li>
           </ul>
         </div>
         <div className='registerForm'>
@@ -155,7 +161,7 @@ const ManagerOfficeUpdate = () => {
           </div>
           <form className='form-section' onSubmit={handleSubmit}>
             <div className='form-group'>
-              <label htmlFor="title">Office Name</label>
+              <label htmlFor="title">오피스명</label>
               <input
                 type="text"
                 id="title"
@@ -164,7 +170,7 @@ const ManagerOfficeUpdate = () => {
               />
             </div>
             <div className='form-group'>
-              <label htmlFor="price">Price (per day)</label>
+              <label htmlFor="price">가격(일 단위)</label>
               <input
                 type="number"
                 id="price"
@@ -173,7 +179,7 @@ const ManagerOfficeUpdate = () => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="address">Address<button type="button" onClick={handleAddressSearch}>Search</button></label>
+              <label htmlFor="address">주소<button type="button" onClick={handleAddressSearch}>검색</button></label>
               <input
                 type="text"
                 id="address"
@@ -188,7 +194,7 @@ const ManagerOfficeUpdate = () => {
               />
             </div>
             <div className='form-group'>
-              <label htmlFor="content">Description</label>
+              <label htmlFor="content">설명</label>
               <textarea
                 id="content"
                 rows="4"
@@ -197,7 +203,7 @@ const ManagerOfficeUpdate = () => {
               ></textarea>
             </div>
             <div className='form-group'>
-              <label htmlFor="capacity">Capacity</label>
+              <label htmlFor="capacity">수용인원</label>
               <input
                 type="number"
                 id="capacity"
@@ -209,7 +215,7 @@ const ManagerOfficeUpdate = () => {
             <div className='form-group'>
               <div className="images-section">
                 <div>
-                  <label htmlFor="mainImage">Main Image</label>
+                  <label htmlFor="mainImage">대표 이미지</label>
                   <input
                     type="file"
                     id="mainImage"
@@ -218,7 +224,7 @@ const ManagerOfficeUpdate = () => {
                 </div>
                 {additionalImages.map((_, index) => (
                   <div key={index}>
-                    <label htmlFor={`additionalImage${index + 1}`}>Additional Image {index + 1}</label>
+                    <label htmlFor={`additionalImage${index + 1}`}>기타 이미지 {index + 1}</label>
                     <input
                       type="file"
                       id={`additionalImage${index + 1}`}
@@ -232,7 +238,10 @@ const ManagerOfficeUpdate = () => {
                 ))}
               </div>
             </div>
-            <button className='submit-button' type="submit">Update</button>
+            <div className='button-group'>
+              <button className='submit-button' type="submit">수정</button>
+              <button type="button" className="cancel-button" onClick={handleCancel}>취소</button>
+            </div>
           </form>
         </div>
       </div>

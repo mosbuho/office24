@@ -166,6 +166,11 @@ const ManagerRegister = () => {
 
   // [번호인증] 버튼
   const sendCode = async () => {
+    if (!validatePhone(phone)) {
+      alert('번호를 제대로 입력해주세요.');
+      return;
+    }
+    
     try {
       const response = await axios.post('http://localhost:8080/message/send-one', {
         to: phone,
@@ -209,7 +214,7 @@ const ManagerRegister = () => {
     <>
       <div className="managerRegister-container">
         <div className='reg-container'>
-          <div className="logo">office24</div>
+          <div className="logo" onClick={()=>navigate('/manager')}>OFFICE24</div>
           <div className="signup-tabs">
             <div className="active">관리자 회원가입</div>
           </div>
@@ -235,7 +240,7 @@ const ManagerRegister = () => {
             </div>
             {pwError && <div className="error">{pwError}</div>}
             <div className="input-group">
-              <label htmlFor="pwConfirm">비밀번호 재입력</label>
+              <label htmlFor="pwConfirm">비밀번호 확인</label>
               <input type="password" id="pwConfirm" placeholder="비밀번호를 다시 입력하세요" value={pwConfirm}
                 onChange={(e) => {
                   setPwConfirm(e.target.value);

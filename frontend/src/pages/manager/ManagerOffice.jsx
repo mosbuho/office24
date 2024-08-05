@@ -136,7 +136,7 @@ const ManagerOffice = () => {
                     <td>{office.title}</td>
                     <td>{office.address}</td>
                     <td>{office.capacity}</td>
-                    <td>{office.price}원</td>
+                    <td>{office.price.toLocaleString()}원</td>
                     <td>
                       <span className={
                         office.availability === 1

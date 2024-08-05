@@ -25,4 +25,22 @@ public class BookingService {
         result.put("currentPage", page);
         return result;
     }
+
+    public Map<String, Object> getDetailedBookingsByManager(Integer managerNo, int page, int size, String filter,
+            String searchText, String sortOrder) {
+        int offset = (page - 1) * size;
+        List<Map<String, Object>> bookings = bookingMapper.selectDetailedBookingsByManager(managerNo, size, offset, filter, searchText, sortOrder);
+        int totalBookings = bookingMapper.countBookingsByManagerWithFilter(managerNo, filter, searchText);
+        int totalPages = (int) Math.ceil((double) totalBookings / size);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("bookings", bookings);
+        result.put("totalPages", totalPages);
+        result.put("currentPage", page);
+        return result;
+    }
+
+    public void deleteBooking(int bookingNo) {
+        bookingMapper.deleteBooking(bookingNo);
+    }
 }

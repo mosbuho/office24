@@ -250,12 +250,12 @@ public class OfficeService {
                     imagesToKeep.remove(newImage);
                 }
             });
-        }
 
-        imagesToKeep.forEach(oldImage -> {
-            officeMapper.deleteOfficeImage(office.getNo(), oldImage);
-            deleteImageFile(oldImage);
-        });
+            imagesToKeep.forEach(oldImage -> {
+                officeMapper.deleteOfficeImage(office.getNo(), oldImage);
+                deleteImageFile(oldImage);
+            });
+        }
     }
 
     public boolean deleteImageFile(String imageName) {
