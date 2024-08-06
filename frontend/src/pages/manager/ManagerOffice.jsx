@@ -10,58 +10,74 @@ const ManagerOffice = () => {
   const { no } = useParams();
   const navigate = useNavigate();
   const [offices, setOffices] = useState([]);
-  const [pageCount, setPageCount] = useState(0);
+  const [pageCount, setPageCount] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
-  const [searchText, setSearchText] = useState('');
+  const [pageDataCache, setPageDataCache] = useState({});
   const [searchInput, setSearchInput] = useState('');
   const [availability, setAvailability] = useState('all');
 
-  const fetchOffices = useCallback(async (page) => {
+  const fetchOffices = async (page) => {
+    const cacheKey = `${availability}_${searchInput}_${page}`;
+
+    if (pageDataCache[cacheKey]) {
+      setOffices(pageDataCache[cacheKey].offices);
+      setPageCount(pageDataCache[cacheKey].pageCount);
+      setCurrentPage(page - 1);
+      return;
+    }
+
     try {
       const response = await axios.get(`/manager/office/${no}`, {
         params: {
-          page: page,
+          page,
           size: 10,
           availability: availability === 'all' ? null : availability,
-          searchText: searchText
+          searchText: searchInput 
         },
         withCredentials: true
       });
-      setOffices(response.data.offices);
-      setPageCount(Math.ceil(response.data.total / 10));
+
+      const fetchedOffices = response.data.offices;
+      const totalPages = Math.ceil(response.data.total / 10);
+
+      setPageDataCache(prevCache => ({
+        ...prevCache,
+        [cacheKey]: { offices: fetchedOffices, pageCount: totalPages }
+      }));
+
+      setOffices(fetchedOffices);
+      setPageCount(totalPages);
       setCurrentPage(page - 1);
     } catch (error) {
       console.error("오피스 정보를 가져오는 중 오류 발생:", error);
     }
-  }, [no, availability, searchText]);
+  };
 
-  // 마운트, 상태, 검색어에 따라
   useEffect(() => {
     fetchOffices(1);
-  }, [no, availability, searchText, fetchOffices]);
-
-  useEffect(() => {
-    document.body.classList.add('manager-office-body');
-    return () => {
-      document.body.classList.remove('manager-office-body');
-    };
-  }, []);
+  }, [availability]);
 
   const handlePageClick = (data) => {
     const selectedPage = data.selected + 1;
+    setCurrentPage(selectedPage - 1);
     fetchOffices(selectedPage);
+  };
+
+  const handleSearch = () => {
+    setCurrentPage(0);
+    setPageDataCache({});
+    fetchOffices(1);
   };
 
   const handleTabClick = (availabilityStatus) => {
     setAvailability(availabilityStatus);
+    setCurrentPage(0);
+    setPageDataCache({});
+    fetchOffices(1);
   };
 
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
-  };
-
-  const handleSearch = () => {
-    setSearchText(searchInput);
   };
 
   const handleRegisterClick = () => {
@@ -82,6 +98,7 @@ const ManagerOffice = () => {
     try {
       await axios.delete(`/manager/office/delete/${officeNo}`, { withCredentials: true });
       alert("오피스가 성공적으로 삭제되었습니다.");
+      setPageDataCache({});
       fetchOffices(currentPage + 1);
     } catch (error) {
       console.error("오피스 삭제 중 오류 발생:", error);
@@ -179,11 +196,12 @@ const ManagerOffice = () => {
             containerClassName={'pagination'}
             subContainerClassName={'pages pagination'}
             activeClassName={'active'}
+            forcePage={currentPage}
           />
         </div>
       </div>
     </>
   );
-}
+};
 
 export default ManagerOffice;

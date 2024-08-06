@@ -11,12 +11,11 @@ const ManagerBooking = () => {
   const [bookings, setBookings] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const [searchText, setSearchText] = useState('');
+  const [pageDataCache, setPageDataCache] = useState({});
   const [searchInput, setSearchInput] = useState('');
   const [filter, setFilter] = useState('recent');
   const [sortOrder, setSortOrder] = useState('new');
 
-  // 서버에서 받은 데이터를 변환하는 함수
   const normalizeBookingData = (data) => {
     return data.map(booking => ({
       bookingNo: booking.BOOKING_NO,
@@ -29,52 +28,69 @@ const ManagerBooking = () => {
     }));
   };
 
-  const fetchBookings = useCallback(async (page) => {
+  const fetchBookings = async (page) => {
+    const cacheKey = `${filter}_${searchInput}_${sortOrder}_${page}`;
+
+    if (pageDataCache[cacheKey]) {
+      setBookings(pageDataCache[cacheKey].bookings);
+      setPageCount(pageDataCache[cacheKey].pageCount);
+      setCurrentPage(page - 1);
+      return;
+    }
+
     try {
       const response = await axios.get(`/manager/booking/${no}`, {
         params: {
           page: page,
           size: 10,
           filter: filter,
-          searchText: searchText,
+          searchText: searchInput,
           sortOrder: sortOrder
         },
         withCredentials: true
       });
-      setBookings(normalizeBookingData(response.data.bookings));
-      setPageCount(Math.ceil(response.data.totalPages));
+
+      const fetchedBookings = normalizeBookingData(response.data.bookings);
+      const totalPages = Math.ceil(response.data.totalPages);
+
+      setPageDataCache(prevCache => ({
+        ...prevCache,
+        [cacheKey]: { bookings: fetchedBookings, pageCount: totalPages }
+      }));
+
+      setBookings(fetchedBookings);
+      setPageCount(totalPages);
       setCurrentPage(page - 1);
     } catch (error) {
       console.error("예약 정보를 가져오는 중 오류 발생:", error);
     }
-  }, [no, filter, searchText, sortOrder]);
+  };
 
   useEffect(() => {
     fetchBookings(1);
-  }, [no, filter, searchText, fetchBookings]);
-
-  useEffect(() => {
-    document.body.classList.add('manager-booking-body');
-    return () => {
-      document.body.classList.remove('manager-booking-body');
-    };
-  }, []);
+  }, [no, filter, sortOrder]);
 
   const handlePageClick = (data) => {
     const selectedPage = data.selected + 1;
+    setCurrentPage(selectedPage - 1);
     fetchBookings(selectedPage);
+  };
+
+  const handleSearch = () => {
+    setCurrentPage(0);
+    setPageDataCache({});
+    fetchBookings(1);
   };
 
   const handleTabClick = (filterStatus) => {
     setFilter(filterStatus);
+    setCurrentPage(0);
+    setPageDataCache({});
+    fetchBookings(1);
   };
 
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
-  };
-
-  const handleSearch = () => {
-    setSearchText(searchInput);
   };
 
   const handleDeleteClick = async (bookingNo) => {
@@ -87,6 +103,7 @@ const ManagerBooking = () => {
     try {
       await axios.delete(`/manager/booking/delete/${bookingNo}`, { withCredentials: true });
       alert("예약이 성공적으로 삭제되었습니다.");
+      setPageDataCache({});
       fetchBookings(currentPage + 1);
     } catch (error) {
       console.error("예약 삭제 중 오류 발생:", error);
@@ -172,10 +189,12 @@ const ManagerBooking = () => {
             containerClassName={'pagination'}
             subContainerClassName={'pages pagination'}
             activeClassName={'active'}
+            forcePage={currentPage}  // 현재 페이지를 설정하여 올바른 페이지가 표시되도록 함
           />
         </div>
       </div>
     </>
   );
-}
+};
+
 export default ManagerBooking;
