@@ -1,30 +1,27 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from '../../utils/axiosConfig';
 import Header from '../../components/admin/AdminHeader';
 import Sidebar from '../../components/admin/AdminSidebar';
 import Pagination from '../../components/admin/AdminPagination';
 import AdminSearch from '../../components/admin/AdminSearch';
-import '../../styles/pages/admin/AdminTable.css';
-
+import AdminTable from '../../components/admin/AdminTable';
+import '../../styles/pages/admin/AdminReviewList.css';
 
 const AdminReviewList = () => {
-    const [reviews, setreviews] = useState([]);
+    const [reviews, setReviews] = useState([]);
     const [pageCount, setPageCount] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
     const [pageDataCache, setPageDataCache] = useState({});
     const [f, setF] = useState('NO');
     const [q, setQ] = useState('');
 
-    const navigate = useNavigate();
-
     useEffect(() => {
-        fetchreviews(1);
+        fetchReviews(1);
     }, []);
 
-    const fetchreviews = async (page) => {
+    const fetchReviews = async (page) => {
         if (pageDataCache[`${f}_${q}_${page}`]) {
-            setreviews(pageDataCache[`${f}_${q}_${page}`]);
+            setReviews(pageDataCache[`${f}_${q}_${page}`]);
             return;
         }
 
@@ -34,27 +31,34 @@ const AdminReviewList = () => {
             }
         });
 
-        const { reviews: fetchedreviews, totalCount } = response.data;
-        console.log(fetchedreviews);
+        const { reviews: fetchedReviews, totalCount } = response.data;
         setPageDataCache(prevCache => ({
             ...prevCache,
-            [`${f}_${q}_${page}`]: fetchedreviews
+            [`${f}_${q}_${page}`]: fetchedReviews
         }));
 
-        setreviews(fetchedreviews);
+        setReviews(fetchedReviews);
         setPageCount(Math.ceil(totalCount / 30));
     };
 
     const handlePageClick = (selectedItem) => {
         const newPage = selectedItem.selected + 1;
         setCurrentPage(selectedItem.selected);
-        fetchreviews(newPage);
+        fetchReviews(newPage);
     };
 
     const handleSearch = () => {
         setCurrentPage(0);
         setPageDataCache({});
-        fetchreviews(1);
+        fetchReviews(1);
+    };
+
+    const handleDelete = async (reviewId) => {
+        await axios.delete(`/admin/review/${reviewId}`);
+        const newReviews = reviews.filter(review => review.NO !== reviewId);
+        setReviews(newReviews);
+        setPageDataCache({});
+        fetchReviews(currentPage + 1);
     };
 
     const options = [
@@ -64,46 +68,31 @@ const AdminReviewList = () => {
         { value: 'MEMBER_NO', label: '작성자번호' },
     ];
 
+
+    const columns = [
+        { header: '번호', accessor: 'NO' },
+        { header: '내용', accessor: 'CONTENT' },
+        { header: '작성자번호', accessor: 'MEMBER_NO' },
+        { header: '오피스번호', accessor: 'OFFICE_NO' },
+        { header: '점수', accessor: 'RATING' },
+        { header: '작성일', accessor: 'REG_DATE' },
+        { header: '', accessor: 'actions' }
+    ];
+
+    const formattedReviews = reviews.map(item => ({
+        ...item,
+        REG_DATE: new Date(item.REG_DATE).toISOString().split('T')[0],
+        actions: <button className='admin-review-delete-btn' onClick={() => handleDelete(item.NO)}>삭제</button>
+    }));
+
     return (
         <div className="admin-main">
             <Header />
             <Sidebar />
             <div className='main'>
                 <AdminSearch f={f} setF={setF} q={q} setQ={setQ} onSearch={handleSearch} options={options} />
-                <div className='admin-table'>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>번호</th>
-                                <th>내용</th>
-                                <th>작성자번호</th>
-                                <th>오피스번호</th>
-                                <th>점수</th>
-                                <th>작성일</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {reviews.length === 0 ? (
-                                <tr>
-                                    <td colSpan="6">데이터가 존재하지 않습니다.</td>
-                                </tr>
-                            ) : (
-                                reviews.map(review => (
-                                    <tr key={review.NO} onClick={() => navigate(`/admin/review/${review.NO}`, { state: { review } })}>
-                                        <td>{review.NO}</td>
-                                        <td>{review.CONTENT}</td>
-                                        <td>{review.MEMBER_NO}</td>
-                                        <td>{review.OFFICE_NO}</td>
-                                        <td>{review.RATING}</td>
-                                        <td>{new Date(review.REG_DATE).toISOString().split('T')[0]}</td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-                <Pagination pageCount={pageCount} handlePageClick={handlePageClick} currentPage={currentPage}
-                />
+                <AdminTable columns={columns} data={formattedReviews} />
+                <Pagination pageCount={pageCount} handlePageClick={handlePageClick} currentPage={currentPage} />
             </div>
         </div>
     );

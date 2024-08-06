@@ -39,7 +39,6 @@ export const fetchGroupData = async (groupState, setGroupState, group) => {
     }
 
     const response = await axios.get(`/admin/${group}`);
-    console.log(response.data);
     const months = Array.from({ length: 12 }, (_, i) => {
         const month = i + 1;
         return `${month}월`;

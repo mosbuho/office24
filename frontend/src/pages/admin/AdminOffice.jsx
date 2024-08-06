@@ -5,7 +5,7 @@ import Sidebar from '../../components/admin/AdminSidebar';
 import Header from "../../components/admin/AdminHeader";
 import '../../styles/pages/admin/AdminOffice.css';
 
-const ManagerOfficeUpdate = () => {
+const AdminOffice = () => {
     const { no } = useParams();
     const [office, setOffice] = useState({
         title: '',
@@ -170,4 +170,4 @@ const ManagerOfficeUpdate = () => {
     );
 };
 
-export default ManagerOfficeUpdate;
+export default AdminOffice;

@@ -1,7 +1,7 @@
 import '../../styles/components/admin/AdminSidebar.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const Sidebar = () => {
+const AdminSidebar = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -24,4 +24,4 @@ const Sidebar = () => {
     );
 };
 
-export default Sidebar;
+export default AdminSidebar;
