@@ -133,6 +133,7 @@ create table booking (
 	constraint chk_date check ( start_date <= end_date )                -- 예약 조건
 );
 
+select * from booking;
 
 -----------------------------------statistics--------------------------------------------
 

@@ -96,7 +96,7 @@ const ManagerOffice = () => {
     }
 
     try {
-      await axios.delete(`/manager/office/delete/${officeNo}`, { withCredentials: true });
+      await axios.delete(`/manager/office/${officeNo}`, { withCredentials: true });
       alert("오피스가 성공적으로 삭제되었습니다.");
       setPageDataCache({});
       fetchOffices(currentPage + 1);

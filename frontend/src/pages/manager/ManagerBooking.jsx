@@ -101,7 +101,7 @@ const ManagerBooking = () => {
     }
 
     try {
-      await axios.delete(`/manager/booking/delete/${bookingNo}`, { withCredentials: true });
+      await axios.delete(`/manager/booking/${bookingNo}`, { withCredentials: true });
       alert("예약이 성공적으로 삭제되었습니다.");
       setPageDataCache({});
       fetchBookings(currentPage + 1);

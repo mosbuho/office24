@@ -16,13 +16,12 @@ const ManagerMain = () => {
   const [stats, setStats] = useState(null);
   const [monthlyData, setMonthlyData] = useState([]);
   const [genderData, setGenderData] = useState([]);
-  const [bookings, setBookings] = useState([]);
-  const [bookingPageCount, setBookingPageCount] = useState(0);
+  const [bookings, setBookings] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
-  const [offices, setOffices] = useState([]);
+  const [bookingPageCount, setBookingPageCount] = useState(0);
+  const [offices, setOffices] = useState({});
+  const [currentOfficePage, setCurrentOfficePage] = useState(0);
   const [officePageCount, setOfficePageCount] = useState(0);
-  const [bookingPageCache, setBookingPageCache] = useState({});
-  const [officePageCache, setOfficePageCache] = useState({});
 
   useEffect(() => {
     document.body.classList.add('manager-main-body');
@@ -51,51 +50,14 @@ const ManagerMain = () => {
       setGenderData(genderRatio);
 
       setOfficePageCount(Math.ceil(serverData.offices.length / 5));
-      setOffices(serverData.offices.slice(0, 5));
+      setOffices({ 0: serverData.offices.slice(0, 5) });
     } catch (error) {
       console.error("Error fetching stats:", error);
     }
   };
 
-  const fetchOfficeStatus = async (selectedPage) => {
-    const cacheKey = `office_${selectedPage}`;
-
-    if (officePageCache[cacheKey]) {
-      setOffices(officePageCache[cacheKey].offices);
-      setOfficePageCount(officePageCache[cacheKey].pageCount);
-      return;
-    }
-
-    try {
-      const response = await axios.get(`/manager/office/status/${no}`, {
-        params: {
-          page: selectedPage + 1,
-          size: 5,
-        },
-      });
-
-      setOffices(response.data.offices);
-      setOfficePageCount(Math.ceil(response.data.total / 5));
-
-      setOfficePageCache(prevCache => ({
-        ...prevCache,
-        [cacheKey]: {
-          offices: response.data.offices,
-          pageCount: Math.ceil(response.data.total / 5)
-        }
-      }));
-    } catch (error) {
-      console.error("Error fetching office status:", error);
-    }
-  };
-
   const fetchBookings = async (selectedPage) => {
-    const cacheKey = `booking_${selectedPage}`;
-    setBookings([]);
-
-    if (bookingPageCache[cacheKey]) {
-      setBookings(bookingPageCache[cacheKey].bookings);
-      setBookingPageCount(bookingPageCache[cacheKey].pageCount);
+    if (bookings[selectedPage]) {
       setCurrentPage(selectedPage);
       return;
     }
@@ -115,36 +77,55 @@ const ManagerMain = () => {
         END_DATE: new Date(booking.END_DATE).toLocaleDateString()
       }));
 
-      setBookings(bookData);
-      setBookingPageCount(Math.ceil(response.data.total / 5));
-      setCurrentPage(selectedPage);
-
-      setBookingPageCache(prevCache => ({
-        ...prevCache,
-        [cacheKey]: {
-          bookings: bookData,
-          pageCount: Math.ceil(response.data.total / 5)
-        }
+      setBookings(prevBookings => ({
+        ...prevBookings,
+        [selectedPage]: bookData,
       }));
+      setCurrentPage(selectedPage);
+      setBookingPageCount(response.data.totalPages);
     } catch (error) {
       console.error("Error fetching bookings:", error);
+    }
+  };
+
+  const fetchOfficeStatus = async (selectedPage) => {
+    if (offices[selectedPage]) {
+      setCurrentOfficePage(selectedPage);
+      return;
+    }
+
+    try {
+      const response = await axios.get(`/manager/office/status/${no}`, {
+        params: {
+          page: selectedPage + 1,
+          size: 5,
+        },
+      });
+
+      setOffices(prevOffices => ({
+        ...prevOffices,
+        [selectedPage]: response.data.offices,
+      }));
+      setCurrentOfficePage(selectedPage);
+      setOfficePageCount(Math.ceil(response.data.total / 5));
+    } catch (error) {
+      console.error("Error fetching office status:", error);
     }
   };
 
   useEffect(() => {
     fetchStats();
     fetchBookings(0);
+    fetchOfficeStatus(0);
   }, [no]);
 
   const handleBookingPageClick = (data) => {
     const selectedPage = data.selected;
-    setCurrentPage(selectedPage);
     fetchBookings(selectedPage);
   };
 
   const handleOfficePageClick = (data) => {
     const selectedPage = data.selected;
-    setCurrentPage(selectedPage); 
     fetchOfficeStatus(selectedPage);
   };
 
@@ -234,7 +215,7 @@ const ManagerMain = () => {
               <h4>오피스 등록 상태</h4>
               <div className='office-status'>
                 <ul>
-                  {offices.map((office) => (
+                  {(offices[currentOfficePage] || []).map((office) => (
                     <li key={office.no} className='statusli'>
                       {office.title}
                       <span className={office.availability === 1 ? 'approved' : 'pending'}>
@@ -256,7 +237,6 @@ const ManagerMain = () => {
                   pageClassName={'pagination-item'}
                   subContainerClassName={'pages pagination'}
                   activeClassName={'active'}
-                  forcePage={currentPage} 
                 />
               </div>
             </div>
@@ -274,21 +254,15 @@ const ManagerMain = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {bookings.length > 0 ? (
-                      bookings.map((booking) => (
-                        <tr key={booking.BOOKING_NO}>
-                          <td>{booking.BOOKING_NO}</td>
-                          <td>{booking.BOOKING_DATE}</td>
-                          <td>{booking.BOOKING_NAME}</td>
-                          <td>{booking.BOOKING_PHONE.trim()}</td>
-                          <td>{booking.START_DATE} ~ {booking.END_DATE}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="5" style={{ textAlign: 'center' }}>검색 결과가 없습니다</td>
+                    {(bookings[currentPage] || []).map((booking) => (
+                      <tr key={booking.BOOKING_NO}>
+                        <td>{booking.BOOKING_NO}</td>
+                        <td>{booking.BOOKING_DATE}</td>
+                        <td>{booking.BOOKING_NAME}</td>
+                        <td>{booking.BOOKING_PHONE.trim()}</td>
+                        <td>{booking.START_DATE} ~ {booking.END_DATE}</td>
                       </tr>
-                    )}
+                    ))}
                   </tbody>
                 </table>
                 <ReactPaginate
@@ -303,7 +277,6 @@ const ManagerMain = () => {
                   containerClassName={'pagination'}
                   subContainerClassName={'pages pagination'}
                   activeClassName={'active'}
-                  forcePage={currentPage}
                 />
               </div>
             </div>
