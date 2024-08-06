@@ -73,4 +73,18 @@ public class ManagerService {
         managerMapper.updateManagerInfo(updatedData);
     }
 
+    public String findManagerIdByPhone(Manager manager) {
+        String id = managerMapper.findManagerIdByPhone(manager.getPhone());
+        if (id == null) {
+            throw new RuntimeException("해당 전화번호로 등록된 아이디가 없습니다.");
+        }
+        return id;
+    }
+
+    public boolean resetPassword(Manager manager) {
+        String encodedPw = passwordEncoder.encode(manager.getPw());
+        managerMapper.updateManagerPassword(manager.getId(), encodedPw);
+        return true;
+    }
+
 }
