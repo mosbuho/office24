@@ -1,0 +1,11 @@
+.admin-review-tr {
+    cursor: default;
+}
+
+.admin-review-delete-btn {
+    color: white;
+    background: #db4455;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

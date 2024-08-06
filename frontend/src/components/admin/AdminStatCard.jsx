@@ -1,6 +1,6 @@
 import { FaAngleUp, FaAngleDown } from "react-icons/fa";
 
-const StatCard = ({ title, value, change }) => (
+const AdminStatCard = ({ title, value, change }) => (
     <div className="stat-card">
         <h3>{title}</h3>
         <p className="stat-value">{value}</p>
@@ -12,4 +12,4 @@ const StatCard = ({ title, value, change }) => (
     </div>
 );
 
-export default StatCard;
+export default AdminStatCard;

@@ -21,19 +21,26 @@ import com.kh.backend.member.Member;
 import com.kh.backend.member.MemberService;
 import com.kh.backend.office.Office;
 import com.kh.backend.office.OfficeService;
+import com.kh.backend.review.ReviewService;
 
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
 
-    @Autowired
-    private MemberService memberService;
+    private final MemberService memberService;
+    private final ManagerService managerService;
+    private final OfficeService officeService;
+    private final ReviewService reviewService;
 
-    @Autowired
-    private ManagerService managerService;
-
-    @Autowired
-    private OfficeService officeService;
+    public AdminController(MemberService memberService,
+            ManagerService managerService,
+            OfficeService officeService,
+            ReviewService reviewService) {
+        this.memberService = memberService;
+        this.managerService = managerService;
+        this.officeService = officeService;
+        this.reviewService = reviewService;
+    }
 
     @GetMapping("/member")
     public Map<String, Object> getAllMembers(
@@ -167,6 +174,25 @@ public class AdminController {
     public ResponseEntity<String> deleteOffices(@PathVariable int no) {
         try {
             officeService.deleteOffice(no);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/review")
+    public Map<String, Object> getAllOffices(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "30") int size,
+            @RequestParam(required = false) String f,
+            @RequestParam(required = false) String q) {
+        return reviewService.getReviewsWithPagination(page, size, f, q);
+    }
+
+    @DeleteMapping("/review/{no}")
+    public ResponseEntity<String> deleteReview(@PathVariable int no) {
+        try {
+            reviewService.deleteReview(no);
             return ResponseEntity.ok(null);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();

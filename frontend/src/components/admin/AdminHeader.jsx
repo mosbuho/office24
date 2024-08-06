@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { removeTokens } from "../../utils/auth";
 import '../../styles/components/admin/AdminHeader.css';
 
-const Header = () => {
+const AdminHeader = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -22,4 +22,4 @@ const Header = () => {
     );
 };
 
-export default Header; 
+export default AdminHeader; 
