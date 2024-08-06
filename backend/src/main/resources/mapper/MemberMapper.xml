@@ -24,8 +24,8 @@
 
     <select id="getAllMembers" resultType="map"> SELECT * FROM ( SELECT m.*, ROWNUM rnum FROM (
         SELECT no, id, name, phone, email, birth, gender, reg_date FROM member <if
-            test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if>
-        ORDER BY no ) m WHERE ROWNUM &lt;= #{end} ) WHERE rnum >= #{start} </select>
+            test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if> ORDER BY no ) m
+        WHERE ROWNUM &lt;= #{end} ) WHERE rnum >= #{start} </select>
 
     <select id="getTotalMemberCount" resultType="int"> SELECT COUNT(*) FROM member <if
             test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if>

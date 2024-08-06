@@ -33,6 +33,8 @@ import AdminManagerList from './pages/admin/AdminManagerList';
 import AdminMember from './pages/admin/AdminMember';
 import AdminMemberList from './pages/admin/AdminMemberList';
 import AdminReviewList from './pages/admin/AdminReviewList';
+import AdminBookingList from './pages/admin/AdminBookingList';
+
 
 function App() {
   return (
@@ -49,8 +51,8 @@ function App() {
         <Route path="/member/resetPw" element={<MemberResetPw />} />
         <Route path="/member/office/:no" element={<MemberOffice />} />
         <Route path="/manager/login" element={<ManagerLogin />} />
-        <Route path="/manager/find-id" element={<ManagerFindId/>} />
-        <Route path="/manager/reset-pw" element={<ManagerResetPw/>} />
+        <Route path="/manager/find-id" element={<ManagerFindId />} />
+        <Route path="/manager/reset-pw" element={<ManagerResetPw />} />
 
         {/* 멤버 라우트 */}
         <Route path="/member/update" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberUpdate /></PrivateRoute>} />
@@ -75,6 +77,7 @@ function App() {
         <Route path="/admin/office" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminOfficeList /></PrivateRoute>} />
         <Route path="/admin/office/:no" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminOffice /></PrivateRoute>} />
         <Route path="/admin/review" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminReviewList /></PrivateRoute>} />
+        <Route path="/admin/booking" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminBookingList /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );
