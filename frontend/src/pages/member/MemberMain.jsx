@@ -350,7 +350,7 @@ function MemberMain() {
               >
                 {SearchResultMockData.map((item) => (
                   <OfficeItem key={item.id} {...item} />
-                ))}{" "}
+                ))}
               </div>
 
               <div className="item-list-button-container">

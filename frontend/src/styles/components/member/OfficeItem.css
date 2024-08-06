@@ -199,7 +199,8 @@
     }
 }
 
-.office-item-list.expanded {
+.office-item-list.expanded,
+.office-item-list.sub {
     .office-item {
         flex: 0 0 calc(33.333% - 20px);
         max-width: calc(33.333% - 20px);
