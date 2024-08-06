@@ -299,7 +299,12 @@ public class OfficeService {
         return response;
     }
 
-    public void adminDeleteOffice(int no) {
-        officeMapper.adminDeleteOffice(no);
+
+    public void acceptOffice(int no) {
+        officeMapper.acceptOffice(no);
+    }
+
+    public void refuseOffice(int no) {
+        officeMapper.refuseOffice(no);
     }
 }

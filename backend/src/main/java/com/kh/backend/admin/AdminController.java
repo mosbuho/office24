@@ -125,16 +125,6 @@ public class AdminController {
         return officeService.adminGetOfficesWithPagination(page, size, f, q, availability);
     }
 
-    @DeleteMapping("/office/{no}")
-    public ResponseEntity<String> deleteOffices(@PathVariable("no") int no) {
-        try {
-            officeService.adminDeleteOffice(no);
-            return ResponseEntity.ok(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
-        }
-    }
-
     @GetMapping("/notavailability")
     public List<Office> getOfficeNotAvailability(
             @RequestParam(value = "page", defaultValue = "1") int page,
@@ -144,9 +134,42 @@ public class AdminController {
         return officeService.getOfficeNotAvailability(page, size);
     }
 
-    @GetMapping("/office/info/{officeNo}")
-    public ResponseEntity<Map<String, Object>> getOfficeByNo(@PathVariable int officeNo) {
-        Map<String, Object> officeInfo = officeService.getOfficeInfo(officeNo);
+    @GetMapping("/office/{no}")
+    public ResponseEntity<Map<String, Object>> getOfficeByNo(@PathVariable int no) {
+        Map<String, Object> officeInfo = officeService.getOfficeInfo(no);
         return ResponseEntity.ok(officeInfo);
+    }
+
+    @PutMapping("/office/{no}/accept")
+    public ResponseEntity<String> acceptOffice(@PathVariable int no) {
+        try {
+            officeService.acceptOffice(no);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @PutMapping("/office/{no}/refuse")
+    public ResponseEntity<Map<String, Object>> refuseOffice(@PathVariable int no) {
+        try {
+            officeService.refuseOffice(no);
+            System.out.println(no);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @DeleteMapping("/office/{no}")
+    public ResponseEntity<String> deleteOffices(@PathVariable int no) {
+        try {
+            officeService.deleteOffice(no);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
     }
 }

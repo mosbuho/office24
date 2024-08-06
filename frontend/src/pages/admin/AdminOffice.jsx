@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from '../../utils/axiosConfig';
 import Sidebar from '../../components/admin/AdminSidebar';
 import Header from "../../components/admin/AdminHeader";
@@ -23,7 +23,7 @@ const ManagerOfficeUpdate = () => {
 
     useEffect(() => {
         const fetchOfficeDetails = async () => {
-            const { data } = await axios.get(`/admin/office/info/${no}`, {
+            const { data } = await axios.get(`/admin/office/${no}`, {
                 withCredentials: true,
             });
 
@@ -45,17 +45,48 @@ const ManagerOfficeUpdate = () => {
         fetchOfficeDetails();
     }, [no]);
 
+    const navigate = useNavigate();
+
     if (!office) return <></>;
 
-    return (
+    const handleAccept = () => {
+        try {
+            axios.put(`/admin/office/${no}/accept`);
+            alert("승인 되었습니다.");
+            navigate('/admin/office');
+        } catch {
+            alert("처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+        }
+    }
 
+    const handleRefuse = () => {
+        try {
+            axios.put(`/admin/office/${no}/refuse`);
+            alert("반려 되었습니다.");
+            navigate('/admin/office');
+        } catch {
+            alert("처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+        }
+    }
+
+    const handleDelete = () => {
+        try {
+            axios.delete(`/admin/office/${no}`);
+            alert("삭제 되었습니다.");
+            navigate('/admin/office');
+        } catch {
+            alert("처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+        }
+    }
+
+
+
+    return (
         <div className="admin-main">
             <Header />
             <Sidebar />
             <div className='main'>
                 <div className='admin-office-detail'>
-
-
                     <div className='image-preview-section'>
                         <div className='main-image-preview'>
                             <img
@@ -130,9 +161,9 @@ const ManagerOfficeUpdate = () => {
                             </div>
                         </form>
                         <div className='buttons'>
-                            <button className='update-btn'>승인</button>
-                            <button>반려</button>
-                            <button className='delete-btn'>삭제</button>
+                            <button className='update-btn' onClick={handleAccept}>승인</button>
+                            <button onClick={handleRefuse}>반려</button>
+                            <button className='delete-btn' onClick={handleDelete}>삭제</button>
                         </div>
                     </div>
                 </div>

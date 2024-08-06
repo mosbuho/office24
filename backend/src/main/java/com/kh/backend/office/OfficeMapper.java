@@ -56,5 +56,7 @@ public interface OfficeMapper {
                         @Param("q") String q,
                         @Param("availability") Integer availability);
 
-        void adminDeleteOffice(int no);
+        void acceptOffice(int no);
+
+        void refuseOffice(int no);
 }
