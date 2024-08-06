@@ -47,8 +47,6 @@ const ManagerOfficeUpdate = () => {
 
     const navigate = useNavigate();
 
-    if (!office) return <></>;
-
     const handleAccept = () => {
         try {
             axios.put(`/admin/office/${no}/accept`);

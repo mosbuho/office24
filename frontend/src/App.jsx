@@ -27,7 +27,7 @@ import AdminManagerList from './pages/admin/AdminManagerList';
 import AdminMember from './pages/admin/AdminMember';
 import AdminMemberList from './pages/admin/AdminMemberList';
 import ManagerInfo from './pages/manager/ManagerInfo';
-
+import AdminReviewList from './pages/admin/AdminReviewList';
 function App() {
   return (
     <BrowserRouter>
@@ -56,7 +56,7 @@ function App() {
         <Route path="/manager/office/register/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeRegister /></PrivateRoute>} />
         <Route path="/manager/office/update/:no/:officeNo" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeUpdate /></PrivateRoute>} />
         <Route path="/manager/booking/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerBooking /></PrivateRoute>} />
-        <Route path="/manager/info/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerInfo/></PrivateRoute>} />
+        <Route path="/manager/info/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerInfo /></PrivateRoute>} />
 
         {/* 어드민 라우트 */}
         <Route path="/admin" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMain /></PrivateRoute>} />
@@ -66,6 +66,7 @@ function App() {
         <Route path="/admin/manager/:no" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminManager /></PrivateRoute>} />
         <Route path="/admin/office" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminOfficeList /></PrivateRoute>} />
         <Route path="/admin/office/:no" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminOffice /></PrivateRoute>} />
+        <Route path="/admin/review" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminReviewList /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );

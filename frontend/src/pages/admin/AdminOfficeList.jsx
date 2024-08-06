@@ -115,7 +115,9 @@ const AdminOffice = () => {
                                         <td>{office.PHONE}</td>
                                         <td>{office.PRICE.toLocaleString()}원</td>
                                         <td>{office.CAPACITY.toLocaleString()}</td>
-                                        <td>{office.AVAILABILITY === 1 ? '승인' : '미승인'}</td>
+                                        <td>
+                                            {office.AVAILABILITY === 1 ? '승인' : (office.AVAILABILITY === 2 ? '반려됨' : '미승인')}
+                                        </td>
                                         <td>{new Date(office.REG_DATE).toISOString().split('T')[0]}</td>
                                     </tr>
                                 ))
