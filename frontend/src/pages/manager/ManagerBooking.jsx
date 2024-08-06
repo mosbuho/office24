@@ -189,7 +189,7 @@ const ManagerBooking = () => {
             containerClassName={'pagination'}
             subContainerClassName={'pages pagination'}
             activeClassName={'active'}
-            forcePage={currentPage}  // 현재 페이지를 설정하여 올바른 페이지가 표시되도록 함
+            forcePage={currentPage}
           />
         </div>
       </div>
