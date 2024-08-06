@@ -53,12 +53,29 @@ const AdminReviewList = () => {
         fetchReviews(1);
     };
 
-    const handleDelete = async (reviewId) => {
-        await axios.delete(`/admin/review/${reviewId}`);
-        const newReviews = reviews.filter(review => review.NO !== reviewId);
-        setReviews(newReviews);
-        setPageDataCache({});
-        fetchReviews(currentPage + 1);
+    const handleDelete = async (reviewNo) => {
+        if (confirm("리뷰를 삭제하시겠습니까?")) {
+            try {
+                await axios.delete(`/admin/review/${reviewNo}`);
+
+                // 로컬 상태 업데이트
+                setReviews(prevReviews => prevReviews.filter(review => review.NO !== reviewNo));
+
+                // 캐시 업데이트
+                setPageDataCache(prevCache => {
+                    const updatedCache = { ...prevCache };
+                    for (let key in updatedCache) {
+                        updatedCache[key] = updatedCache[key].filter(review => review.NO !== reviewNo);
+                    }
+                    return updatedCache;
+                });
+
+                alert("리뷰가 삭제되었습니다.");
+            } catch (error) {
+                console.error("리뷰 삭제 중 오류 발생:", error);
+                alert("리뷰 삭제에 실패했습니다.");
+            }
+        }
     };
 
     const options = [
@@ -67,7 +84,6 @@ const AdminReviewList = () => {
         { value: 'OFFICE_NO', label: '오피스번호' },
         { value: 'MEMBER_NO', label: '작성자번호' },
     ];
-
 
     const columns = [
         { header: '번호', accessor: 'NO' },
@@ -91,7 +107,7 @@ const AdminReviewList = () => {
             <Sidebar />
             <div className='main'>
                 <AdminSearch f={f} setF={setF} q={q} setQ={setQ} onSearch={handleSearch} options={options} />
-                <AdminTable columns={columns} data={formattedReviews} />
+                <AdminTable columns={columns} data={formattedReviews} onRowClick={() => { }} />
                 <Pagination pageCount={pageCount} handlePageClick={handlePageClick} currentPage={currentPage} />
             </div>
         </div>

@@ -11,4 +11,6 @@ public interface ReviewMapper {
             @Param("f") String f, @Param("q") String q);
 
     int getTotalReviewCount(@Param("f") String f, @Param("q") String q);
+
+    void deleteReview(@Param("no") int no);
 }

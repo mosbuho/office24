@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ReviewService {
+
     @Autowired
     private ReviewMapper reviewMapper;
 
@@ -23,4 +24,9 @@ public class ReviewService {
         response.put("totalCount", totalCount);
         return response;
     }
+
+    public void deleteReview(int no) {
+        reviewMapper.deleteReview(no);
+    }
+
 }

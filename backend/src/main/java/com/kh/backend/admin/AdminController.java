@@ -188,4 +188,14 @@ public class AdminController {
             @RequestParam(required = false) String q) {
         return reviewService.getReviewsWithPagination(page, size, f, q);
     }
+
+    @DeleteMapping("/review/{no}")
+    public ResponseEntity<String> deleteReview(@PathVariable int no) {
+        try {
+            reviewService.deleteReview(no);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
 }
