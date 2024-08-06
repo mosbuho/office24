@@ -41,7 +41,6 @@ const Adminmanager = () => {
 
     const handleUpdate = async () => {
         if (window.confirm('정보를 수정하시겠습니까?')) {
-            console.log(formData);
             try {
                 await axios.put(`/admin/manager/${formData.NO}`, {
                     name: formData.NAME,

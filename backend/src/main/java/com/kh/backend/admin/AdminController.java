@@ -1,5 +1,6 @@
 package com.kh.backend.admin;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,21 @@ import com.kh.backend.manager.Manager;
 import com.kh.backend.manager.ManagerService;
 import com.kh.backend.member.Member;
 import com.kh.backend.member.MemberService;
+import com.kh.backend.office.Office;
+import com.kh.backend.office.OfficeService;
 
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
+
     @Autowired
     private MemberService memberService;
+
     @Autowired
     private ManagerService managerService;
+
+    @Autowired
+    private OfficeService officeService;
 
     @GetMapping("/member")
     public Map<String, Object> getAllMembers(
@@ -101,6 +109,64 @@ public class AdminController {
     public ResponseEntity<String> deleteManager(@PathVariable("no") int no) {
         try {
             managerService.deleteManager(no);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/office")
+    public Map<String, Object> getAllOffices(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "30") int size,
+            @RequestParam(required = false) String f,
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) Integer availability) {
+        return officeService.adminGetOfficesWithPagination(page, size, f, q, availability);
+    }
+
+    @GetMapping("/notavailability")
+    public List<Office> getOfficeNotAvailability(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "5") int size,
+            @RequestParam(required = false) String f,
+            @RequestParam(required = false) String q) {
+        return officeService.getOfficeNotAvailability(page, size);
+    }
+
+    @GetMapping("/office/{no}")
+    public ResponseEntity<Map<String, Object>> getOfficeByNo(@PathVariable int no) {
+        Map<String, Object> officeInfo = officeService.getOfficeInfo(no);
+        return ResponseEntity.ok(officeInfo);
+    }
+
+    @PutMapping("/office/{no}/accept")
+    public ResponseEntity<String> acceptOffice(@PathVariable int no) {
+        try {
+            officeService.acceptOffice(no);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @PutMapping("/office/{no}/refuse")
+    public ResponseEntity<Map<String, Object>> refuseOffice(@PathVariable int no) {
+        try {
+            officeService.refuseOffice(no);
+            System.out.println(no);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @DeleteMapping("/office/{no}")
+    public ResponseEntity<String> deleteOffices(@PathVariable int no) {
+        try {
+            officeService.deleteOffice(no);
             return ResponseEntity.ok(null);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();

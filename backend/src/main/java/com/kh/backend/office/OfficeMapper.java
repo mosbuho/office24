@@ -39,10 +39,24 @@ public interface OfficeMapper {
         Office getOfficeByNo(@Param("officeNo") int officeNo);
 
         void updateOffice(Office office);
-    
+
         List<String> getOfficeImagesByOfficeNo(@Param("officeNo") int officeNo);
-    
+
         void deleteOfficeImage(@Param("officeNo") int officeNo, @Param("imageName") String imageName);
 
         List<Office> getOfficeNotAvailability(Map<String, Integer> params);
+
+        List<Office> adminGetAllOffices(@Param("start") int start,
+                        @Param("end") int end,
+                        @Param("f") String f,
+                        @Param("q") String q,
+                        @Param("availability") Integer availability);
+
+        int adminGetTotalOfficeCount(@Param("f") String f,
+                        @Param("q") String q,
+                        @Param("availability") Integer availability);
+
+        void acceptOffice(int no);
+
+        void refuseOffice(int no);
 }

@@ -1,132 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.backend.office.OfficeMapper">
-    <select id="getTotalRevenue" parameterType="int" resultType="int">
-        SELECT SUM(b.price) AS total_revenue
-        FROM booking b
-        JOIN office o ON b.office_no = o.no
-        WHERE o.manager_no = #{no}
+    <select id="getTotalRevenue" parameterType="int" resultType="int"> SELECT SUM(b.price) AS
+        total_revenue FROM booking b JOIN office o ON b.office_no = o.no WHERE o.manager_no = #{no} </select>
+
+    <select id="getTotalUsage" parameterType="int" resultType="int"> SELECT COUNT(b.no) AS
+        total_bookings FROM booking b JOIN office o ON b.office_no = o.no WHERE o.manager_no = #{no} </select>
+
+    <select id="getTotalRating" parameterType="int" resultType="Double"> SELECT ROUND(AVG(r.rating),
+        2) AS total_rating FROM review r JOIN office o ON r.office_no = o.no WHERE o.manager_no =
+        #{no} </select>
+
+    <select id="getActiveOfficeCount" parameterType="int" resultType="int"> SELECT COUNT(DISTINCT
+        o.no) AS active_office_count FROM office o JOIN booking b ON o.no = b.office_no WHERE
+        o.manager_no = #{no} AND SYSDATE BETWEEN b.start_date AND b.end_date </select>
+
+    <select id="getMonthlyRevenue" parameterType="int" resultType="hashmap"> WITH months AS ( SELECT
+        LEVEL AS month_num, TO_CHAR(ADD_MONTHS(TRUNC(SYSDATE, 'YYYY'), LEVEL - 1), 'MM') AS month
+        FROM DUAL CONNECT BY LEVEL &lt;= 12 ) SELECT mo.month, COALESCE(SUM(b.price), 0) AS
+        monthly_revenue FROM months mo LEFT JOIN office o ON o.manager_no = #{no} LEFT JOIN booking
+        b ON o.no = b.office_no AND TO_CHAR(b.start_date, 'MM') = mo.month GROUP BY mo.month,
+        mo.month_num ORDER BY mo.month_num </select>
+
+    <select id="getTotalGenderRatio" parameterType="int" resultType="map"> SELECT mem.gender,
+        COUNT(*) AS count FROM booking b JOIN office o ON b.office_no = o.no JOIN member mem ON
+        b.member_no = mem.no WHERE o.manager_no = #{no} GROUP BY mem.gender </select>
+
+    <select id="getOfficeStatusPaged" resultType="com.kh.backend.office.Office"> SELECT * FROM (
+        SELECT A.*, ROWNUM AS rnum FROM ( SELECT no, title, availability FROM office WHERE
+        manager_no = #{no} ORDER BY no desc ) A WHERE ROWNUM &lt;= #{offset} + #{limit} ) WHERE rnum
+        &gt; #{offset} </select>
+
+    <select id="getOfficeStatusCount" resultType="int"> SELECT COUNT(*) FROM office WHERE manager_no
+        = #{no} </select>
+
+    <select id="getOffices" resultType="com.kh.backend.office.Office"> SELECT * FROM ( SELECT A.*,
+        ROWNUM AS rnum FROM ( SELECT no, manager_no, title, address, zip_code AS zipCode, latitude,
+        longitude, content, price, capacity, title_img AS titleImg, availability, reg_date FROM
+        office WHERE manager_no = #{no} <if test="availability != null"> AND availability =
+        #{availability} </if>
+                <if test="searchText != null and searchText != ''"> AND title LIKE '%'
+        || #{searchText} || '%' </if> ORDER BY no desc ) A WHERE ROWNUM &lt;= #{offset} + #{limit} )
+        WHERE rnum &gt; #{offset} </select>
+
+    <select id="getOfficeCount" resultType="int"> SELECT COUNT(*) FROM office WHERE manager_no =
+        #{no} <if test="availability != null"> AND availability = #{availability} </if>
+        <if
+            test="searchText != null and searchText != ''"> AND title LIKE '%' || #{searchText} ||
+        '%' </if>
     </select>
 
-    <select id="getTotalUsage" parameterType="int" resultType="int">
-        SELECT COUNT(b.no) AS total_bookings
-        FROM booking b
-        JOIN office o ON b.office_no = o.no
-        WHERE o.manager_no = #{no}
-    </select>
-
-    <select id="getTotalRating" parameterType="int" resultType="Double">
-        SELECT ROUND(AVG(r.rating), 2) AS total_rating
-        FROM review r
-        JOIN office o ON r.office_no = o.no
-        WHERE o.manager_no = #{no}
-    </select>
-
-    <select id="getActiveOfficeCount" parameterType="int" resultType="int">
-        SELECT COUNT(DISTINCT o.no) AS active_office_count
-        FROM office o
-        JOIN booking b ON o.no = b.office_no
-        WHERE o.manager_no = #{no} AND SYSDATE BETWEEN b.start_date AND b.end_date
-    </select>
-
-    <select id="getMonthlyRevenue" parameterType="int" resultType="hashmap">
-        WITH months AS (
-            SELECT LEVEL AS month_num, TO_CHAR(ADD_MONTHS(TRUNC(SYSDATE, 'YYYY'), LEVEL - 1), 'MM') AS month
-            FROM DUAL CONNECT BY LEVEL &lt;= 12
-        )
-        SELECT mo.month, COALESCE(SUM(b.price), 0) AS monthly_revenue
-        FROM months mo
-        LEFT JOIN office o ON o.manager_no = #{no}
-        LEFT JOIN booking b ON o.no = b.office_no AND TO_CHAR(b.start_date, 'MM') = mo.month
-        GROUP BY mo.month, mo.month_num
-        ORDER BY mo.month_num
-    </select>
-
-    <select id="getTotalGenderRatio" parameterType="int" resultType="map">
-        SELECT mem.gender, COUNT(*) AS count
-        FROM booking b
-        JOIN office o ON b.office_no = o.no
-        JOIN member mem ON b.member_no = mem.no
-        WHERE o.manager_no = #{no}
-        GROUP BY mem.gender
-    </select>
-
-    <select id="getOfficeStatusPaged" resultType="com.kh.backend.office.Office">
-        SELECT * FROM (
-            SELECT A.*, ROWNUM AS rnum
-            FROM (
-                SELECT no, title, availability
-                FROM office
-                WHERE manager_no = #{no}
-                ORDER BY no desc
-            ) A
-            WHERE ROWNUM &lt;= #{offset} + #{limit}
-        ) WHERE rnum &gt; #{offset}
-    </select>
-
-    <select id="getOfficeStatusCount" resultType="int">
-        SELECT COUNT(*) FROM office WHERE manager_no = #{no}
-    </select>
-
-    <select id="getOffices" resultType="com.kh.backend.office.Office">
-        SELECT * FROM (
-            SELECT A.*, ROWNUM AS rnum
-            FROM (
-                SELECT no, manager_no, title, address, zip_code AS zipCode, latitude, longitude, content, price, capacity, title_img AS titleImg, availability, reg_date
-                FROM office
-                WHERE manager_no = #{no}
-                <if test="availability != null"> AND availability = #{availability} </if>
-                <if test="searchText != null and searchText != ''"> AND title LIKE '%' || #{searchText} || '%' </if>
-                ORDER BY no desc
-            ) A
-            WHERE ROWNUM &lt;= #{offset} + #{limit}
-        ) WHERE rnum &gt; #{offset}
-    </select>
-
-    <select id="getOfficeCount" resultType="int">
-        SELECT COUNT(*)
-        FROM office
-        WHERE manager_no = #{no}
-        <if test="availability != null"> AND availability = #{availability} </if>
-        <if test="searchText != null and searchText != ''"> AND title LIKE '%' || #{searchText} || '%' </if>
-    </select>
-
-    <delete id="deleteOffice">
-        DELETE FROM office WHERE no = #{no}
-    </delete>
+    <delete id="deleteOffice"> DELETE FROM office WHERE no = #{no} </delete>
 
     <insert id="insertOffice" parameterType="com.kh.backend.office.Office">
-        <selectKey keyProperty="no" order="BEFORE" resultType="int">
-            SELECT office_seq.nextval FROM dual
-        </selectKey>
-        INSERT INTO office (no, manager_no, title, address, zip_code, sido, latitude, longitude, content, price, capacity, title_img)
-        VALUES (#{no}, #{manager_no}, #{title}, #{address}, #{zipCode}, #{sido}, #{latitude}, #{longitude}, #{content}, #{price}, #{capacity}, #{titleImg})
-    </insert>
+        <selectKey keyProperty="no" order="BEFORE" resultType="int"> SELECT office_seq.nextval FROM
+        dual </selectKey> INSERT INTO office (no, manager_no, title, address, zip_code, sido,
+        latitude, longitude, content, price, capacity, title_img) VALUES (#{no}, #{manager_no},
+        #{title}, #{address}, #{zipCode}, #{sido}, #{latitude}, #{longitude}, #{content}, #{price},
+        #{capacity}, #{titleImg}) </insert>
 
-    <insert id="insertOfficeImage" parameterType="com.kh.backend.office.OfficeImage">
-        INSERT INTO office_image (office_no, name)
-        VALUES (#{officeNo}, #{name})
-    </insert>
+    <insert id="insertOfficeImage" parameterType="com.kh.backend.office.OfficeImage"> INSERT INTO
+        office_image (office_no, name) VALUES (#{officeNo}, #{name}) </insert>
 
-    <select id="getOfficeByNo" parameterType="int" resultType="com.kh.backend.office.Office">
-        SELECT no, manager_no, title, address, zip_code AS zipCode, sido, latitude, longitude, content, price, capacity, title_img AS titleImg, availability, reg_date AS regDate
-        FROM office
-        WHERE no = #{officeNo}
-    </select>
+    <select id="getOfficeByNo" parameterType="int" resultType="com.kh.backend.office.Office"> SELECT
+        no, manager_no, title, address, zip_code AS zipCode, sido, latitude, longitude, content,
+        price, capacity, title_img AS titleImg, availability, reg_date AS regDate FROM office WHERE
+        no = #{officeNo} </select>
 
-    <update id="updateOffice" parameterType="com.kh.backend.office.Office">
-        UPDATE office
-        SET title = #{title}, address = #{address}, zip_code = #{zipCode}, sido = #{sido}, latitude = #{latitude}, longitude = #{longitude}, content = #{content}, price = #{price}, capacity = #{capacity}, title_img = #{titleImg}
-        WHERE no = #{no} AND manager_no = #{manager_no}
-    </update>
+    <update id="updateOffice" parameterType="com.kh.backend.office.Office"> UPDATE office SET title
+        = #{title}, address = #{address}, zip_code = #{zipCode}, sido = #{sido}, latitude =
+        #{latitude}, longitude = #{longitude}, content = #{content}, price = #{price}, capacity =
+        #{capacity}, title_img = #{titleImg} WHERE no = #{no} AND manager_no = #{manager_no} </update>
 
-    <select id="getOfficeImagesByOfficeNo" parameterType="int" resultType="string">
-        SELECT name FROM office_image WHERE office_no = #{officeNo}
-    </select>
+    <select id="getOfficeImagesByOfficeNo" parameterType="int" resultType="string"> SELECT name FROM
+        office_image WHERE office_no = #{officeNo} </select>
 
-    <delete id="deleteOfficeImage">
-        DELETE FROM office_image WHERE office_no = #{officeNo} AND name = #{imageName}
-    </delete>
+    <delete id="deleteOfficeImage"> DELETE FROM office_image WHERE office_no = #{officeNo} AND name
+        = #{imageName} </delete>
 
     <select id="getOfficeNotAvailability" parameterType="map"
         resultType="com.kh.backend.office.Office">
@@ -146,4 +96,37 @@
         WHERE rnum >= #{start}
         ]]>
     </select>
+
+    <select id="adminGetAllOffices" resultType="map"> SELECT * FROM ( SELECT n.*, ROWNUM rnum FROM (
+        SELECT o.no, m.name, m.phone, o.title, o.address, o.price, o.capacity, o.availability,
+        o.reg_date FROM office o JOIN manager m ON o.manager_no = m.no <where>
+            <if test="f != null and q != ''">
+                <choose>
+                    <when test="f == 'no'">AND o.no LIKE '%' || #{q} || '%'</when>
+                    <when test="f == 'title'">AND o.title LIKE '%' || #{q} || '%'</when>
+                    <otherwise>1=1</otherwise>
+                </choose>
+            </if>
+                    <if
+                test="availability != null">AND o.availability = #{availability}</if>
+        </where>
+        ORDER BY o.no ) n WHERE ROWNUM &lt;= #{end} ) WHERE rnum>= #{start} </select>
+
+    <select id="adminGetTotalOfficeCount" resultType="int"> SELECT COUNT(*) FROM office <where>
+            <if test="f != null and q != ''">
+                <choose>
+                    <when test="f == 'no'">AND no LIKE '%' || #{q} || '%'</when>
+                    <when test="f == 'title'">AND title LIKE '%' || #{q} || '%'</when>
+                    <otherwise>1=1</otherwise>
+                </choose>
+            </if>
+        <if
+                test="availability != null">AND availability = #{availability}</if>
+        </where>
+    </select>
+
+    <update id="acceptOffice">UPDATE office SET availability = 1 WHERE no = #{no}</update>
+
+    <update id="refuseOffice">UPDATE office SET availability = 2 WHERE no = #{no}</update>
+
 </mapper>

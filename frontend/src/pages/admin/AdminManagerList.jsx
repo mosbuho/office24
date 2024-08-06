@@ -57,12 +57,20 @@ const Adminmanager = () => {
         fetchManager(1);
     };
 
+    const options = [
+        { value: 'NO', label: '번호' },
+        { value: 'ID', label: '아이디' },
+        { value: 'NAME', label: '이름' },
+        { value: 'PHONE', label: '연락처' },
+    ];
+
+
     return (
         <div className="admin-main">
             <Header />
             <Sidebar />
             <div className='main'>
-                <AdminSearch f={f} setF={setF} q={q} setQ={setQ} onSearch={handleSearch} />
+                <AdminSearch f={f} setF={setF} q={q} setQ={setQ} onSearch={handleSearch} options={options} />
                 <div className='admin-table'>
                     <table>
                         <thead>
