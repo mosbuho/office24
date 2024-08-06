@@ -182,8 +182,9 @@
 
 
                 .required-information-item-title {
-                    padding: 20px;
+                    padding: 10px;
                     ;
+                    margin: 10px;
                     position: relative;
                     width: 100%;
 
@@ -207,7 +208,7 @@
                     }
                 }
 
-                .required-information-item-title:has(.noPhoneNumber) {
+                .required-information-item-title:has(.noValue) {
                     border: 2px solid var(--discard-color);
                     border-radius: 10px;
 
@@ -216,8 +217,9 @@
                     }
                 }
 
-                .required-information-item-title:has(.noPhoneNumber):hover {
-                    padding: 25px 25px 25px 25px;
+                .required-information-item-title:has(.noValue):hover {
+                    padding: 13px;
+                    ;
                     font-size: larger !important;
                     transition: all 0.3s ease;
                 }
@@ -366,6 +368,7 @@
     align-items: center;
     z-index: 1000;
 
+
     .popup {
         background-color: white;
         padding: 20px;
@@ -497,6 +500,10 @@
 
     .phone-number-input-wrapper {
         min-width: 30vw;
+    }
+
+    .phone-number-input-wrapper,
+    .name-input-wrapper {
         margin-top: 20px;
 
         input {
@@ -507,4 +514,5 @@
             border: 1px solid var(--shaded-color);
         }
     }
+
 }

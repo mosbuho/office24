@@ -162,8 +162,9 @@ const MemberPayment = () => {
 
   const [showDatePopup, setShowDatePopup] = useState(false);
   const [showAttendancePopup, setShowAttendancePopup] = useState(false);
-  const [showPhoneNumberPopup, setShowPhoneNumberPopup] = useState(false);
-
+  const [showPhoneNumberInputPopup, setShowPhoneNumberInputPopup] =
+    useState(false);
+  const [showNameInputPopup, setShowNameInputPopup] = useState(false);
   const [startDate, setStartDate] = useState(location.state?.startDate || null);
   const [endDate, setEndDate] = useState(location.state?.endDate || null);
   const [attendance, setAttendance] = useState(location.state?.attendance || 1);
@@ -366,9 +367,61 @@ const MemberPayment = () => {
       </div>
     );
   };
+  // Component NameInputPopup
+  const NameInputPopup = ({ onClose, onSave }) => {
+    const [localName, setLocalName] = useState("");
+    const nameInputRef = useRef(null);
 
-  // Component PhoneNumberPopup
-  const PhoneNumberPopup = ({ onClose, onSave }) => {
+    const handleNameChange = (event) => {
+      setLocalName(event.target.value);
+    };
+
+    const handleSave = () => {
+      onSave(localName);
+      onClose();
+    };
+
+    const handleClear = () => {
+      setLocalName("");
+    };
+
+    useEffect(() => {
+      if (nameInputRef.current) {
+        nameInputRef.current.focus();
+      }
+    }, []);
+
+    return (
+      <div className="popup-overlay" onClick={onClose}>
+        <div className="popup" onClick={(e) => e.stopPropagation()}>
+          <h2>이름 입력</h2>
+          <button className="popup-close" onClick={onClose}>
+            <IoCloseCircle />
+          </button>
+          <div className="name-input-wrapper">
+            <input
+              id="name-input"
+              type="text"
+              className="search-input"
+              value={localName}
+              onChange={handleNameChange}
+              placeholder="이름을 입력하세요"
+              ref={nameInputRef}
+            />
+          </div>
+          <div className="popup-buttons">
+            <button onClick={handleClear}>
+              <u>지우기</u>
+            </button>
+            <button onClick={handleSave}>저장</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Component PhoneNumberInputPopup
+  const PhoneNumberInputPopup = ({ onClose, onSave }) => {
     const [localPhoneNumber, setLocalPhoneNumber] = useState("");
     const phoneNumberInputRef = useRef(null);
 
@@ -427,6 +480,64 @@ const MemberPayment = () => {
   const pricePerAttendance = resultItemMockData.price * attendance;
   const totalPrice = resultItemMockData.price * period * attendance;
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [name, setName] = useState("");
+
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+  const [cvv, setCvv] = useState("");
+
+  const handleCardNumberChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "");
+    let formattedValue;
+
+    const cardPatterns = {
+      mastercard: /^5[1-5]/,
+      visa: /^4/,
+      amex: /^3[47]/,
+      discover: /^6011/,
+    };
+
+    if (cardPatterns.amex.test(value)) {
+      formattedValue = value
+        .replace(/(\d{4})(\d{6})?(\d{5})?/, "$1-$2-$3")
+        .trim();
+      setCardNumber(formattedValue.slice(0, 17)); // 15 digits + 2 hyphens
+    } else if (
+      cardPatterns.mastercard.test(value) ||
+      cardPatterns.visa.test(value) ||
+      cardPatterns.discover.test(value)
+    ) {
+      formattedValue = value.replace(/(\d{4})(?=\d)/g, "$1-");
+      setCardNumber(formattedValue.slice(0, 19)); // 16 digits + 3 hyphens
+    } else {
+      // For other card types or invalid numbers
+      formattedValue = value.replace(/(\d{4})(?=\d)/g, "$1-");
+      setCardNumber(formattedValue.slice(0, 19));
+    }
+
+    // Validate the card number
+    const cardRegex =
+      /(5[1-5]\d{14})|(4\d{12})(\d{3}?)|3[47]\d{13}|(6011\d{12})/;
+    const isValid = cardRegex.test(value);
+
+    // You can use isValid to update UI or state as needed
+    console.log("Is valid card number:", isValid);
+  };
+
+  const handleExpiryDateChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "");
+    if (value.length <= 2) {
+      setExpiryDate(value);
+    } else {
+      setExpiryDate(value.slice(0, 2) + "/" + value.slice(2, 4));
+    }
+  };
+
+  const handleCvvChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "");
+    setCvv(value.slice(0, 3));
+  };
+
   //render MemberPayment
   return (
     <div>
@@ -475,6 +586,7 @@ const MemberPayment = () => {
             <hr />
             <div className="reservation-content">
               <h3>결제 수단</h3>
+
               <div className="dropdown-section" style={{ display: "none" }}>
                 <select
                   className="payment-dropdown"
@@ -489,15 +601,33 @@ const MemberPayment = () => {
               {paymentMethod === "new-credit-card" && (
                 <form>
                   <div className="credit-card-form">
-                    <input type="text" placeholder="우편번호" />
-                    <input type="text" placeholder="카드 만료일 (MM/YY)" />
-                    <input type="text" placeholder="CVV" />
+                    <input
+                      type="text"
+                      placeholder="카드 번호"
+                      value={cardNumber}
+                      onChange={handleCardNumberChange}
+                      maxLength={19}
+                    />
+                    <input
+                      type="text"
+                      placeholder="카드 만료일 (MM/YY)"
+                      value={expiryDate}
+                      onChange={handleExpiryDateChange}
+                      maxLength={5}
+                    />
+                    <input
+                      type="text"
+                      placeholder="CVV"
+                      value={cvv}
+                      onChange={handleCvvChange}
+                      maxLength={3}
+                    />
                   </div>
-                  <input
+                  {/* <input
                     className="one-line-input"
                     type="text"
                     placeholder="우편번호"
-                  />
+                  /> */}
                 </form>
               )}
               {/* end of choice section */}
@@ -509,13 +639,30 @@ const MemberPayment = () => {
                 <div className="required-information-item">
                   <div
                     className="required-information-item-title"
-                    onClick={() => setShowPhoneNumberPopup(true)}
+                    onClick={() => setShowNameInputPopup(true)}
+                  >
+                    <span>이름</span>
+                    {name ? (
+                      <p>{name}</p>
+                    ) : (
+                      <p className="noValue">
+                        아직 이름이 등록되지 않았습니다. 클릭하여 등록해주세요
+                      </p>
+                    )}
+                    <u>수정</u>
+                  </div>
+                </div>
+
+                <div className="required-information-item">
+                  <div
+                    className="required-information-item-title"
+                    onClick={() => setShowPhoneNumberInputPopup(true)}
                   >
                     <span>전화번호</span>
                     {phoneNumber ? (
                       <p>{phoneNumber}</p>
                     ) : (
-                      <p className="noPhoneNumber">
+                      <p className="noValue">
                         아직 전화번호가 등록되지 않았습니다. 클릭하여
                         등록해주세요
                       </p>
@@ -543,10 +690,9 @@ const MemberPayment = () => {
               <div className="reservation-content last">
                 <h3>기본 규칙</h3>
                 <div className="inform">
-                  <p>• 대여 시간 엄수</p>
-                  <p>• 대여 목적 외 사용 금지, 손상/분실 시 배상</p>
+                  <p>• 시간 엄수</p>
+                  <p>• 목적 외 사용 금지, 손상/분실 시 배상</p>
                   <p>• 사용 후 정리 정돈, 쓰레기 배출</p>
-                  <p>• 입실 시 신분증 확인, 비밀번호 외부 유출 금지</p>
                   <p>• 금연, 화기 사용 금지, 불법 행위 금지</p>
                 </div>
               </div>
@@ -617,12 +763,21 @@ const MemberPayment = () => {
           }}
         />
       )}
-      {showPhoneNumberPopup && (
-        <PhoneNumberPopup
-          onClose={() => setShowPhoneNumberPopup(false)}
+      {showNameInputPopup && (
+        <NameInputPopup
+          onClose={() => setShowNameInputPopup(false)}
+          onSave={(newName) => {
+            setName(newName);
+            setShowNameInputPopup(false);
+          }}
+        />
+      )}
+      {showPhoneNumberInputPopup && (
+        <PhoneNumberInputPopup
+          onClose={() => setShowPhoneNumberInputPopup(false)}
           onSave={(newPhoneNumber) => {
             setPhoneNumber(newPhoneNumber);
-            setShowPhoneNumberPopup(false);
+            setShowPhoneNumberInputPopup(false);
           }}
         />
       )}
