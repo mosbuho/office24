@@ -169,12 +169,39 @@ public class ManagerController {
     }
 
     @PutMapping("/update/{no}")
-    public ResponseEntity<String> updateManagerInfo(@PathVariable int no, @RequestBody Map<String, Object> updatedData) {
+    public ResponseEntity<String> updateManagerInfo(@PathVariable int no,
+            @RequestBody Map<String, Object> updatedData) {
         try {
             managerService.updateManagerInfo(no, updatedData);
             return ResponseEntity.ok("정보가 성공적으로 수정되었습니다.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body("정보 수정 중 오류가 발생했습니다.");
+        }
+    }
+
+    // id 찾기 페이지
+    @PostMapping("/find-id")
+    public ResponseEntity<String> findManagerIdByPhone(@RequestBody Manager manager) {
+        try {
+            String id = managerService.findManagerIdByPhone(manager);
+            return ResponseEntity.ok(id);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // pw 재설정 페이지
+    @PostMapping("/reset-pw")
+    public ResponseEntity<String> resetPassword(@RequestBody Manager manager) {
+        try {
+            boolean isReset = managerService.resetPassword(manager);
+            if (isReset) {
+                return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
+            } else {
+                return ResponseEntity.badRequest().body("아이디 또는 전화번호가 일치하지 않습니다.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("비밀번호 재설정 중 오류가 발생했습니다.");
         }
     }
 

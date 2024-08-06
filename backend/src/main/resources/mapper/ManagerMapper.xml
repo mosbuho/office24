@@ -43,4 +43,16 @@
         </trim>
         WHERE no = #{data.no}
     </update>
+
+    <select id="findManagerIdByPhone" resultType="String">
+        SELECT id
+        FROM manager
+        WHERE phone = #{phone}
+    </select>
+    
+    <update id="updateManagerPassword">
+        UPDATE manager
+        SET pw = #{pw}
+        WHERE id = #{id}
+    </update>
 </mapper>

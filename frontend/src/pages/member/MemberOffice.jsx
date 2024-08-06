@@ -2,6 +2,7 @@ import { default as React, useEffect, useRef, useState } from "react";
 import { CiShare2 } from "react-icons/ci";
 import { FaStar } from "react-icons/fa";
 import { PiHeartThin } from "react-icons/pi";
+import { useNavigate } from "react-router-dom";
 import Calendar from "../../components/member/Calendar";
 import KakaoMapSingleLocation from "../../components/member/KakaoMapSingleLocation";
 import MemberFooter from "../../components/member/MemberFooter";
@@ -207,7 +208,7 @@ const ReviewGraph = ({ averageRating, resultItemMockData }) => {
   return (
     <div className="review-statics-section">
       <h3>
-        <FaStar /> {averageRating.toFixed(1)} · 후기{" "}
+        <FaStar /> {averageRating.toFixed(1)} · 후기
         {resultItemMockData.noOfReview}개
       </h3>
       <div className="rating-bars">
@@ -379,6 +380,7 @@ const MemberOffice = () => {
     const [extendDateInput, setExtendDateInput] = useState(false);
     const [extendAttendInput, setExtendAttendInput] = useState(false);
     const attendanceInputRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
       const handleClickOutside = (event) => {
@@ -451,102 +453,143 @@ const MemberOffice = () => {
     };
 
     return (
-      <div className="right-column">
-        <div className="background-for-input-wrapper">
-          <div className="price">
-            <h4>
-              <b>₩{resultItemMockData.price.toLocaleString()}</b> /1석 /1일
-            </h4>
-          </div>
-          <h3>사용 기간과 인원 입력하고 가격을 확인하세요</h3>
-          <div className="extended-input-wrapper">
-            <div className="date-input-wrapper">
-              {renderDateInput("시작", startDate, toggleExtendDateInput)}
-              {renderDateInput("종료", endDate, toggleExtendDateInput)}
+      <>
+        <button
+          className="mobile-reservation-button"
+          onClick={() =>
+            navigate("/payment", {
+              state: {
+                startDate: startDate,
+                endDate: endDate,
+                attendance,
+                officeNo: resultItemMockData.officeNo,
+              },
+            })
+          }
+        >
+          예약하기
+        </button>
+        <div className="right-column">
+          <div className="background-for-input-wrapper">
+            <div className="price">
+              <h4>
+                <b>₩{resultItemMockData.price.toLocaleString()}</b> /1석&1일
+              </h4>
             </div>
-            <div
-              className={`attend-count ${extendAttendInput ? "extend" : ""}`}
-              onClick={(e) => {
-                if (!e.target.closest("button") && !e.target.closest("input")) {
-                  toggleExtendAttendInput();
-                }
-              }}
-            >
-              <div className="attendance-input-wrapper">
-                <label
-                  htmlFor="reservation-attendance-input"
-                  className="search-label"
-                >
-                  인원
-                </label>
+            <h3>사용 기간과 인원 입력하고 가격을 확인하세요</h3>
+            <div className="extended-input-wrapper">
+              <div className="date-input-wrapper">
+                {renderDateInput("시작", startDate, toggleExtendDateInput)}
+                {renderDateInput("종료", endDate, toggleExtendDateInput)}
+              </div>
+              <div
+                className={`attend-count ${extendAttendInput ? "extend" : ""}`}
+                onClick={(e) => {
+                  if (
+                    !e.target.closest("button") &&
+                    !e.target.closest("input")
+                  ) {
+                    toggleExtendAttendInput();
+                  }
+                }}
+              >
                 <div className="attendance-input-wrapper">
-                  <input
-                    id="reservation-attendance-input"
-                    type="number"
-                    className="search-input"
-                    value={attendance}
-                    onChange={(e) => {
-                      const value = parseInt(e.target.value, 10);
-                      if (!isNaN(value)) {
-                        setAttendance(value);
-                      }
-                    }}
-                    onBlur={() => {
-                      setAttendance((prev) => prev || 1);
-                      setExtendAttendInput(false);
-                    }}
-                    min="1"
-                    max="100"
-                    step="1"
-                    ref={attendanceInputRef}
+                  <label
+                    htmlFor="reservation-attendance-input"
+                    className="search-label"
+                  >
+                    인원
+                  </label>
+                  <div className="attendance-input-wrapper">
+                    <input
+                      id="reservation-attendance-input"
+                      type="number"
+                      className="search-input"
+                      value={attendance}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value, 10);
+                        if (!isNaN(value)) {
+                          setAttendance(value);
+                        }
+                      }}
+                      onBlur={() => {
+                        setAttendance((prev) => prev || 1);
+                        setExtendAttendInput(false);
+                      }}
+                      min="1"
+                      max="100"
+                      step="1"
+                      ref={attendanceInputRef}
+                    />
+                  </div>
+                </div>
+                <button
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    setAttendance((prev) => Math.min(100, (prev || 0) + 1));
+                  }}
+                >
+                  +
+                </button>
+                <button
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    setAttendance((prev) => Math.max(1, (prev || 1) - 1));
+                  }}
+                >
+                  -
+                </button>
+              </div>
+              <button
+                className="reservation-button"
+                onClick={() =>
+                  navigate("/payment", {
+                    state: {
+                      startDate: startDate,
+                      endDate: endDate,
+                      attendance,
+                      officeNo: resultItemMockData.officeNo,
+                    },
+                  })
+                }
+              >
+                예약하기
+              </button>
+              <div
+                className={`extended-input ${
+                  extendDateInput ? "extended" : ""
+                }`}
+              >
+                <div className="extended-input-container">
+                  <Calendar
+                    settingStartDate={setStartDate}
+                    settingEndDate={setEndDate}
+                    startDate={startDate}
+                    endDate={endDate}
                   />
                 </div>
               </div>
-              <button
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  setAttendance((prev) => Math.min(100, (prev || 0) + 1));
-                }}
-              >
-                +
-              </button>
-              <button
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  setAttendance((prev) => Math.max(1, (prev || 1) - 1));
-                }}
-              >
-                -
-              </button>
             </div>
-            <button className="reservation-button">예약하기</button>
-            <div
-              className={`extended-input ${extendDateInput ? "extended" : ""}`}
-            >
-              <div className="extended-input-container">
-                <Calendar
-                  settingStartDate={setStartDate}
-                  settingEndDate={setEndDate}
-                  startDate={startDate}
-                  endDate={endDate}
-                />
-              </div>
+            <div className="reservation-information">
+              #예약이 확정되기 전에는 요금이 청구되지 않습니다.
             </div>
-          </div>
-          <div className="reservation-information">
-            #예약이 확정되기 전에는 요금이 청구되지 않습니다.
-          </div>
-          <hr />
-          <div className="total-price-line">
-            <div>총합계</div>
-            <div>₩{calculateTotalPrice().toLocaleString()}</div>
+            <hr />
+            <div className="total-price-line">
+              <div>총합계</div>
+              <div>₩{calculateTotalPrice().toLocaleString()}</div>
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   };
 
   //Render MemberOfficePage
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
   return (
     <>
       <MemberHeader />
@@ -596,9 +639,6 @@ const MemberOffice = () => {
               hostJoinedTime={hostJoinedTime}
             />
 
-            <div className="mobile-reservation-button">
-              <div>예약하기</div>
-            </div>
             <RightColumn resultItemMockData={resultItemMockData} />
           </div>
           <hr />
