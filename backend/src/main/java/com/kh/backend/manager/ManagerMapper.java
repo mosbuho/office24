@@ -26,4 +26,9 @@ public interface ManagerMapper {
     Manager getManagerInfo(@Param("no") int no);
 
     void updateManagerInfo(@Param("data") Map<String, Object> updatedData);
+
+    String findManagerIdByPhone(@Param("phone") String phone);
+
+    void updateManagerPassword(@Param("id") String id, @Param("pw") String pw);
+
 }

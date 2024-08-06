@@ -1,0 +1,97 @@
+.managerSearchPw-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f8f9fa;
+}
+
+.managerSearchPw-container .searchPw {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 390px;
+    text-align: center;
+}
+
+.managerSearchPw-container .logo {
+    font-size: 35px;
+    font-weight: bold;
+    color: #6363d2;
+    margin-bottom: 20px;
+}
+
+.managerSearchPw-container .tabs {
+    display: flex;
+    justify-content: center;
+    margin: 20px auto 40px;
+    border-bottom: 1px solid #b0b0b0;
+    padding: 10px;
+    width: 200px;
+    font-size: 16px;
+}
+
+.managerSearchPw-container .active {
+    color: #b0b0b0;
+}
+
+.managerSearchPw-container .find-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.managerSearchPw-container .find-form input {
+    width: 300px;
+    padding: 10px;
+    margin: 0 auto 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.managerSearchPw-container .find-form input::placeholder {
+    font-size: 12px;
+}
+
+.managerSearchPw-container .find-btn {
+    width: 320px;
+    background-color: #6363d2;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 10px auto 15px;
+}
+
+.managerSearchPw-container .options {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.managerSearchPw-container .options button {
+    color: #6363d2;
+    background-color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+}
+
+.managerSearchPw-container p {
+    color: #6363d2;
+    font-size: 15px;
+    font-weight: bold;
+    margin: 10px auto 0;
+}
+
+.managerSearchPw-container .error-message {
+    color: #6363d2;
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 5px;
+}
