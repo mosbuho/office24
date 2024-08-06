@@ -26,7 +26,8 @@ public class ManagerController {
     private final OfficeService officeService;
     private final BookingService bookingService;
 
-    public ManagerController(ManagerService managerService, OfficeService officeService, BookingService bookingService) {
+    public ManagerController(ManagerService managerService, OfficeService officeService,
+            BookingService bookingService) {
         this.managerService = managerService;
         this.officeService = officeService;
         this.bookingService = bookingService;
@@ -145,14 +146,36 @@ public class ManagerController {
             @RequestParam(value = "filter", required = false) String filter,
             @RequestParam(value = "searchText", required = false) String searchText,
             @RequestParam(value = "sortOrder", required = false, defaultValue = "new") String sortOrder) {
-        Map<String, Object> result = bookingService.getDetailedBookingsByManager(no, page, size, filter, searchText, sortOrder);
+        Map<String, Object> result = bookingService.getDetailedBookingsByManager(no, page, size, filter, searchText,
+                sortOrder);
         return ResponseEntity.ok(result);
     }
-    
+
     @DeleteMapping("/booking/delete/{bookingNo}")
     public ResponseEntity<Void> deleteBooking(@PathVariable int bookingNo) {
         bookingService.deleteBooking(bookingNo);
         return ResponseEntity.ok().build();
+    }
+
+    // 정보 관리 페이지
+    @GetMapping("/info/{no}")
+    public ResponseEntity<Manager> getManagerInfo(@PathVariable int no) {
+        try {
+            Manager manager = managerService.getManagerInfo(no);
+            return ResponseEntity.ok(manager);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    @PutMapping("/update/{no}")
+    public ResponseEntity<String> updateManagerInfo(@PathVariable int no, @RequestBody Map<String, Object> updatedData) {
+        try {
+            managerService.updateManagerInfo(no, updatedData);
+            return ResponseEntity.ok("정보가 성공적으로 수정되었습니다.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body("정보 수정 중 오류가 발생했습니다.");
+        }
     }
 
 }

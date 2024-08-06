@@ -217,7 +217,6 @@ body.manager-booking-body {
         width: 270px;
     }
 
-    /* 페이징 */
     .pagination {
         display: flex;
         justify-content: center;

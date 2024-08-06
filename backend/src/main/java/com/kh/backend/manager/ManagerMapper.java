@@ -1,6 +1,7 @@
 package com.kh.backend.manager;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -21,4 +22,8 @@ public interface ManagerMapper {
     void updateManager(Manager manager);
 
     void deleteManager(int no);
+
+    Manager getManagerInfo(@Param("no") int no);
+
+    void updateManagerInfo(@Param("data") Map<String, Object> updatedData);
 }

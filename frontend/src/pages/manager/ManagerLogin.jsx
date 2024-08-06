@@ -11,10 +11,18 @@ const ManagerLogin = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await axios.post('http://localhost:8080/auth/manager/login', { id, pw });
-        const { accessToken, refreshToken, no } = response.data;
-        setTokens(accessToken, refreshToken, no);
-        navigate('/manager');
+        try {
+            const response = await axios.post('http://localhost:8080/auth/manager/login', { id, pw });
+            const { accessToken, refreshToken, no } = response.data;
+            setTokens(accessToken, refreshToken, no);
+            navigate('/manager');
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                alert(error.response.data);
+            } else {
+                alert('로그인 중 오류가 발생했습니다.');
+            }
+        }
     };
 
     return (
