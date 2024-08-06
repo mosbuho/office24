@@ -6,8 +6,8 @@ import Pagination from '../../components/admin/AdminPagination';
 import AdminSearch from '../../components/admin/AdminSearch';
 import AdminTable from '../../components/admin/AdminTable';
 
-const AdminManagerList = () => {
-    const [manager, setManager] = useState([]);
+const AdminBookingList = () => {
+    const [booking, setBooking] = useState([]);
     const [pageCount, setPageCount] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
     const [pageDataCache, setPageDataCache] = useState({});
@@ -15,62 +15,70 @@ const AdminManagerList = () => {
     const [q, setQ] = useState('');
 
     useEffect(() => {
-        fetchManager(1);
+        fetchbooking(1);
     }, []);
 
-    const fetchManager = async (page) => {
+    const fetchbooking = async (page) => {
         if (pageDataCache[`${f}_${q}_${page}`]) {
-            setManager(pageDataCache[`${f}_${q}_${page}`]);
+            setBooking(pageDataCache[`${f}_${q}_${page}`]);
             return;
         }
 
-        const response = await axios.get(`/admin/manager`, {
+        const response = await axios.get(`/admin/booking`, {
             params: {
                 page, size: 30, f, q
             }
         });
+        console.log(response.data);
 
-        const { manager: fetchedManager, totalCount } = response.data;
+        const { bookings: fetchedbooking, totalCount } = response.data;
 
         setPageDataCache(prevCache => ({
             ...prevCache,
-            [`${f}_${q}_${page}`]: fetchedManager
+            [`${f}_${q}_${page}`]: fetchedbooking
         }));
 
-        setManager(fetchedManager);
+        setBooking(fetchedbooking);
         setPageCount(Math.ceil(totalCount / 30));
     };
 
     const handlePageClick = (selectedItem) => {
         const newPage = selectedItem.selected + 1;
         setCurrentPage(selectedItem.selected);
-        fetchManager(newPage);
+        fetchbooking(newPage);
     };
 
     const handleSearch = () => {
         setCurrentPage(0);
         setPageDataCache({});
-        fetchManager(1);
+        fetchbooking(1);
     };
 
     const columns = [
         { header: '번호', accessor: 'NO' },
-        { header: '아이디', accessor: 'ID' },
-        { header: '이름', accessor: 'NAME' },
-        { header: '핸드폰', accessor: 'PHONE' },
-        { header: '이메일', accessor: 'EMAIL' },
-        { header: '가입일', accessor: 'REG_DATE' }
+        { header: '오피스번호', accessor: 'OFFICE_NO' },
+        { header: '이용자번호', accessor: 'MEMBER_NO' },
+        { header: '예약자', accessor: 'NAME' },
+        { header: '예약자연락처', accessor: 'PHONE' },
+        { header: '결제금액', accessor: 'PRICE' },
+        { header: '결제수단', accessor: 'PAYMENT' },
+        { header: '예약 시작일', accessor: 'START_DATE' },
+        { header: '예약 종료일', accessor: 'END_DATE' },
+        { header: '결제일', accessor: 'REG_DATE' }
     ];
 
     const options = [
         { value: 'NO', label: '번호' },
-        { value: 'ID', label: '아이디' },
-        { value: 'NAME', label: '이름' },
-        { value: 'PHONE', label: '연락처' },
+        { value: 'NAME', label: '예약자명' },
+        { value: 'OFFICE_NO', label: '오피스번호' },
+        { value: 'MEMBER_NO', label: '이용자번호' },
     ];
 
-    const formattedManager = manager.map(item => ({
+    const formattedbookings = booking.map(item => ({
         ...item,
+        PRICE: `${item.PRICE.toLocaleString('ko-KR')}원`,
+        START_DATE: new Date(item.START_DATE).toISOString().split('T')[0],
+        END_DATE: new Date(item.END_DATE).toISOString().split('T')[0],
         REG_DATE: new Date(item.REG_DATE).toISOString().split('T')[0]
     }));
 
@@ -80,11 +88,11 @@ const AdminManagerList = () => {
             <Sidebar />
             <div className='main'>
                 <AdminSearch f={f} setF={setF} q={q} setQ={setQ} onSearch={handleSearch} options={options} />
-                <AdminTable columns={columns} data={formattedManager} onRowClick={(manager, navigate) => navigate(`/admin/manager/${manager.NO}`, { state: { manager } })} />
+                <AdminTable columns={columns} data={formattedbookings} onRowClick={() => { }} />
                 <Pagination pageCount={pageCount} handlePageClick={handlePageClick} currentPage={currentPage} />
             </div>
         </div>
     );
 };
 
-export default AdminManagerList;
+export default AdminBookingList;
