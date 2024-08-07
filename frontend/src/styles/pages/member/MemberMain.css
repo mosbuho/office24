@@ -24,6 +24,10 @@
         justify-content: space-between;
     }
 
+    .office-item.dummy {
+        visibility: hidden;
+    }
+
     .office-item-list.expanded {
         max-width: 1055px;
         box-sizing: border-box;

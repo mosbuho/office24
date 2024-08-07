@@ -107,6 +107,18 @@ const ManagerOfficeRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (
+      !titleRef.current.value.trim() ||
+      !priceRef.current.value.trim() ||
+      !addressRef.current.value.trim() ||
+      !zipcodeRef.current.value.trim() ||
+      !contentRef.current.value.trim() ||
+      !capacityRef.current.value.trim()
+    ) {
+      alert("모든 필수 항목을 입력해 주세요.");
+      return;
+    }
+
     const data = new FormData();
     data.append('title', titleRef.current.value);
     data.append('price', priceRef.current.value);

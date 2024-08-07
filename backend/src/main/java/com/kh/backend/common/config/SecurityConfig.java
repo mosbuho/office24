@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/img/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/office/**").permitAll()
                         // .requestMatchers("/auth/kakao/**").permitAll()
                         // .requestMatchers("/auth/naver/**").permitAll()
                         // .requestMatchers("/auth/google/**").permitAll()

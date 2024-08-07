@@ -16,9 +16,11 @@ const ManagerMain = () => {
   const [stats, setStats] = useState(null);
   const [monthlyData, setMonthlyData] = useState([]);
   const [genderData, setGenderData] = useState([]);
-  const [bookings, setBookings] = useState([]);
+  const [bookings, setBookings] = useState({});
+  const [currentPage, setCurrentPage] = useState(0);
   const [bookingPageCount, setBookingPageCount] = useState(0);
-  const [offices, setOffices] = useState([]); // 오피스 등록 상태 리스트
+  const [offices, setOffices] = useState({});
+  const [currentOfficePage, setCurrentOfficePage] = useState(0);
   const [officePageCount, setOfficePageCount] = useState(0);
 
   useEffect(() => {
@@ -48,30 +50,18 @@ const ManagerMain = () => {
       setGenderData(genderRatio);
 
       setOfficePageCount(Math.ceil(serverData.offices.length / 5));
-      setOffices(serverData.offices.slice(0, 5));
+      setOffices({ 0: serverData.offices.slice(0, 5) });
     } catch (error) {
       console.error("Error fetching stats:", error);
     }
   };
 
-  // 오피스 등록 상태
-  const fetchOfficeStatus = async (selectedPage) => {
-    try {
-      const response = await axios.get(`/manager/office/status/${no}`, {
-        params: {
-          page: selectedPage + 1,
-          size: 5,
-        },
-      });
-
-      setOffices(response.data.offices);
-      setOfficePageCount(Math.ceil(response.data.total / 5));
-    } catch (error) {
-      console.error("Error fetching office status:", error);
-    }
-  };
-
   const fetchBookings = async (selectedPage) => {
+    if (bookings[selectedPage]) {
+      setCurrentPage(selectedPage);
+      return;
+    }
+
     try {
       const response = await axios.get(`/manager/booking/simple/${no}`, {
         params: {
@@ -87,16 +77,46 @@ const ManagerMain = () => {
         END_DATE: new Date(booking.END_DATE).toLocaleDateString()
       }));
 
-      setBookings(bookData);
+      setBookings(prevBookings => ({
+        ...prevBookings,
+        [selectedPage]: bookData,
+      }));
+      setCurrentPage(selectedPage);
       setBookingPageCount(response.data.totalPages);
     } catch (error) {
       console.error("Error fetching bookings:", error);
     }
   };
 
+  const fetchOfficeStatus = async (selectedPage) => {
+    if (offices[selectedPage]) {
+      setCurrentOfficePage(selectedPage);
+      return;
+    }
+
+    try {
+      const response = await axios.get(`/manager/office/status/${no}`, {
+        params: {
+          page: selectedPage + 1,
+          size: 5,
+        },
+      });
+
+      setOffices(prevOffices => ({
+        ...prevOffices,
+        [selectedPage]: response.data.offices,
+      }));
+      setCurrentOfficePage(selectedPage);
+      setOfficePageCount(Math.ceil(response.data.total / 5));
+    } catch (error) {
+      console.error("Error fetching office status:", error);
+    }
+  };
+
   useEffect(() => {
     fetchStats();
     fetchBookings(0);
+    fetchOfficeStatus(0);
   }, [no]);
 
   const handleBookingPageClick = (data) => {
@@ -195,7 +215,7 @@ const ManagerMain = () => {
               <h4>오피스 등록 상태</h4>
               <div className='office-status'>
                 <ul>
-                  {offices.map((office) => (
+                  {(offices[currentOfficePage] || []).map((office) => (
                     <li key={office.no} className='statusli'>
                       {office.title}
                       <span className={office.availability === 1 ? 'approved' : 'pending'}>
@@ -234,7 +254,7 @@ const ManagerMain = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {bookings.map((booking) => (
+                    {(bookings[currentPage] || []).map((booking) => (
                       <tr key={booking.BOOKING_NO}>
                         <td>{booking.BOOKING_NO}</td>
                         <td>{booking.BOOKING_DATE}</td>

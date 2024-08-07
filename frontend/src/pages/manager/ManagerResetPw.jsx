@@ -66,7 +66,6 @@ const ManagerResetPw = () => {
     }
   };
 
-  // [번호인증] 버튼
   const sendCode = async () => {
     try {
       const response = await axios.post('http://localhost:8080/message/send-one', {
@@ -80,11 +79,14 @@ const ManagerResetPw = () => {
         alert('인증 코드 전송에 실패했습니다.');
       }
     } catch (error) {
-      alert('인증 코드 전송 중 오류가 발생했습니다.');
+      if (error.response && error.response.status === 429) {
+        alert(error.response.data);
+      } else {
+        alert('인증 코드 전송 중 오류가 발생했습니다.');
+      }
     }
   };
 
-  // [인증] 버튼
   const verifyCode = async () => {
     try {
       const response = await axios.post('http://localhost:8080/message/verify-code', {

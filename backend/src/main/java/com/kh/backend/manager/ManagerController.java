@@ -88,7 +88,7 @@ public class ManagerController {
         return officeService.getAllOffices(no, page, size, availability, searchText);
     }
 
-    @DeleteMapping("/office/delete/{no}")
+    @DeleteMapping("/office/{no}")
     public ResponseEntity<Void> deleteOffice(@PathVariable int no) {
         officeService.deleteOffice(no);
         return ResponseEntity.ok().build();
@@ -151,7 +151,7 @@ public class ManagerController {
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/booking/delete/{bookingNo}")
+    @DeleteMapping("/booking/{bookingNo}")
     public ResponseEntity<Void> deleteBooking(@PathVariable int bookingNo) {
         bookingService.deleteBooking(bookingNo);
         return ResponseEntity.ok().build();
