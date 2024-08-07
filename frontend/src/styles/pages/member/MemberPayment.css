@@ -2,7 +2,7 @@
     --discard-color: #e74d4d;
 }
 
-.member-payment-page-logo {
+.member-sub-page-logo {
     color: var(--primary-color);
     font-size: 40px;
     width: 10vw;
@@ -502,6 +502,7 @@
         min-width: 30vw;
     }
 
+    .popup-form,
     .phone-number-input-wrapper,
     .name-input-wrapper {
         margin-top: 20px;

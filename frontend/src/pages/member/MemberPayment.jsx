@@ -542,7 +542,7 @@ const MemberPayment = () => {
   return (
     <div>
       <div
-        className="member-payment-page-logo"
+        className="member-sub-page-logo"
         onClick={() => navigate("/")}
         style={{ cursor: "pointer" }}
       >

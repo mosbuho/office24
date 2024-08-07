@@ -13,11 +13,13 @@ const OfficeItem = ({ NO, TITLE, RATING, LOCATION, PRICEPERDAY, OFFICEIMGURL }) 
   };
 
   return (
-    <div className="office-item" onClick={handleClick}>
-      <div className="office-item-image-box">
-        <div className="office-item-like-on-image">
-          <PiHeartThin />
-          {/* <PiHeartStraightFill style={{ color: "red" }} /> */}
+    <>
+      <div className="office-item" onClick={handleClick}>
+        <div className="office-item-image-box">
+          <div className="office-item-like-on-image">
+            <PiHeartThin />
+            {/* <PiHeartStraightFill style={{ color: "red" }} /> */}
+          </div>
         </div>
         <div
           className="office-item-image"
@@ -40,7 +42,7 @@ const OfficeItem = ({ NO, TITLE, RATING, LOCATION, PRICEPERDAY, OFFICEIMGURL }) 
             <FaStar />
             <div className="rate">{RATING}</div>
           </div>
-        </div>
+
 
         <div className="office-item-middle">
           <p>{LOCATION}</p>
@@ -54,7 +56,7 @@ const OfficeItem = ({ NO, TITLE, RATING, LOCATION, PRICEPERDAY, OFFICEIMGURL }) 
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

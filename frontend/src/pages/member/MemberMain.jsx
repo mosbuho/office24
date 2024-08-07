@@ -79,6 +79,7 @@ function MemberMain() {
                 className={`office-item-list${isMapExpanded ? " expanded" : ""
                   }`}
               >
+
                 {mapData.map((item, index) => (
                   <OfficeItem
                     key={index}
