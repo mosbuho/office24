@@ -56,6 +56,7 @@ create table office (
 	title        varchar2(255) not null,     	 	                    -- 이름 (6자 이상 12자 이하 한글x)
 	address      varchar2(255) not null,     	 	                    -- 주소
 	zip_code     varchar2(20) not null,      		                    -- 우편 번호
+	sido         varchar2(10) not null,                                 -- 시도
 	latitude     float not null,             	 	                    -- 좌표 (위도)
 	longitude    float not null,              		                    -- 좌표 (경도)
 	content      varchar2(4000) not null,              		            -- 상세설명
@@ -79,11 +80,10 @@ create table office_image (
 -----------------------------------------------------------------------------------------
 
 create table notice (
-	no         number default notice_seq.nextval primary key,           -- 구분 코드
-	title      varchar2(100) not null,                                  -- 제목
-	content    varchar2(4000) not null,                                 -- 내용
-	view_count number not null,            		                        -- 조회 수
-	reg_date   date default systimestamp                                -- 생성일
+	no       number default notice_seq.nextval primary key,           -- 구분 코드
+	title    varchar2(100) not null,                                  -- 제목
+	content  varchar2(4000) not null,                                 -- 내용
+	reg_date date default systimestamp                                -- 생성일
 );
 
 -----------------------------------------------------------------------------------------
@@ -125,15 +125,14 @@ create table booking (
 		references member ( no )
 			on delete cascade,					                        -- 멤버
 	name       varchar2(12) not null,			                        -- 예약자
+	phone      char(11) not null,										-- 예약자 번호
+	price      number(10) not null,        		                        -- 예약 금액
 	payment    varchar2(20) not null,			                        -- 결제 수단
 	start_date date not null,               	                        -- 예약 시작일
 	end_date   date not null,               	                        -- 예약 종료일
-	price      number(10) not null,        		                        -- 예약 금액
 	reg_date   date default systimestamp, 		                        -- 예약일
 	constraint chk_date check ( start_date <= end_date )                -- 예약 조건
 );
-
-select * from booking;
 
 -----------------------------------statistics--------------------------------------------
 

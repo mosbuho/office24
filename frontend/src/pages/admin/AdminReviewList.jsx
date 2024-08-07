@@ -55,26 +55,16 @@ const AdminReviewList = () => {
 
     const handleDelete = async (reviewNo) => {
         if (confirm("리뷰를 삭제하시겠습니까?")) {
-            try {
-                await axios.delete(`/admin/review/${reviewNo}`);
-
-                // 로컬 상태 업데이트
-                setReviews(prevReviews => prevReviews.filter(review => review.NO !== reviewNo));
-
-                // 캐시 업데이트
-                setPageDataCache(prevCache => {
-                    const updatedCache = { ...prevCache };
-                    for (let key in updatedCache) {
-                        updatedCache[key] = updatedCache[key].filter(review => review.NO !== reviewNo);
-                    }
-                    return updatedCache;
-                });
-
-                alert("리뷰가 삭제되었습니다.");
-            } catch (error) {
-                console.error("리뷰 삭제 중 오류 발생:", error);
-                alert("리뷰 삭제에 실패했습니다.");
-            }
+            await axios.delete(`/admin/review/${reviewNo}`);
+            setReviews(prevReviews => prevReviews.filter(review => review.NO !== reviewNo));
+            setPageDataCache(prevCache => {
+                const updatedCache = { ...prevCache };
+                for (let key in updatedCache) {
+                    updatedCache[key] = updatedCache[key].filter(review => review.NO !== reviewNo);
+                }
+                return updatedCache;
+            });
+            alert("리뷰가 삭제되었습니다.");
         }
     };
 

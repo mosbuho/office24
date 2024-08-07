@@ -69,6 +69,7 @@ BEGIN
 END;
 /
 
+
 ------------------------------------------------------------------------------------------------------------------------------
 
 BEGIN
@@ -98,7 +99,7 @@ BEGIN
             TRUNC(DBMS_RANDOM.VALUE(100000, 2000000)),
             i * 10,
             'img' || i || '.jpg',
-            TRUNC(DBMS_RANDOM.VALUE(0, 2)),
+            TRUNC(DBMS_RANDOM.VALUE(0, 3)),
             CASE 
                 WHEN FLOOR(DBMS_RANDOM.VALUE(1, 5)) = 1 THEN '서울'
                 WHEN FLOOR(DBMS_RANDOM.VALUE(1, 5)) = 2 THEN '부산'
@@ -118,7 +119,7 @@ BEGIN
         INSERT INTO review (member_no, office_no, rating, content)
         VALUES (
             1,  
-            4, 
+            1, 
             TRUNC(DBMS_RANDOM.VALUE(0, 6)),  
             'Review content for office ' || i
         );
@@ -143,18 +144,19 @@ END;
 
 BEGIN
     FOR i IN 1..100 LOOP
-        INSERT INTO booking (office_no, member_no, name, payment, start_date, end_date, price)
+        INSERT INTO booking (office_no, member_no, name, phone, payment, price, start_date, end_date)
         VALUES (
             1,  
             1, 
             'Booking ' || LPAD(i, 3, '0'),
+            '01051341847',
             CASE
                 WHEN MOD(i, 2) = 0 THEN 'Credit Card'
                 ELSE 'Cash'
             END,
+            TRUNC(DBMS_RANDOM.VALUE(5000, 10000)),  
             SYSDATE + i,  
-            SYSDATE + i + 1, 
-            TRUNC(DBMS_RANDOM.VALUE(5000, 10000))  
+            SYSDATE + i + 1
         );
     END LOOP;
 END;
