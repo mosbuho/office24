@@ -307,4 +307,8 @@ public class OfficeService {
     public void refuseOffice(int no) {
         officeMapper.refuseOffice(no);
     }
+
+    public List<Map<String, Object>> getOfficeList() {
+        return officeMapper.selectOfficeList();
+    }
 }

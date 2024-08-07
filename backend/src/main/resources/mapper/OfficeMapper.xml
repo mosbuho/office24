@@ -129,4 +129,25 @@
 
     <update id="refuseOffice">UPDATE office SET availability = 2 WHERE no = #{no}</update>
 
+    <select id="selectOfficeList" resultType="map">
+        SELECT 
+            o.no as no, 
+            o.title as title, 
+            NVL(AVG(r.rating), 0) as rating, 
+            COUNT(r.no) as noOfRating, 
+            o.address as location, 
+            o.price as pricePerDay, 
+            o.title_img as officeImgURL, 
+            o.longitude as longitude, 
+            o.latitude as latitude
+        FROM 
+            office o 
+        LEFT JOIN 
+            review r 
+        ON 
+            o.no = r.office_no 
+        GROUP BY 
+            o.no, o.title, o.address, o.price, o.title_img, o.longitude, o.latitude
+    </select>
+
 </mapper>
