@@ -3,7 +3,6 @@ package com.kh.backend.admin;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,25 +14,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kh.backend.booking.BookingService;
 import com.kh.backend.manager.Manager;
 import com.kh.backend.manager.ManagerService;
 import com.kh.backend.member.Member;
 import com.kh.backend.member.MemberService;
 import com.kh.backend.office.Office;
 import com.kh.backend.office.OfficeService;
+import com.kh.backend.review.ReviewService;
 
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
 
-    @Autowired
-    private MemberService memberService;
+    private final MemberService memberService;
+    private final ManagerService managerService;
+    private final OfficeService officeService;
+    private final ReviewService reviewService;
+    private final BookingService bookingService;
 
-    @Autowired
-    private ManagerService managerService;
-
-    @Autowired
-    private OfficeService officeService;
+    public AdminController(MemberService memberService,
+            ManagerService managerService,
+            OfficeService officeService,
+            ReviewService reviewService,
+            BookingService bookingService) {
+        this.memberService = memberService;
+        this.managerService = managerService;
+        this.officeService = officeService;
+        this.reviewService = reviewService;
+        this.bookingService = bookingService;
+    }
 
     @GetMapping("/member")
     public Map<String, Object> getAllMembers(
@@ -171,5 +181,33 @@ public class AdminController {
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
+    }
+
+    @GetMapping("/review")
+    public Map<String, Object> getAllOffices(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "30") int size,
+            @RequestParam(required = false) String f,
+            @RequestParam(required = false) String q) {
+        return reviewService.getReviewsWithPagination(page, size, f, q);
+    }
+
+    @DeleteMapping("/review/{no}")
+    public ResponseEntity<String> deleteReview(@PathVariable int no) {
+        try {
+            reviewService.deleteReview(no);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/booking")
+    public Map<String, Object> getAllBookings(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "30") int size,
+            @RequestParam(required = false) String f,
+            @RequestParam(required = false) String q) {
+        return bookingService.getBookingsWithPagination(page, size, f, q);
     }
 }

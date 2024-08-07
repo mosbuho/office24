@@ -49,8 +49,6 @@ const AdminMain = () => {
     const [fetchedNoticePages, setfetchedNoticePages] = useState(new Set());
     const [noticePage, setNoticePage] = useState(1);
 
-
-
     useEffect(() => {
         const fetchData = async () => {
             await fetchAccumulate(setAccumulate);

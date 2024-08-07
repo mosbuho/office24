@@ -296,7 +296,7 @@ body.manager-main-body {
         display: flex;
         justify-content: center;
         padding: 10px;
-        margin: 5px 0 0 0;
+        margin: 16px 0 0 0;
         list-style: none;
         gap: 5px;
     }

@@ -18,10 +18,11 @@ const ManagerRegister = () => {
   const [phoneError, setPhoneError] = useState('');
   const [emailError, setEmailError] = useState('');
 
-  const [isPhoneVerified, setIsPhoneVerified] = useState(false); // 전화번호 인증 상태
-  const [codeSent, setCodeSent] = useState(false); // 인증 코드 전송 상태
-  const [codeInput, setCodeInput] = useState(''); // 입력받은 인증 코드
-  const [isIdAvailable, setIsIdAvailable] = useState(null); // 아이디 중복 확인 상태
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  const [codeSent, setCodeSent] = useState(false);
+  const [codeInput, setCodeInput] = useState('');
+  const [isIdAvailable, setIsIdAvailable] = useState(null);
+
   const navigate = useNavigate();
 
   const idRef = useRef();
@@ -31,7 +32,6 @@ const ManagerRegister = () => {
   const phoneRef = useRef();
   const emailRef = useRef();
 
-  // 유효성 검사
   const validateId = (id) => {
     const idRegex = /^[a-zA-Z0-9]{6,12}$/;
     if (!idRegex.test(id)) {
@@ -108,7 +108,6 @@ const ManagerRegister = () => {
     return isValidId && isValidPw && isValidPwConfirm && isValidName && isValidPhone && isValidEmail;
   };
 
-  // [가입] 버튼
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateForm()) {
@@ -123,7 +122,6 @@ const ManagerRegister = () => {
       return;
     }
     try {
-      console.log({ id, pw, name, phone, email });
       const response = await axios.post('http://localhost:8080/manager/register', {
         id,
         pw,
@@ -143,7 +141,6 @@ const ManagerRegister = () => {
     }
   };
 
-  // [중복 확인] 버튼
   const handleIdCheck = async () => {
     try {
       const response = await axios.get('http://localhost:8080/manager/idCheck', {
@@ -164,30 +161,32 @@ const ManagerRegister = () => {
     }
   };
 
-  // [번호인증] 버튼
   const sendCode = async () => {
     if (!validatePhone(phone)) {
       alert('번호를 제대로 입력해주세요.');
       return;
     }
-    
+
     try {
+      console.log("인증 코드 전송 요청 중...");
       const response = await axios.post('http://localhost:8080/message/send-one', {
         to: phone,
       }, { withCredentials: true });
 
       if (response.status === 200) {
+        console.log("인증 코드 전송 성공");
         setCodeSent(true);
         alert('인증 코드가 전송되었습니다.');
-      } else {
-        alert('인증 코드 전송에 실패했습니다.');
       }
     } catch (error) {
-      alert('인증 코드 전송 중 오류가 발생했습니다.');
+      if (error.response && error.response.status === 429) {
+        alert(error.response.data);
+      } else {
+        alert('인증 코드 전송 중 오류가 발생했습니다.');
+      }
     }
   };
 
-  // [인증] 버튼
   const verifyCode = async () => {
     try {
       const response = await axios.post('http://localhost:8080/message/verify-code', {
@@ -214,7 +213,7 @@ const ManagerRegister = () => {
     <>
       <div className="managerRegister-container">
         <div className='reg-container'>
-          <div className="logo" onClick={()=>navigate('/manager')}>OFFICE24</div>
+          <div className="logo" onClick={() => navigate('/manager')}>OFFICE24</div>
           <div className="signup-tabs">
             <div className="active">관리자 회원가입</div>
           </div>
@@ -232,7 +231,7 @@ const ManagerRegister = () => {
             {isIdAvailable === false && <div className="error">이미 사용 중인 아이디입니다.</div>}
             <div className="input-group">
               <label htmlFor="pw">비밀번호</label>
-              <input type="password" id="pw" placeholder="8~16자, 영문, 숫자, 특수문자 포함" value={pw} 
+              <input type="password" id="pw" placeholder="8~16자, 영문, 숫자, 특수문자 포함" value={pw}
                 onChange={(e) => {
                   setPw(e.target.value);
                   validatePw(e.target.value);

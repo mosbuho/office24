@@ -3,6 +3,7 @@ import axios from '../../utils/axiosConfig';
 export const fetchAccumulate = async (setAccumulate) => {
     const response = await axios.get('/admin/accumulate');
     setAccumulate(response.data);
+    console.log(response.data);
 };
 
 export const fetchAgeGroup = async (setAgeGroup) => {
@@ -11,11 +12,8 @@ export const fetchAgeGroup = async (setAgeGroup) => {
     const initialData = ageOrder.map(ageGroup => ({ ageGroup, M: '0.00', W: '0.00' }));
     const ageGroupMap = response.data.reduce((sum, item) => sum + item.COUNT, 0);
     const formattedAgeGroup = response.data.reduce((acc, item) => {
-        const ageGroup = item.AGEGROUP;
-        const gender = item.GENDER;
-        const percentage = (item.COUNT / ageGroupMap * 100).toFixed(2);
-        const existing = acc.find(data => data.ageGroup === ageGroup);
-        if (existing) existing[gender] = percentage;
+        const existing = acc.find(data => data.ageGroup === item.AGEGROUP);
+        if (existing) existing[item.GENDER] = (item.COUNT / ageGroupMap * 100).toFixed(2);
         return acc;
     }, initialData);
     formattedAgeGroup.sort((a, b) => ageOrder.indexOf(a.ageGroup) - ageOrder.indexOf(b.ageGroup));
@@ -39,7 +37,6 @@ export const fetchGroupData = async (groupState, setGroupState, group) => {
     }
 
     const response = await axios.get(`/admin/${group}`);
-    console.log(response.data);
     const months = Array.from({ length: 12 }, (_, i) => {
         const month = i + 1;
         return `${month}월`;
@@ -66,7 +63,7 @@ export const fetchGroupData = async (groupState, setGroupState, group) => {
             labels = { label1: '신규', label2: '삭제', label3: '리뷰' };
             break;
         default:
-            labels = { label1: 'label1', label2: 'label2', label3: 'label3' }; // 기본 레이블
+            labels = { label1: 'label1', label2: 'label2', label3: 'label3' };
     }
 
     const formattedGroup = months.map(month => ({
@@ -79,9 +76,7 @@ export const fetchGroupData = async (groupState, setGroupState, group) => {
     let cumulativeTrend = 0;
 
     response.data.forEach(item => {
-        const yearMonth = item.YEAR_MONTH;
-        const month = parseInt(yearMonth.split('-')[1], 10);
-        const monthName = `${month}월`;
+        const monthName = `${parseInt(item.YEAR_MONTH.split('-')[1], 10)}월`;
 
         const monthIndex = months.indexOf(monthName);
         if (monthIndex !== -1) {

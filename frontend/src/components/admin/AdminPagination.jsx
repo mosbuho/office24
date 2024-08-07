@@ -2,7 +2,7 @@ import React from 'react';
 import ReactPaginate from 'react-paginate';
 import '../../styles/components/admin/AdminPagination.css';
 
-const Pagination = ({ pageCount, handlePageClick, currentPage }) => {
+const AdminPagination = ({ pageCount, handlePageClick, currentPage }) => {
     return (
         <ReactPaginate
             previousLabel={"이전"}
@@ -22,4 +22,4 @@ const Pagination = ({ pageCount, handlePageClick, currentPage }) => {
     );
 };
 
-export default Pagination;
+export default AdminPagination;

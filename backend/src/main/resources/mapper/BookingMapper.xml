@@ -11,7 +11,7 @@
                 m.phone AS booking_phone,
                 b.start_date,
                 b.end_date,
-                ROW_NUMBER() OVER (ORDER BY b.reg_date DESC) AS rn
+                ROW_NUMBER() OVER (ORDER BY b.no DESC) AS rn
             FROM
                 booking b
             JOIN
@@ -26,86 +26,44 @@
         WHERE rn BETWEEN #{offset} + 1 AND #{offset} + #{limit}
     </select>
 
-    <select id="countBookingsByManager" resultType="int">
-        SELECT COUNT(*)
-        FROM booking b
-        JOIN office o ON b.office_no = o.no
-        JOIN manager m ON o.manager_no = m.no
-        WHERE m.no = #{no}
-    </select>
+    <select id="countBookingsByManager" resultType="int"> SELECT COUNT(*) FROM booking b JOIN office
+        o ON b.office_no = o.no JOIN manager m ON o.manager_no = m.no WHERE m.no = #{no} </select>
 
-    <select id="selectDetailedBookingsByManager" resultType="map">
-        SELECT *
-        FROM (
-            SELECT
-                b.no AS booking_no,
-                o.title AS office_name,
-                m.name AS customer_name,
-                b.payment AS payment_method,
-                b.price AS payment_amount,
-                b.start_date,
-                b.end_date,
-                ROW_NUMBER() OVER (
-                <choose>
-                    <when test="sortOrder == 'new'">
-                        ORDER BY b.reg_date DESC
-                    </when>
-                    <when test="sortOrder == 'oldest'">
-                        ORDER BY b.reg_date ASC
-                    </when>
-                </choose>
-            ) AS rn
-            FROM
-                booking b
-            JOIN
-                office o ON b.office_no = o.no
-            JOIN
-                manager mgr ON o.manager_no = mgr.no
-            JOIN
-                member m ON b.member_no = m.no
-            WHERE
-                mgr.no = #{no}
-                <if test="filter == 'recent'">
-                    AND b.end_date >= SYSDATE
-                </if>
+    <select id="selectDetailedBookingsByManager" resultType="map"> SELECT * FROM ( SELECT b.no AS
+        booking_no, o.title AS office_name, m.name AS customer_name, b.payment AS payment_method,
+        b.price AS payment_amount, b.start_date, b.end_date, ROW_NUMBER() OVER ( <choose>
+            <when test="sortOrder == 'new'"> ORDER BY b.reg_date DESC </when>
+            <when test="sortOrder == 'oldest'"> ORDER BY b.reg_date ASC </when>
+        </choose> )
+        AS rn FROM booking b JOIN office o ON b.office_no = o.no JOIN manager mgr ON o.manager_no =
+        mgr.no JOIN member m ON b.member_no = m.no WHERE mgr.no = #{no} <if
+            test="filter == 'recent'"> AND b.end_date >= SYSDATE </if>
                 <if test="filter == 'past'">
-                    AND b.end_date &lt; SYSDATE
-                </if>
-                <if test="searchText != null and searchText != ''">
-                    AND (o.title LIKE '%' || #{searchText} || '%'
-                    OR m.name LIKE '%' || #{searchText} || '%')
-                </if>
-        )
-        WHERE rn BETWEEN #{offset} + 1 AND #{offset} + #{limit}
+        AND b.end_date &lt; SYSDATE </if>
+                <if test="searchText != null and searchText != ''"> AND
+        (o.title LIKE '%' || #{searchText} || '%' OR m.name LIKE '%' || #{searchText} || '%') </if>
+        ) WHERE rn BETWEEN #{offset} + 1 AND #{offset} + #{limit} </select>
+
+    <select id="countBookingsByManagerWithFilter" resultType="int"> SELECT COUNT(*) FROM booking b
+        JOIN office o ON b.office_no = o.no JOIN manager mgr ON o.manager_no = mgr.no JOIN member m
+        ON b.member_no = m.no WHERE mgr.no = #{no} <if test="filter == 'recent'"> AND b.end_date >=
+        SYSDATE </if>
+            <if test="filter == 'past'"> AND b.end_date &lt; SYSDATE </if>
+            <if
+            test="searchText != null and searchText != ''"> AND (o.title LIKE '%' || #{searchText}
+        || '%' OR m.name LIKE '%' || #{searchText} || '%') </if>
     </select>
 
-    <select id="countBookingsByManagerWithFilter" resultType="int">
-        SELECT COUNT(*)
-        FROM
-            booking b
-        JOIN
-            office o ON b.office_no = o.no
-        JOIN
-            manager mgr ON o.manager_no = mgr.no
-        JOIN
-            member m ON b.member_no = m.no
-        WHERE
-            mgr.no = #{no}
-            <if test="filter == 'recent'">
-                AND b.end_date >= SYSDATE
-            </if>
-            <if test="filter == 'past'">
-                AND b.end_date &lt; SYSDATE
-            </if>
-            <if test="searchText != null and searchText != ''">
-                AND (o.title LIKE '%' || #{searchText} || '%'
-                OR m.name LIKE '%' || #{searchText} || '%')
-            </if>
-    </select>
+    <delete id="deleteBooking"> DELETE FROM booking WHERE no = #{bookingNo} </delete>
 
-    <!-- 예약 삭제 -->
-    <delete id="deleteBooking">
-        DELETE FROM booking WHERE no = #{bookingNo}
-    </delete>
+    <select id="getAllBookings" resultType="map"> SELECT * FROM ( SELECT m.*, ROWNUM rnum FROM (
+        SELECT no, office_no, member_no, name, phone, payment, price, start_date, end_date, reg_date
+        FROM booking <if
+            test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if> ORDER BY no ) m
+        WHERE ROWNUM &lt;= #{end} ) WHERE rnum >= #{start} </select>
+
+    <select id="getTotalBookingCount" resultType="int"> SELECT COUNT(*) FROM booking <if
+            test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if>
+    </select>
 
 </mapper>

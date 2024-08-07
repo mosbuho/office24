@@ -59,4 +59,7 @@ public interface OfficeMapper {
         void acceptOffice(int no);
 
         void refuseOffice(int no);
+
+        List<Map<String, Object>> selectOfficeList(@Param("startRow") int startRow, @Param("endRow") int endRow);
+
 }
