@@ -1,10 +1,14 @@
-import React, { useReducer, useState } from "react";
+import React, { useState } from "react";
+import { FaStar } from "react-icons/fa6";
 import { IoCloseCircle } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import Calendar from "../../components/member/Calendar";
 import MemberFooter from "../../components/member/MemberFooter";
 import MemberHeader from "../../components/member/MemberHeader";
 import OfficeItem from "../../components/member/OfficeItem";
 import "../../styles/pages/member/MemberMyPage.css";
+
+//mock data
 const OfficeMockData = [
   {
     id: 1,
@@ -295,22 +299,111 @@ const OfficeMockData = [
     latitude: 37.6555561555385,
   },
 ];
-const popupReducer = (state, action) => {
-  switch (action.type) {
-    case "OPEN_POPUP":
-      return {
-        ...state,
-        openPopup: action.field,
-        [action.field]: action.value,
-      };
-    case "CLOSE_POPUP":
-      return { ...state, openPopup: null };
-    case "UPDATE_VALUE":
-      return { ...state, [state.openPopup]: action.value };
-    default:
-      return state;
-  }
-};
+
+//Component CancelPopup
+function CancelPopup({ onConfirm, onCancel, msg }) {
+  return (
+    <div className="popup-overlay" onClick={onCancel}>
+      <div className="popup" onClick={(e) => e.stopPropagation()}>
+        <div className="popup-header">
+          <h3>예약 취소</h3>
+          <button className="popup-close" onClick={onCancel}>
+            <IoCloseCircle />
+          </button>
+        </div>
+        <div className="popup-content">
+          <div className="popup-form">
+            <p>{msg}</p>
+            <div className="popup-buttons verification">
+              <button className="yes" onClick={() => onConfirm("yes")}>
+                예
+              </button>
+              <button className="no" onClick={() => onCancel("no")}>
+                아니오
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+//Component EditPopup
+function EditPopup({ reservation, onClose, onSave }) {
+  const [startDate, setStartDate] = useState(new Date(reservation.startDate));
+  const [endDate, setEndDate] = useState(new Date(reservation.endDate));
+  const [attendance, setAttendance] = useState(reservation.attendance || 1);
+
+  const handleSave = () => {
+    onSave({
+      ...reservation,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+      attendance,
+    });
+  };
+  //function getDiffDays
+  const getDiffDays = (start, end) => {
+    const diffTime = Math.max(end - start, 0);
+    return Math.max(Math.ceil(diffTime / (1000 * 60 * 60 * 24)), 1);
+  };
+  // Function formateDate
+  const formatDate = (date) => {
+    if (!date) return "";
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  };
+
+  return (
+    <div className="popup-overlay" onClick={onClose}>
+      <div className="popup" onClick={(e) => e.stopPropagation()}>
+        <div className="popup-header  calendar-popup">
+          <h2>{`${getDiffDays(startDate, endDate || startDate)}일`}</h2>
+          <button className="popup-close" onClick={onClose}>
+            <IoCloseCircle />
+          </button>
+          <div className="show-date-value">
+            <div className="wrap-right">
+              <span>시작일</span>
+              <div>{formatDate(startDate)}</div>
+            </div>
+            <div className="wrap-left">
+              <span>종료일</span>
+              <div>{formatDate(endDate || startDate)}</div>
+            </div>
+          </div>
+        </div>
+        <div className="calendar-container">
+          <div>
+            <Calendar
+              settingStartDate={setStartDate}
+              settingEndDate={setEndDate}
+              startDate={startDate}
+              endDate={endDate}
+            />
+          </div>
+        </div>
+        <div className="attendance-container">
+          <label htmlFor="attendance">인원:</label>
+          <input
+            type="number"
+            id="attendance"
+            placeholder="인원을 입력하세요"
+            value={attendance}
+            onChange={(e) => setAttendance(parseInt(e.target.value))}
+            min="1"
+          />
+        </div>
+        <div className="popup-buttons">
+          <button onClick={onClose}>취소</button>
+          <button onClick={handleSave}>저장</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+//Component Phone input Popup
 function PhonePopup({ initialValue, onSave, onClose }) {
   const [phone, setPhone] = useState(initialValue);
   const [error, setError] = useState("");
@@ -380,15 +473,16 @@ function PhonePopup({ initialValue, onSave, onClose }) {
   );
 }
 
+//Component Email input Popup
 function EmailPopup({ initialValue, onSave, onClose }) {
   const [email, setEmail] = useState(initialValue);
   const [error, setError] = useState("");
-
+  //function validate email
   const validateEmail = (value) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailPattern.test(value);
   };
-
+  //function handle email save
   const handleSave = () => {
     if (validateEmail(email)) {
       onSave("email", email);
@@ -397,6 +491,7 @@ function EmailPopup({ initialValue, onSave, onClose }) {
       setError("올바른 이메일 주소를 입력해주세요.");
     }
   };
+  //render email popup
   return (
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup" onClick={(e) => e.stopPropagation()}>
@@ -424,6 +519,8 @@ function EmailPopup({ initialValue, onSave, onClose }) {
     </div>
   );
 }
+
+//Component POPUP name input
 function NamePopup({ initialValue, onSave, onClose }) {
   const [name, setName] = useState(initialValue);
   const [error, setError] = useState("");
@@ -469,6 +566,8 @@ function NamePopup({ initialValue, onSave, onClose }) {
     </div>
   );
 }
+
+//component POPUP birthday input
 function BirthPopup({ initialValue, onSave, onClose }) {
   const [birth, setBirth] = useState(initialValue);
   const [error, setError] = useState("");
@@ -514,39 +613,178 @@ function BirthPopup({ initialValue, onSave, onClose }) {
     </div>
   );
 }
-function OfficeList({ offices }) {
+
+//component New Review Popup
+function NewReviewPopup({ newInitialValue, onClose }) {
+  const [review, setReview] = useState("");
+  const [rating, setRating] = useState(0);
+  const [error, setError] = useState("");
+
+  const handleSave = () => {
+    if (review.trim() !== "") {
+      onClose();
+    } else {
+      setError("리뷰를 입력해주세요.");
+    }
+  };
+
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
+  };
+
   return (
-    <div className="office-item-list sub">
-      {offices.map((item) => (
-        <OfficeItem key={item.id} {...item} />
-      ))}
+    <div className="popup-overlay" onClick={onClose}>
+      <div className="popup" onClick={(e) => e.stopPropagation()}>
+        <div className="popup-header">
+          <h3>{`${newInitialValue.title} 새 리뷰 작성`}</h3>
+          <button className="popup-close" onClick={onClose}>
+            <IoCloseCircle />
+          </button>
+        </div>
+        <div className="popup-content">
+          <div className="popup-form">
+            <div className="rating">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <FaStar
+                  key={star}
+                  className={star <= rating ? "star active" : "star"}
+                  onClick={() => handleRatingChange(star)}
+                />
+              ))}
+            </div>
+            <textarea
+              placeholder="내용"
+              value={review}
+              onChange={(e) => setReview(e.target.value)}
+              rows={5}
+            />
+            {error && <p className="error">{error}</p>}
+            <div className="popup-buttons">
+              <button onClick={onClose}>취소</button>
+              <button onClick={handleSave}>저장</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
-function ViewInfo({ mockMemberData, updateMemberData }) {
-  const [popupState, dispatch] = useReducer(popupReducer, {
-    openPopup: null,
-    phone: "",
-    email: "",
-    name: "",
-    birth: "",
-  });
 
+//component Edit Review Popup
+function EditReviewPopup({ initialValue, onClose }) {
+  const [review, setReview] = useState(initialValue.content);
+  const [rating, setRating] = useState(initialValue.rating);
+  const [error, setError] = useState("");
+
+  const handleSave = () => {
+    if (review.trim() !== "") {
+      onClose();
+    } else {
+      setError("리뷰를 입력해주세요.");
+    }
+  };
+
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
+  };
+
+  return (
+    <div className="popup-overlay" onClick={onClose}>
+      <div className="popup" onClick={(e) => e.stopPropagation()}>
+        <div className="popup-header">
+          <h3>{`${initialValue.title} 리뷰 수정`}</h3>
+          <button className="popup-close" onClick={onClose}>
+            <IoCloseCircle />
+          </button>
+        </div>
+        <div className="popup-content">
+          <div className="popup-form">
+            <div className="rating">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <FaStar
+                  key={star}
+                  className={star <= rating ? "star active" : "star"}
+                  onClick={() => handleRatingChange(star)}
+                />
+              ))}
+            </div>
+            <textarea
+              placeholder={initialValue.content}
+              value={review}
+              onChange={(e) => setReview(e.target.value)}
+              rows={5}
+            />
+            {error && <p className="error">{error}</p>}
+            <div className="popup-buttons">
+              <button onClick={onClose}>취소</button>
+              <button onClick={handleSave}>저장</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+//component reviewItem
+function ReviewItem({ customTitle, ...review }) {
+  const [isReviewPopupOpen, setIsReviewPopupOpen] = useState(false);
+
+  const handleEdit = (review) => {
+    setIsReviewPopupOpen(true);
+  };
+
+  const renderStars = (rating) => {
+    const filledStars = "★".repeat(rating);
+    const emptyStars = "☆".repeat(5 - rating);
+    return filledStars + emptyStars;
+  };
+  //render reviewItem
+  return (
+    <div className="review-item">
+      <div className="review-header">
+        <div className="text-container">
+          <h4>{customTitle ? customTitle : review.title}</h4>
+
+          <h4>{renderStars(review.rating)}</h4>
+          <p>{review.content}</p>
+        </div>
+        <div className="edit-button" onClick={handleEdit}>
+          <p>수정</p>
+        </div>
+      </div>
+      {isReviewPopupOpen && (
+        <EditReviewPopup
+          initialValue={review}
+          onClose={() => setIsReviewPopupOpen(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+//component viewInfor
+function ViewInfo({ mockMemberData, updateMemberData }) {
+  //view info states
   const [activePopup, setActivePopup] = useState(null);
 
+  //function edit handler
   const handleEdit = (field) => {
     setActivePopup(field);
   };
 
+  //function save handler
   const handleSave = (field, value) => {
     updateMemberData(field, value);
     setActivePopup(null);
   };
 
+  //function close handler
   const handleClose = () => {
     setActivePopup(null);
   };
 
+  //render ViewInfo
   return (
     <div className="info-container">
       <h2>내 정보</h2>
@@ -624,20 +862,474 @@ function ViewInfo({ mockMemberData, updateMemberData }) {
     </div>
   );
 }
+
+//component favorites tab
 function Favorites() {
   return (
-    <div>
+    <div className="favorites-tab">
       <h2>찜 목록</h2>
-      <OfficeList offices={OfficeMockData} />
+      <div className="office-item-list-sub">
+        {OfficeMockData.map((item) => (
+          <OfficeItem key={item.id} {...item} />
+        ))}
+      </div>
     </div>
   );
 }
+
+//component Reservations tab
 function Reservations() {
-  return <h2>예약 내역 확인</h2>;
+  const [activeTab, setActiveTab] = useState("upcoming");
+  const [isReviewPopupOpen, setIsReviewPopupOpen] = useState(false);
+
+  const [selectedReservation, setSelectedReservation] = useState(null);
+  const [isCancelPopupOpen, setIsCancelPopupOpen] = useState(false);
+  const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+
+  const mockReservations = [
+    {
+      no: 1,
+      title: "강남역 사무실",
+      rating: "4.5",
+      noOfRating: "40",
+      description: "강남역 사무실",
+      location: "강남역",
+      pricePerDay: "10000",
+      officeImgURL: "/demooffice1.webp",
+      longitude: 127.058392,
+      latitude: 37.500454,
+      regdate: "2024-05-15T10:05:00",
+      startDate: "2024-07-15T10:05:00",
+      endDate: "2024-10-18T10:05:00",
+      attendance: 1,
+    },
+    {
+      no: 2,
+      title: "홍대입구 코워킹스페이스",
+      rating: "4.8",
+      noOfRating: "55",
+      description: "홍대입구 코워킹스페이스",
+      location: "홍대입구",
+      pricePerDay: "12000",
+      officeImgURL: "/demooffice2.webp",
+      longitude: 126.9237741555385,
+      latitude: 37.5575341555385,
+      regdate: "2024-05-16T10:05:00",
+      startDate: "2024-05-16T10:00:00",
+      endDate: "2024-12-19T10:00:00",
+      attendance: 1,
+    },
+    {
+      no: 3,
+      title: "역삼동 비즈니스 센터",
+      rating: "4.6",
+      noOfRating: "32",
+      description: "역삼동 비즈니스 센터",
+      location: "역삼동",
+      pricePerDay: "15000",
+      officeImgURL: "/demooffice3.webp",
+      longitude: 127.036346,
+      latitude: 37.501362,
+      regdate: "2024-05-15T09:30:00",
+      startDate: "2024-01-15T09:00:00",
+      endDate: "2024-12-18T09:00:00",
+      attendance: 2,
+    },
+    {
+      no: 4,
+      title: "신촌 스타트업 허브",
+      rating: "4.3",
+      noOfRating: "28",
+      description: "신촌 스타트업 허브",
+      location: "신촌",
+      pricePerDay: "11000",
+      officeImgURL: "/demooffice1.webp",
+      longitude: 126.936893,
+      latitude: 37.555348,
+      regdate: "2024-05-17T11:15:00",
+      startDate: "2024-05-17T11:00:00",
+      endDate: "2024-05-20T11:00:00",
+
+      attendance: 4,
+    },
+    {
+      no: 5,
+      title: "판교 테크노밸리 오피스",
+      rating: "4.7",
+      noOfRating: "45",
+      description: "판교 테크노밸리 오피스",
+      location: "판교",
+      pricePerDay: "13000",
+      officeImgURL: "/demooffice2.webp",
+      longitude: 127.108705,
+      latitude: 37.402111,
+      regdate: "2024-06-01T09:00:00",
+      startDate: "2024-03-01T09:00:00",
+      endDate: "2024-08-31T18:00:00",
+      attendance: 3,
+    },
+    {
+      no: 6,
+      title: "여의도 금융 센터",
+      rating: "4.9",
+      noOfRating: "60",
+      description: "여의도 금융 센터",
+      location: "여의도",
+      pricePerDay: "18000",
+      officeImgURL: "/demooffice3.webp",
+      longitude: 126.925381,
+      latitude: 37.525732,
+      regdate: "2023-06-15T10:30:00",
+      startDate: "2023-09-01T09:00:00",
+      endDate: "2023-09-30T18:00:00",
+      attendance: 1,
+    },
+    {
+      no: 7,
+      title: "성수동 창업 공간",
+      rating: "4.4",
+      noOfRating: "35",
+      description: "성수동 창업 공간",
+      location: "성수동",
+      pricePerDay: "9000",
+      officeImgURL: "/demooffice1.webp",
+      longitude: 127.055723,
+      latitude: 37.544323,
+      regdate: "2022-07-01T11:00:00",
+      startDate: "2022-10-01T09:00:00",
+      endDate: "2022-10-07T18:00:00",
+      attendance: 2,
+    },
+    {
+      no: 8,
+      title: "광화문 비즈니스 라운지",
+      rating: "4.8",
+      noOfRating: "50",
+      description: "광화문 비즈니스 라운지",
+      location: "광화문",
+      pricePerDay: "16000",
+      officeImgURL: "/demooffice2.webp",
+      longitude: 126.976882,
+      latitude: 37.572736,
+      regdate: "2021-07-15T14:00:00",
+      startDate: "2021-11-01T09:00:00",
+      endDate: "2021-11-30T18:00:00",
+      attendance: 1,
+    },
+    {
+      no: 9,
+      title: "송파 공유 오피스",
+      rating: "4.5",
+      noOfRating: "38",
+      description: "송파 공유 오피스",
+      location: "송파",
+      pricePerDay: "11000",
+      officeImgURL: "/demooffice3.webp",
+      longitude: 127.112585,
+      latitude: 37.514322,
+      regdate: "2024-08-01T09:30:00",
+      startDate: "2025-01-02T09:00:00",
+      endDate: "2025-01-31T18:00:00",
+      attendance: 2,
+    },
+  ];
+
+  const reviews = [
+    {
+      no: 4,
+      title: "신촌 스타트업 허브",
+      content:
+        "Solid performance and reasonable price. Satisfied with my purchase.",
+      rating: 4,
+      date: "2023-05-18",
+    },
+    {
+      no: 5,
+      title: "판교 테크노밸리 오피스",
+      content:
+        "Decent product overall, but there are a few minor issues that could be addressed.",
+      rating: 3,
+      date: "2023-05-20",
+    },
+  ];
+
+  //render tabs
+  const TabNavigation = () => (
+    <div className="tab-navigation">
+      {activeTab === "upcoming" && (
+        <button className="active" onClick={() => setActiveTab("upcoming")}>
+          예약 목록
+        </button>
+      )}
+      {activeTab === "inUse" && (
+        <button className="active" onClick={() => setActiveTab("inUse")}>
+          사용 중
+        </button>
+      )}
+      {activeTab === "past" && (
+        <button className="active" onClick={() => setActiveTab("past")}>
+          기간 만료
+        </button>
+      )}
+      {activeTab !== "upcoming" && (
+        <button onClick={() => setActiveTab("upcoming")}>예약 목록</button>
+      )}
+      {activeTab !== "inUse" && (
+        <button onClick={() => setActiveTab("inUse")}>사용 중</button>
+      )}
+      {activeTab !== "past" && (
+        <button onClick={() => setActiveTab("past")}>기간 만료</button>
+      )}
+    </div>
+  );
+
+  const currentDateTime = new Date();
+
+  const upcomingReservations = mockReservations.filter((reservation) => {
+    const startDate = new Date(reservation.startDate);
+    return startDate > currentDateTime;
+  });
+
+  const inUseReservations = mockReservations.filter((reservation) => {
+    const startDate = new Date(reservation.startDate);
+    const endDate = new Date(reservation.endDate);
+    return currentDateTime >= startDate && currentDateTime <= endDate;
+  });
+
+  const pastReservations = mockReservations.filter((reservation) => {
+    const endDate = new Date(reservation.endDate);
+    return endDate < currentDateTime;
+  });
+
+  const handleEditPopup = (item) => {
+    setSelectedReservation(item);
+    setIsEditPopupOpen(true);
+  };
+
+  const handleCancelPopup = (item) => {
+    setSelectedReservation(item);
+    setIsCancelPopupOpen(true);
+  };
+
+  return (
+    <>
+      <TabNavigation />
+      {activeTab === "upcoming" && (
+        <>
+          {upcomingReservations.map((item) => (
+            <div className="office-item-option-wrap " key={item.no}>
+              <OfficeItem {...item} />
+              <div className="office-item-reservation-info">
+                <p>시작일: {new Date(item.startDate).toLocaleDateString()}</p>
+                <p>~</p>
+                <p>종료일: {new Date(item.endDate).toLocaleDateString()}</p>
+                <p>사용 인원: {item.attendance}명 </p>
+              </div>
+              <div className="extra-info">
+                <div className="btns-wrap">
+                  <div
+                    className="btn-edit"
+                    onClick={() => handleEditPopup(item)}
+                  >
+                    수정
+                  </div>
+                  <div
+                    className="btn-cancel"
+                    onClick={() => handleCancelPopup(item)}
+                  >
+                    취소
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+          {isEditPopupOpen && (
+            <EditPopup
+              reservation={selectedReservation}
+              onClose={() => setIsEditPopupOpen(false)}
+              onSave={(updatedReservation) => {
+                setIsEditPopupOpen(false);
+                // Handle the updated reservation
+              }}
+            />
+          )}
+
+          {isCancelPopupOpen && (
+            <CancelPopup
+              onConfirm={(result) => {
+                setIsCancelPopupOpen(false);
+                // Handle
+                if (result === "yes") {
+                  // cancellation
+                }
+              }}
+              onCancel={(result) => {
+                setIsCancelPopupOpen(false);
+                // Handle 'no'
+              }}
+              msg="예약을 취소하시겠습니까?"
+            />
+          )}
+        </>
+      )}
+
+      {activeTab === "inUse" && (
+        <>
+          {inUseReservations.map((item) => (
+            <div className="office-item-option-wrap " key={item.no}>
+              <OfficeItem {...item} />
+              <div className="office-item-reservation-info">
+                <p>시작일: {new Date(item.startDate).toLocaleDateString()}</p>
+                <p>~</p>
+                <p>종료일: {new Date(item.endDate).toLocaleDateString()}</p>
+                <p>사용 인원: {item.attendance}명 </p>
+              </div>
+              <div className="extra-info">
+                <div className="btn-review">
+                  {reviews.find((review) => review.no === item.no) ? (
+                    <ReviewItem
+                      customTitle="리뷰"
+                      {...reviews.find((review) => review.no === item.no)}
+                    />
+                  ) : (
+                    <div className="no-review review-item">
+                      <div className="review-header">
+                        <div className="title-container">
+                          <h4>작성한 리뷰가 없습니다</h4>
+                        </div>
+                        <div
+                          className="edit-button"
+                          onClick={() => setIsReviewPopupOpen(true)}
+                        >
+                          <p>작성</p>
+                        </div>
+                      </div>
+                      {isReviewPopupOpen && (
+                        <NewReviewPopup
+                          newInitialValue={item}
+                          onClose={() => setIsReviewPopupOpen(false)}
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </>
+      )}
+
+      {activeTab === "past" && (
+        <>
+          {pastReservations.map((item) => (
+            <div className="office-item-option-wrap " key={item.no}>
+              <OfficeItem {...item} />
+              <div className="office-item-reservation-info">
+                <p>시작일: {new Date(item.startDate).toLocaleDateString()}</p>
+                <p>~</p>
+                <p>종료일: {new Date(item.endDate).toLocaleDateString()}</p>
+                <p>사용 인원: {item.attendance}명 </p>
+              </div>
+              <div className="extra-info">
+                <div className="btn-review">
+                  {reviews.find((review) => review.no === item.no) ? (
+                    <ReviewItem
+                      customTitle="리뷰"
+                      {...reviews.find((review) => review.no === item.no)}
+                    />
+                  ) : (
+                    <div className="no-review review-item">
+                      <div className="review-header">
+                        <div className="title-container">
+                          <h4>작성한 리뷰가 없습니다</h4>
+                        </div>
+                        <div
+                          className="edit-button"
+                          onClick={() => setIsReviewPopupOpen(true)}
+                        >
+                          <p>작성</p>
+                        </div>
+                      </div>
+
+                      {isReviewPopupOpen && (
+                        <NewReviewPopup
+                          newInitialValue={item}
+                          onClose={() => setIsReviewPopupOpen(false)}
+                          type="new"
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </>
+      )}
+    </>
+  );
 }
+
+//component reviews tab
 function Reviews() {
-  return <h2>리뷰 작성 내역</h2>;
+  const [reviews, setReviews] = useState([
+    {
+      no: 1,
+      title: "강남역 사무실",
+      content:
+        "깨끗하고 조용한 환경에서 업무에 집중할 수 있었습니다. 위치도 좋고 시설도 훌륭해요.",
+      rating: 5,
+      date: "2024-03-15",
+    },
+    {
+      no: 2,
+      title: "홍대입구 코워킹스페이스",
+      content:
+        "창의적인 분위기와 다양한 사람들과의 교류가 가능해서 좋았습니다. 다만 가끔 소음이 있어 아쉬웠어요.",
+      rating: 4,
+      date: "2024-02-20",
+    },
+    {
+      no: 3,
+      title: "판교 테크노밸리 오피스",
+      content:
+        "최신 시설과 넓은 공간이 인상적이었습니다. IT 기업들이 많아 네트워킹에도 좋았어요.",
+      rating: 5,
+      date: "2024-01-10",
+    },
+    {
+      no: 4,
+      title: "역삼동 비즈니스 센터",
+      content:
+        "위치가 매우 좋고 회의실 이용이 편리했습니다. 다만 주차 공간이 부족한 점이 아쉬웠어요.",
+      rating: 4,
+      date: "2023-12-05",
+    },
+    {
+      no: 5,
+      title: "성수동 창업 공간",
+      content:
+        "젊고 활기찬 분위기에서 일할 수 있어 좋았습니다. 주변 카페와 식당도 많아 편리해요.",
+      rating: 4,
+      date: "2023-11-22",
+    },
+  ]);
+
+  return (
+    <div className="reviews-tab">
+      <h2>내가 쓴 리뷰</h2>
+      <div className="review-list">
+        {reviews.map((review) => (
+          <div className="btn-review-out" key={review.no}>
+            <ReviewItem {...review} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
+
+//component member mypage
 function MemberMyPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("viewInfo");
@@ -652,6 +1344,7 @@ function MemberMyPage() {
     reg_date: "2023-05-01",
   });
 
+  //function updateMemberData(field, value) {
   const updateMemberData = (field, value) => {
     setMockMemberData((prevData) => ({
       ...prevData,
@@ -659,13 +1352,15 @@ function MemberMyPage() {
     }));
   };
 
+  // interface tabs
   const tabs = [
     { id: "viewInfo", label: "내 정보" },
     { id: "favorites", label: "찜 목록" },
-    { id: "reservations", label: "예약 내역" },
+    { id: "reservations", label: "결제 내역" },
     { id: "reviews", label: "내가 쓴 리뷰" },
   ];
 
+  // render tabcontent
   const renderTabContent = () => {
     switch (activeTab) {
       case "viewInfo":
@@ -685,7 +1380,7 @@ function MemberMyPage() {
         return null;
     }
   };
-
+  //render my page
   return (
     <div className="member-my-page">
       <MemberHeader />
