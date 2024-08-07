@@ -110,9 +110,10 @@ export const fetchNotAvailabilityOffice = async (officePage, setNotAvailabilityO
 export const fetchNotices = async (noticePage, setNotices, fetchedNoticePages, setfetchedNoticePages) => {
     if (fetchedNoticePages.has(noticePage)) return;
 
-    const response = await axios.get('/admin/notice', {
+    const response = await axios.get('/admin/main-notice', {
         params: { page: noticePage, size: 5 }
     });
+    
     setNotices(prev => ({
         ...prev,
         [noticePage]: response.data

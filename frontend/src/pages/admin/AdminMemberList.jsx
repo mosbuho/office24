@@ -24,7 +24,7 @@ const AdminMemberList = () => {
             return;
         }
 
-        const response = await axios.get(`/admin/member`, {
+        const response = await axios.get('/admin/member', {
             params: {
                 page, size: 30, f, q
             }
