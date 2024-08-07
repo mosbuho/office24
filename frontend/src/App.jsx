@@ -34,7 +34,7 @@ import AdminMember from './pages/admin/AdminMember';
 import AdminMemberList from './pages/admin/AdminMemberList';
 import AdminReviewList from './pages/admin/AdminReviewList';
 import AdminBookingList from './pages/admin/AdminBookingList';
-
+import AdminNoticeList from './pages/admin/AdminNoticeList';
 
 function App() {
   return (
@@ -78,6 +78,7 @@ function App() {
         <Route path="/admin/office/:no" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminOffice /></PrivateRoute>} />
         <Route path="/admin/review" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminReviewList /></PrivateRoute>} />
         <Route path="/admin/booking" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminBookingList /></PrivateRoute>} />
+        <Route path="/admin/notice" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminNoticeList /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );

@@ -19,6 +19,8 @@ import com.kh.backend.manager.Manager;
 import com.kh.backend.manager.ManagerService;
 import com.kh.backend.member.Member;
 import com.kh.backend.member.MemberService;
+import com.kh.backend.notice.Notice;
+import com.kh.backend.notice.NoticeService;
 import com.kh.backend.office.Office;
 import com.kh.backend.office.OfficeService;
 import com.kh.backend.review.ReviewService;
@@ -32,17 +34,20 @@ public class AdminController {
     private final OfficeService officeService;
     private final ReviewService reviewService;
     private final BookingService bookingService;
+    private final NoticeService noticeService;
 
     public AdminController(MemberService memberService,
             ManagerService managerService,
             OfficeService officeService,
             ReviewService reviewService,
-            BookingService bookingService) {
+            BookingService bookingService,
+            NoticeService noticeService) {
         this.memberService = memberService;
         this.managerService = managerService;
         this.officeService = officeService;
         this.reviewService = reviewService;
         this.bookingService = bookingService;
+        this.noticeService = noticeService;
     }
 
     @GetMapping("/member")
@@ -156,7 +161,6 @@ public class AdminController {
             officeService.acceptOffice(no);
             return ResponseEntity.ok(null);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.status(500).build();
         }
     }
@@ -165,10 +169,8 @@ public class AdminController {
     public ResponseEntity<Map<String, Object>> refuseOffice(@PathVariable int no) {
         try {
             officeService.refuseOffice(no);
-            System.out.println(no);
             return ResponseEntity.ok(null);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.status(500).build();
         }
     }
@@ -209,5 +211,35 @@ public class AdminController {
             @RequestParam(required = false) String f,
             @RequestParam(required = false) String q) {
         return bookingService.getBookingsWithPagination(page, size, f, q);
+    }
+
+    @GetMapping("/notice")
+    public Map<String, Object> getAllNotices(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "30") int size,
+            @RequestParam(required = false) String f,
+            @RequestParam(required = false) String q) {
+        return noticeService.getNoticesWithPagination(page, size, f, q);
+    }
+
+    @PutMapping("/notice/{no}")
+    public ResponseEntity<String> updateNotice(@PathVariable("no") int no, @RequestBody Notice notice) {
+        try {
+            notice.setNo(no);
+            noticeService.updateNotice(notice);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @DeleteMapping("/notice/{no}")
+    public ResponseEntity<String> deleteNotice(@PathVariable("no") int no) {
+        try {
+            noticeService.deleteNotice(no);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
     }
 }

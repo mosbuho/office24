@@ -12,7 +12,7 @@ public class NoticeController {
     @Autowired
     private NoticeService noticeService;
 
-    @GetMapping("/admin/notice")
+    @GetMapping("/admin/main-notice")
     public List<Notice> getNotice(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int size) {

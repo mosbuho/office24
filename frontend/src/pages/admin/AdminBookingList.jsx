@@ -29,7 +29,6 @@ const AdminBookingList = () => {
                 page, size: 30, f, q
             }
         });
-        console.log(response.data);
 
         const { bookings: fetchedbooking, totalCount } = response.data;
 
