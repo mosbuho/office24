@@ -1,6 +1,7 @@
 .custom-overlay {
     .custom-marker {
-        transform: "translate(-50%, -100%)";
+        position: relative;
+        transform: translate(-50%, -100%);
         z-index: 1;
 
         svg {
@@ -11,6 +12,9 @@
     }
 
     .info-window {
+        position: absolute;
+        top: 0;
+        left: 0;
         display: none;
         background-color: var(--background-color);
         border: 1px solid var(--primary-color);

@@ -44,7 +44,6 @@ public class MessageController {
         MessageRequest requestInfo = requestInfoMap.getOrDefault(phoneNumber, new MessageRequest());
         requestInfo.setTo(phoneNumber);
 
-        // 3분 이내에 3회 초과하는 요청을 하는 경우 제한 설정
         if (requestInfo.getCount() >= 3 && (currentTime - requestInfo.getLastRequestTime()) < 3 * 60 * 1000) {
             return ResponseEntity.status(429).body("요청 횟수를 초과하였습니다. 5분 후에 다시 시도하세요.");
         }

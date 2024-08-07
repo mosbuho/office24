@@ -4,8 +4,7 @@ import { PiHeartThin } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import "../../styles/components/member/OfficeItem.css";
 
-// render: 오피스 아이템 컴포넌트 //
-const OfficeItem = ({ NO, TITLE, RATING, NOOFRATING, LOCATION, PRICEPERDAY, OFFICEIMGURL, LONGITUDE, LATITUDE }) => {
+const OfficeItem = ({ NO, TITLE, RATING, LOCATION, PRICEPERDAY, OFFICEIMGURL }) => {
   const navigate = useNavigate();
   const imageUrl = `http://localhost:8080/img/${OFFICEIMGURL}`;
 
@@ -50,7 +49,7 @@ const OfficeItem = ({ NO, TITLE, RATING, NOOFRATING, LOCATION, PRICEPERDAY, OFFI
         <div className="office-item-bottom">
           <div className="office-item-price">
             <p>
-              <b>{PRICEPERDAY.toLocaleString('ko-KR')}원/일</b>
+              <b>{PRICEPERDAY}원/일</b>
             </p>
           </div>
         </div>

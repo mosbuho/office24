@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import ReactDOMServer from "react-dom/server";
 import { FaStar } from "react-icons/fa";
 import { MdLocationOn } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import "../../styles/components/member/KakaoMap.css";
 
 export default function KakaoMap(props) {
@@ -14,6 +15,7 @@ export default function KakaoMap(props) {
   const [userLocation, setUserLocation] = useState(null);
 
   const container = useRef();
+  const navigate = useNavigate();
 
   const handleZoomIn = useCallback(() => {
     if (kakaoMap) {
@@ -61,7 +63,6 @@ export default function KakaoMap(props) {
     document.head.appendChild(script);
 
     script.onload = () => {
-      console.log("Kakao Maps script loaded");
       setScriptLoaded(true);
     };
 
@@ -89,9 +90,6 @@ export default function KakaoMap(props) {
       });
 
       setKakaoMap(map);
-
-      console.log("Map initialized");
-      console.log("Map center after initialization:", map.getCenter().toString());
     });
   }, []);
 
@@ -124,7 +122,7 @@ export default function KakaoMap(props) {
             <div className="info-window">
               <h3>{item.TITLE}</h3>
               <div className="info-window-content">
-                <div className="price">{item.PRICEPERDAY}원/1일</div>
+                <div className="price">{item.PRICEPERDAY.toLocaleString()}원/1일</div>
                 <div className="item-rating">
                   <FaStar />
                   <div className="rate">{item.RATING}</div>

@@ -60,6 +60,6 @@ public interface OfficeMapper {
 
         void refuseOffice(int no);
 
-        List<Map<String, Object>> selectOfficeList();
+        List<Map<String, Object>> selectOfficeList(@Param("startRow") int startRow, @Param("endRow") int endRow);
 
 }

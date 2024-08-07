@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from '../../utils/axiosConfig';
+import imageCompression from 'browser-image-compression';
 import ManagerSidebar from '../../components/manager/ManagerSidebar';
 import ManagerHeader from "../../components/manager/ManagerHeader";
 import '../../styles/pages/manager/ManagerOfficeUpdate.css';
@@ -56,10 +57,26 @@ const ManagerOfficeUpdate = () => {
 
   }, [officeNo]);
 
-  const handleImageChange = (e, setter) => {
+  const compressImage = async (file) => {
+    const options = {
+      maxSizeMB: 5,
+      useWebWorker: true,
+    };
+
+    try {
+      const compressedFile = await imageCompression(file, options);
+      return compressedFile;
+    } catch (error) {
+      console.error("이미지 압축 중 오류 발생:", error);
+      return file;
+    }
+  };
+
+  const handleImageChange = async (e, setter) => {
     const file = e.target.files[0];
     if (file) {
-      setter(file);
+      const compressedFile = await compressImage(file);
+      setter(compressedFile);
     }
   };
 

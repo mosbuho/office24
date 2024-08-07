@@ -308,7 +308,9 @@ public class OfficeService {
         officeMapper.refuseOffice(no);
     }
 
-    public List<Map<String, Object>> getOfficeList() {
-        return officeMapper.selectOfficeList();
+    public List<Map<String, Object>> getOfficeList(int page, int size) {
+        int startRow = (page - 1) * size;
+        int endRow = page * size;
+        return officeMapper.selectOfficeList(startRow, endRow);
     }
 }
