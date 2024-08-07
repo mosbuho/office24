@@ -242,4 +242,14 @@ public class AdminController {
             return ResponseEntity.status(500).build();
         }
     }
+
+    @PostMapping("/notice")
+    public ResponseEntity<String> createNotice(@RequestBody Notice notice) {
+        try {
+            noticeService.createNotice(notice);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
 }

@@ -1,70 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../components/admin/AdminHeader';
 import Sidebar from '../../components/admin/AdminSidebar';
-import '../../styles/pages/admin/AdminMember.css';
+import '../../styles/pages/admin/AdminNotice.css';
 import axios from '../../utils/axiosConfig';
+import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
-const AdminMember = () => {
+const AdminNotice = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { member } = location.state;
+    const { notice } = location.state;
 
+    const [editorState, setEditorState] = useState(() =>
+        EditorState.createEmpty()
+    );
     const [formData, setFormData] = useState({
-        NO: member.NO,
-        ID: member.ID,
-        NAME: member.NAME,
-        PHONE: member.PHONE,
-        EMAIL: member.EMAIL,
-        BIRTH: new Date(member.BIRTH).toISOString().split('T')[0],
-        GENDER: member.GENDER,
-        REG_DATE: new Date(member.REG_DATE).toISOString().split('T')[0]
+        NO: notice.NO,
+        TITLE: notice.TITLE,
+        REG_DATE: new Date(notice.REG_DATE).toISOString().split('T')[0]
     });
 
-    const handleChange = (e) => {
-        const { id, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [id.toUpperCase()]: value
-        }));
-    };
+    useEffect(() => {
+        setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(notice.CONTENT))));
+    }, [notice.CONTENT]);
 
-    const getGenderText = (gender) => {
-        return gender === 'M' ? '남성' : '여성';
+    const handleEditorChange = (editorState) => {
+        setEditorState(editorState);
     };
-
-    const handleGenderChange = (e) => {
-        const value = e.target.value;
-        setFormData((prevData) => ({
-            ...prevData,
-            GENDER: value === '남성' ? 'M' : 'W'
-        }));
-    };
-
-    const handlePwReset = async () => {
-        if (window.confirm('비밀번호를 초기화 하시겠습니까?')) {
-            try {
-                await axios.post(`/admin/member/${formData.NO}/reset-pw`);
-                alert('비밀번호가 초기화 되었습니다.');
-                navigate('/admin/member');
-            } catch {
-                alert('비밀번호 초기화를 실패했습니다. 다시 시도해 주세요.');
-            }
-        }
-    }
 
     const handleUpdate = async () => {
         if (window.confirm('정보를 수정하시겠습니까?')) {
             try {
-                await axios.put(`/admin/member/${formData.NO}`, {
-                    name: formData.NAME,
-                    phone: formData.PHONE,
-                    email: formData.EMAIL,
-                    birth: formData.BIRTH,
-                    gender: formData.GENDER
+                const contentState = editorState.getCurrentContent();
+                const contentRaw = JSON.stringify(convertToRaw(contentState));
+
+                await axios.put(`/admin/notice/${formData.NO}`, {
+                    title: formData.TITLE,
+                    content: contentRaw,
+                    regDate: formData.REG_DATE,
                 });
                 alert('정보가 수정되었습니다.');
-                navigate('/admin/member');
+                navigate('/admin/notice');
             } catch {
                 alert('수정을 실패했습니다. 다시 시도해 주세요.');
             }
@@ -72,11 +50,11 @@ const AdminMember = () => {
     };
 
     const handleDelete = async () => {
-        if (window.confirm('이용자를 삭제하시겠습니까?')) {
+        if (window.confirm('공지를 삭제하시겠습니까?')) {
             try {
-                await axios.delete(`/admin/member/${formData.NO}`);
-                alert('이용자가 삭제되었습니다.');
-                navigate('/admin/member');
+                await axios.delete(`/admin/notice/${formData.NO}`);
+                alert('공지가 삭제되었습니다.');
+                navigate('/admin/notice');
             } catch {
                 alert('삭제를 실패했습니다. 다시 시도해 주세요.');
             }
@@ -88,7 +66,7 @@ const AdminMember = () => {
             <Header />
             <Sidebar />
             <div className='main'>
-                <div className='admin-member-detail'>
+                <div className='admin-notice-detail'>
                     <form>
                         <div className="form-group">
                             <label htmlFor="no">번호</label>
@@ -100,64 +78,24 @@ const AdminMember = () => {
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="id">아이디</label>
+                            <label htmlFor="title">제목</label>
                             <input
                                 type="text"
-                                id="id"
-                                value={formData.ID}
-                                readOnly
+                                id="title"
+                                value={formData.TITLE}
+                                onChange={(e) => setFormData({ ...formData, TITLE: e.target.value })}
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="name">이름</label>
-                            <input
-                                type="text"
-                                id="name"
-                                value={formData.NAME}
-                                onChange={handleChange}
-                            />
+                            <div className="draft-editor">
+                                <Editor
+                                    editorState={editorState}
+                                    onEditorStateChange={handleEditorChange}
+                                />
+                            </div>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="phone">핸드폰 번호</label>
-                            <input
-                                type="text"
-                                id="phone"
-                                value={formData.PHONE}
-                                onChange={handleChange}
-                                maxLength={11}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="email">이메일</label>
-                            <input
-                                type="email"
-                                id="email"
-                                value={formData.EMAIL}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="birth">생일</label>
-                            <input
-                                type="date"
-                                id="birth"
-                                value={formData.BIRTH}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="gender">성별</label>
-                            <select
-                                id="gender"
-                                value={getGenderText(formData.GENDER)}
-                                onChange={handleGenderChange}
-                            >
-                                <option value="남성">남성</option>
-                                <option value="여성">여성</option>
-                            </select>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="regDate">가입일</label>
+                            <label htmlFor="regDate">작성일</label>
                             <input
                                 type="date"
                                 id="regDate"
@@ -165,7 +103,6 @@ const AdminMember = () => {
                                 readOnly
                             />
                         </div>
-                        <button type="button" className="pw-reset-btn" onClick={handlePwReset}>비밀번호 초기화</button>
                         <button type="button" className="update-btn" onClick={handleUpdate}>수정</button>
                         <button type="button" className="delete-btn" onClick={handleDelete}>삭제</button>
                     </form>
@@ -175,4 +112,4 @@ const AdminMember = () => {
     );
 };
 
-export default AdminMember;
+export default AdminNotice;

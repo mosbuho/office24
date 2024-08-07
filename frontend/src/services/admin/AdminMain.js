@@ -113,6 +113,7 @@ export const fetchNotices = async (noticePage, setNotices, fetchedNoticePages, s
     const response = await axios.get('/admin/main-notice', {
         params: { page: noticePage, size: 5 }
     });
+    
     setNotices(prev => ({
         ...prev,
         [noticePage]: response.data

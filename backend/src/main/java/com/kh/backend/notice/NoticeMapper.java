@@ -18,4 +18,6 @@ public interface NoticeMapper {
     void updateNotice(Notice notice);
 
     void deleteNotice(int no);
+
+    void createNotice(Notice notice);
 }

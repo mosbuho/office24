@@ -1,0 +1,82 @@
+.admin-notice-detail {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+}
+
+.admin-notice-detail {
+    form {
+        display: grid;
+        gap: 16px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="date"],
+    .form-group select {
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .form-group input[readonly] {
+        background-color: #e9ecef;
+        cursor: not-allowed;
+    }
+
+    .form-group input[type="date"] {
+        padding: 8px;
+    }
+
+    .form-group select {
+        background-color: #fff;
+        cursor: pointer;
+    }
+
+    button {
+        text-align: center;
+        border: none;
+        border-radius: 5px;
+        background: #474747;
+        padding: 10px 20px;
+        color: white;
+        cursor: pointer;
+    }
+
+    .pw-reset-btn {
+        margin-top: 10px;
+    }
+
+    .update-btn {
+        background: #3cb371;
+    }
+
+    .delete-btn {
+        background: #db4455;
+    }
+
+    .rdw-editor-main {
+        height: 500px;
+        padding: 0 10px;
+    }
+
+    .rdw-editor-wrapper {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+}

@@ -38,4 +38,8 @@ public class NoticeService {
     public void deleteNotice(int no) {
         noticeMapper.deleteNotice(no);
     }
+
+    public void createNotice(Notice notice) {
+        noticeMapper.createNotice(notice);
+    }
 }

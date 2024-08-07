@@ -6,6 +6,7 @@ import Pagination from '../../components/admin/AdminPagination';
 import AdminSearch from '../../components/admin/AdminSearch';
 import AdminTable from '../../components/admin/AdminTable';
 import '../../styles/pages/admin/AdminNoticeList.css';
+import { useNavigate } from 'react-router-dom';
 
 const AdminNoticeList = () => {
     const [notice, setNotice] = useState([]);
@@ -14,6 +15,8 @@ const AdminNoticeList = () => {
     const [pageDataCache, setPageDataCache] = useState({});
     const [f, setF] = useState('NO');
     const [q, setQ] = useState('');
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchNotice(1);
@@ -31,8 +34,6 @@ const AdminNoticeList = () => {
                 page, size: 30, f, q
             }
         });
-
-        console.log(response.data);
 
         const { notices: fetchedNotice, totalCount } = response.data;
 
@@ -64,7 +65,6 @@ const AdminNoticeList = () => {
     const columns = [
         { header: '번호', accessor: 'NO' },
         { header: '제목', accessor: 'TITLE' },
-        { header: '내용', accessor: 'CONTENT' },
         { header: '작성일', accessor: 'REG_DATE' },
     ];
 
@@ -85,7 +85,7 @@ const AdminNoticeList = () => {
             <div className='main'>
                 <div className="admin-notice-header">
                     <AdminSearch f={f} setF={setF} q={q} setQ={setQ} onSearch={handleSearch} options={options} />
-                    <button className='admin-notice-button'>작성</button>
+                    <button className='admin-notice-button' onClick={() => { navigate('/admin/notice/create') }}>작성</button>
                 </div>
                 <AdminTable columns={columns} data={formattedOffice} onRowClick={handleRowClick} />
                 <Pagination pageCount={pageCount} handlePageClick={handlePageClick} currentPage={currentPage} />

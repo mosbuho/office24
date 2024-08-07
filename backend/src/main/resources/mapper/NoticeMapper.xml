@@ -3,10 +3,10 @@
 <mapper namespace="com.kh.backend.notice.NoticeMapper">
     <select id="getNotice" resultType="map">
         <![CDATA[
-            SELECT * FROM ( SELECT *,
-        ROWNUM rnum FROM ( SELECT * FROM notice ORDER BY reg_date DESC )
-        WHERE ROWNUM <= #{end} ) WHERE rnum>= #{start}
-        ]]>
+        SELECT no, title, content, reg_date FROM ( SELECT no, title, content, reg_date,
+    ROWNUM rnum FROM ( SELECT no, title, content, reg_date FROM notice ORDER BY reg_date DESC )
+    WHERE ROWNUM <= #{end} ) WHERE rnum>= #{start}
+    ]]>
     </select>
 
     <select id="getAllNotices" resultType="map"> SELECT * FROM ( SELECT m.*, ROWNUM rnum FROM (
@@ -22,4 +22,7 @@
         = #{title}, content = #{content} WHERE no = #{no} </update>
 
     <delete id="deleteNotice"> DELETE FROM notice WHERE no = #{no} </delete>
+
+    <insert id="createNotice" parameterType="com.kh.backend.notice.Notice"> INSERT INTO notice
+        (title, content) VALUES (#{title}, #{content})</insert>
 </mapper>

@@ -35,6 +35,8 @@ import AdminMemberList from './pages/admin/AdminMemberList';
 import AdminReviewList from './pages/admin/AdminReviewList';
 import AdminBookingList from './pages/admin/AdminBookingList';
 import AdminNoticeList from './pages/admin/AdminNoticeList';
+import AdminNoticeCreate from './pages/admin/AdminNoticeCreate';
+import AdminNotice from './pages/admin/AdminNotice';
 
 function App() {
   return (
@@ -79,6 +81,8 @@ function App() {
         <Route path="/admin/review" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminReviewList /></PrivateRoute>} />
         <Route path="/admin/booking" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminBookingList /></PrivateRoute>} />
         <Route path="/admin/notice" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminNoticeList /></PrivateRoute>} />
+        <Route path="/admin/notice/:no" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminNotice /></PrivateRoute>} />
+        <Route path="/admin/notice/create" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminNoticeCreate /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );
