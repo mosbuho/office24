@@ -1,0 +1,20 @@
+/* src/components/NotFoundPage.css */
+.not-found-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* 화면 높이의 100% */
+    text-align: center;
+    /* 텍스트 가운데 정렬 */
+}
+
+.not-found-page h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.not-found-page p {
+    font-size: 1rem;
+}

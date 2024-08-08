@@ -38,6 +38,9 @@ import AdminNoticeList from './pages/admin/AdminNoticeList';
 import AdminNoticeCreate from './pages/admin/AdminNoticeCreate';
 import AdminNotice from './pages/admin/AdminNotice';
 
+
+import NotFoundPage from './components/common/NotFound';
+
 function App() {
   return (
     <BrowserRouter>
@@ -83,6 +86,9 @@ function App() {
         <Route path="/admin/notice" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminNoticeList /></PrivateRoute>} />
         <Route path="/admin/notice/:no" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminNotice /></PrivateRoute>} />
         <Route path="/admin/notice/create" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminNoticeCreate /></PrivateRoute>} />
+
+        {/* 에러 */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );
