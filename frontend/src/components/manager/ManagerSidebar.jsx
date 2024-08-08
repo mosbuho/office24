@@ -18,9 +18,9 @@ const ManagerSidebar = () => {
           <div className="logo" onClick={() => handleNav('/manager')}>OFFICE24</div>
           <div className='button_container'>
             <div className='sidebar_button' onClick={() => handleNav(`/manager`)}>대쉬보드</div>
-            <div className='sidebar_button' onClick={() => handleNav(`/manager/office/${no}`)}>오피스 관리</div>
-            <div className='sidebar_button' onClick={() => handleNav(`/manager/booking/${no}`)}>예약 관리</div>
-            <div className='sidebar_button' onClick={() => handleNav(`/manager/info/${no}`)}>정보 관리</div>
+            <div className='sidebar_button' onClick={() => handleNav(`/manager/office`)}>오피스 관리</div>
+            <div className='sidebar_button' onClick={() => handleNav(`/manager/booking`)}>예약 관리</div>
+            <div className='sidebar_button' onClick={() => handleNav(`/manager/info`)}>정보 관리</div>
           </div>
         </div>
       </div>

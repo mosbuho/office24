@@ -32,7 +32,7 @@ const ManagerMain = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get(`/manager/office/stats/${no}`);
+      const response = await axios.get(`/manager/${no}/office/stats`);
       const serverData = response.data;
 
       const monthlyRevenue = serverData.monthlyRevenue.map(item => ({
@@ -63,7 +63,7 @@ const ManagerMain = () => {
     }
 
     try {
-      const response = await axios.get(`/manager/booking/simple/${no}`, {
+      const response = await axios.get(`/manager/${no}/booking/simple`, {
         params: {
           page: selectedPage + 1,
           size: 5,
@@ -95,7 +95,7 @@ const ManagerMain = () => {
     }
 
     try {
-      const response = await axios.get(`/manager/office/status/${no}`, {
+      const response = await axios.get(`/manager/${no}/office/status`, {
         params: {
           page: selectedPage + 1,
           size: 5,
@@ -179,8 +179,9 @@ const ManagerMain = () => {
               <ResponsiveContainer width="100%" height={230}>
                 <BarChart data={monthlyData} margin={{ top: 0, left: 0, right: 20 }}>
                   <XAxis dataKey="month" tick={{ fontSize: 10 }} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11 }} tickLine={false} />
-                  <Tooltip contentStyle={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 11 }} tickLine={false} tickFormatter={(value) => value.toLocaleString()} />
+                  <Tooltip contentStyle={{ fontSize: 12 }} formatter={(value) => `${value.toLocaleString()}원`}
+                    labelFormatter={() => '월 수익'} />
                   <Bar dataKey="revenue" fill="#4171DD" barSize={9} />
                 </BarChart>
               </ResponsiveContainer>
@@ -205,7 +206,7 @@ const ManagerMain = () => {
                     ))}
                   </Pie>
                   <Tooltip />
-                  <Legend verticalAlign="bottom" height={45} iconSize={1}/>
+                  <Legend verticalAlign="bottom" height={45} iconSize={1} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -218,8 +219,18 @@ const ManagerMain = () => {
                   {(offices[currentOfficePage] || []).map((office) => (
                     <li key={office.no} className='statusli'>
                       {office.title}
-                      <span className={office.availability === 1 ? 'approved' : 'pending'}>
-                        {office.availability === 1 ? '승인됨' : '대기 중'}
+                      <span className={
+                        office.availability === 1
+                          ? 'approved'
+                          : office.availability === 0
+                            ? 'pending'
+                            : 'rejected'
+                      }>
+                        {office.availability === 1
+                          ? '승인됨'
+                          : office.availability === 0
+                            ? '대기 중'
+                            : '거절됨'}
                       </span>
                     </li>
                   ))}

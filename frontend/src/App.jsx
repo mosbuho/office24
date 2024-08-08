@@ -13,13 +13,13 @@ import MemberResetPw from "./pages/member/MemberResetPw";
 import MemberFindIdResult from "./pages/member/MemberFindIResult";
 import MemberOffice from "./pages/member/MemberOffice";
 
-import ManagerRegister from './pages/manager/ManagerRegister';
+import ManagerCreate from './pages/manager/ManagerCreate';
 import ManagerLogin from './pages/manager/ManagerLogin';
 import ManagerMain from './pages/manager/ManagerMain';
-import ManagerOfficeRegister from './pages/manager/ManagerOfficeRegister';
+import ManagerOfficeCreate from './pages/manager/ManagerOfficeCreate';
 import ManagerOfficeUpdate from './pages/manager/ManagerOfficeUpdate';
 import ManagerBooking from './pages/manager/ManagerBooking';
-import ManagerOffice from './pages/manager/ManagerOffice';
+import ManagerOfficeList from './pages/manager/ManagerOfficeList';
 import ManagerInfo from './pages/manager/ManagerInfo';
 import ManagerFindId from './pages/manager/ManagerFindId';
 import ManagerResetPw from './pages/manager/ManagerResetPw';
@@ -47,7 +47,7 @@ function App() {
         <Route path="/login" element={<MemberLogin />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/member/register" element={<MemberRegister />} />
-        <Route path="/manager/register" element={<ManagerRegister />} />
+        <Route path="/manager/create" element={<ManagerCreate />} />
         <Route path="/member/findId" element={<MemberFindId />} />
         <Route path="/member/findIdResult" element={<MemberFindIdResult />} />
         <Route path="/member/resetPw" element={<MemberResetPw />} />
@@ -64,11 +64,11 @@ function App() {
 
         {/* 매니저 라우트 */}
         <Route path="/manager/" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerMain /></PrivateRoute>} />
-        <Route path="/manager/office/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOffice /></PrivateRoute>} />
-        <Route path="/manager/office/register/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeRegister /></PrivateRoute>} />
-        <Route path="/manager/office/update/:no/:officeNo" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeUpdate /></PrivateRoute>} />
-        <Route path="/manager/booking/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerBooking /></PrivateRoute>} />
-        <Route path="/manager/info/:no" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerInfo /></PrivateRoute>} />
+        <Route path="/manager/office" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeList /></PrivateRoute>} />
+        <Route path="/manager/office/create" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeCreate /></PrivateRoute>} />
+        <Route path="/manager/office/:officeNo/update" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeUpdate /></PrivateRoute>} />
+        <Route path="/manager/booking" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerBooking /></PrivateRoute>} />
+        <Route path="/manager/info" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerInfo /></PrivateRoute>} />
 
         {/* 어드민 라우트 */}
         <Route path="/admin" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMain /></PrivateRoute>} />

@@ -32,6 +32,10 @@ public interface OfficeMapper {
 
         void deleteOffice(@Param("no") int no);
 
+        String getOfficeTitleImage(int no);
+
+        void updateOfficeAvailability(@Param("no") int no, @Param("availability") int availability);
+
         void insertOffice(Office office);
 
         void insertOfficeImage(OfficeImage officeImage);

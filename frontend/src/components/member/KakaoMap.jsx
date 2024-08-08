@@ -42,14 +42,13 @@ export default function KakaoMap(props) {
         },
         (error) => {
           console.error("Error getting geolocation:", error);
-          // 기본 위치 설정 (예: 서울시청)
+          // 기본 위치 설정 (서울시청)
           setUserLocation({ latitude: 37.5665, longitude: 126.9780 });
         },
         { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
       );
     } else {
       console.error("Geolocation is not supported by this browser.");
-      // 기본 위치 설정
       setUserLocation({ latitude: 37.5665, longitude: 126.9780 });
     }
   }, []);

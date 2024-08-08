@@ -63,7 +63,7 @@ create table office (
 	price        number(10) not null,       		                    -- 가격
 	capacity     number not null,             		                    -- 수용 가능 인원
 	title_img    char(41) not null,       		                        -- 대표 이미지
-	availability number(1) default 1,         		                    -- 사용 가능 여부 (가능 1, 불가능 0)
+	availability number(1) default 0,         		                    -- 사용 가능 여부 (가능 1, 불가능 0)
 	reg_date     date default systimestamp    		                    -- 생성일
 );
 
