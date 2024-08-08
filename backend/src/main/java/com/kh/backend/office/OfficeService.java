@@ -98,7 +98,23 @@ public class OfficeService {
     }
 
     public void deleteOffice(int no) {
+        String titleImageName = officeMapper.getOfficeTitleImage(no);
+        List<String> imageNames = officeMapper.getOfficeImagesByOfficeNo(no);
+
+        if (titleImageName != null && !titleImageName.isEmpty()) {
+            deleteImageFile(titleImageName);
+        }
+
+        for (String imageName : imageNames) {
+            deleteImageFile(imageName);
+        }
+
         officeMapper.deleteOffice(no);
+    }
+
+    @Transactional
+    public void resubmitOffice(Integer officeNo) {
+        officeMapper.updateOfficeAvailability(officeNo, 0);
     }
 
     @Transactional
@@ -298,7 +314,6 @@ public class OfficeService {
         response.put("totalCount", totalCount);
         return response;
     }
-
 
     public void acceptOffice(int no) {
         officeMapper.acceptOffice(no);

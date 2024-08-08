@@ -42,6 +42,7 @@ const OfficeItem = ({ NO, TITLE, RATING, LOCATION, PRICEPERDAY, OFFICEIMGURL }) 
             <FaStar />
             <div className="rate">{RATING}</div>
           </div>
+        </div>
 
 
         <div className="office-item-middle">

@@ -179,8 +179,9 @@ const ManagerMain = () => {
               <ResponsiveContainer width="100%" height={230}>
                 <BarChart data={monthlyData} margin={{ top: 0, left: 0, right: 20 }}>
                   <XAxis dataKey="month" tick={{ fontSize: 10 }} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11 }} tickLine={false} />
-                  <Tooltip contentStyle={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 11 }} tickLine={false} tickFormatter={(value) => value.toLocaleString()} />
+                  <Tooltip contentStyle={{ fontSize: 12 }} formatter={(value) => `${value.toLocaleString()}원`}
+                    labelFormatter={() => '월 수익'} />
                   <Bar dataKey="revenue" fill="#4171DD" barSize={9} />
                 </BarChart>
               </ResponsiveContainer>
@@ -205,7 +206,7 @@ const ManagerMain = () => {
                     ))}
                   </Pie>
                   <Tooltip />
-                  <Legend verticalAlign="bottom" height={45} iconSize={1}/>
+                  <Legend verticalAlign="bottom" height={45} iconSize={1} />
                 </PieChart>
               </ResponsiveContainer>
             </div>

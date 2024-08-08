@@ -16,10 +16,10 @@ const ManagerOffice = () => {
   const [searchInput, setSearchInput] = useState('');
   const [availability, setAvailability] = useState('all');
 
-  const fetchOffices = async (page) => {
+  const fetchOffices = async (page, useCache = true) => {
     const cacheKey = `${availability}_${searchInput}_${page}`;
 
-    if (pageDataCache[cacheKey]) {
+    if (useCache && pageDataCache[cacheKey]) {
       setOffices(pageDataCache[cacheKey].offices);
       setPageCount(pageDataCache[cacheKey].pageCount);
       setCurrentPage(page - 1);
@@ -32,7 +32,7 @@ const ManagerOffice = () => {
           page,
           size: 10,
           availability: availability === 'all' ? null : availability,
-          searchText: searchInput 
+          searchText: searchInput
         },
         withCredentials: true
       });
@@ -54,13 +54,13 @@ const ManagerOffice = () => {
   };
 
   useEffect(() => {
-    fetchOffices(1);
-  }, [availability]);
+    fetchOffices(currentPage + 1, true);
+  }, [availability, currentPage]);
 
   const handlePageClick = (data) => {
     const selectedPage = data.selected + 1;
     setCurrentPage(selectedPage - 1);
-    fetchOffices(selectedPage);
+    fetchOffices(selectedPage, true);
   };
 
   const handleSearch = () => {
@@ -88,6 +88,26 @@ const ManagerOffice = () => {
     navigate(`/manager/office/update/${no}/${officeNo}`);
   };
 
+  const handleResubmitClick = async (officeNo) => {
+    try {
+      const office = offices.find(o => o.no === officeNo);
+      if (!office) {
+        alert("해당 오피스를 찾을 수 없습니다.");
+        return;
+      }
+
+      await axios.patch(`/manager/office/${officeNo}`, { availability: 0 }, { withCredentials: true });
+
+      setOffices([]);
+      setPageDataCache({});
+      fetchOffices(currentPage + 1, false);
+      alert(`"${office.title}" 의 재신청이 완료되었습니다.`);
+    } catch (error) {
+      console.error("재신청 중 오류 발생:", error);
+      alert("재신청 중 오류가 발생했습니다.");
+    }
+  };
+
   const handleDeleteClick = async (officeNo) => {
     const confirmed = window.confirm("정말 이 오피스를 삭제하시겠습니까?");
 
@@ -98,8 +118,9 @@ const ManagerOffice = () => {
     try {
       await axios.delete(`/manager/office/${officeNo}`, { withCredentials: true });
       alert("오피스가 성공적으로 삭제되었습니다.");
+      setOffices([]);
       setPageDataCache({});
-      fetchOffices(currentPage + 1);
+      fetchOffices(currentPage + 1, false);
     } catch (error) {
       console.error("오피스 삭제 중 오류 발생:", error);
       alert("오피스 삭제 중 오류가 발생했습니다.");
@@ -173,7 +194,14 @@ const ManagerOffice = () => {
                     <td>{new Date(office.reg_date).toLocaleDateString()}</td>
                     <td>
                       <button onClick={() => handleUpdateClick(office.no)}>수정</button>
-                      <button onClick={() => handleDeleteClick(office.no)}>삭제</button>
+                      {office.availability === 2 ? (
+                        <>
+                          <button onClick={() => handleDeleteClick(office.no)}>삭제</button>
+                          <button onClick={() => handleResubmitClick(office.no)}>재신청</button>
+                        </>
+                      ) : (
+                        <button onClick={() => handleDeleteClick(office.no)}>삭제</button>
+                      )}
                     </td>
                   </tr>
                 ))

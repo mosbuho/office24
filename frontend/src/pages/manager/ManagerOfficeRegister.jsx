@@ -20,6 +20,9 @@ const ManagerOfficeRegister = () => {
   const [additionalImages, setAdditionalImages] = useState([null, null, null]);
   const [mainImagePreview, setMainImagePreview] = useState(null);
   const [additionalImagesPreview, setAdditionalImagesPreview] = useState([null, null, null]);
+  const MAX_FILE_SIZE_MB = 5;
+  const MAX_WIDTH = 1280;
+  const MAX_HEIGHT = 720;
 
   useEffect(() => {
     document.body.classList.add('manager-office-body');
@@ -68,12 +71,37 @@ const ManagerOfficeRegister = () => {
     }
   };
 
+  const checkImageResolution = (file) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        if (img.width > MAX_WIDTH || img.height > MAX_HEIGHT) {
+          reject(`이미지 해상도는 최대 ${MAX_WIDTH}x${MAX_HEIGHT}px이어야 합니다.`);
+        } else {
+          resolve();
+        }
+      };
+    });
+  };
+
   const handleMainImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const compressedFile = await compressImage(file);
-      setMainImage(compressedFile);
-      setMainImagePreview(URL.createObjectURL(compressedFile));
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        alert(`이미지 크기는 ${MAX_FILE_SIZE_MB}MB를 초과할 수 없습니다.`);
+        return;
+      }
+      try {
+        await checkImageResolution(file);
+        const compressedFile = await compressImage(file);
+        setMainImage(compressedFile);
+        setMainImagePreview(URL.createObjectURL(compressedFile));
+      } catch (error) {
+        alert(error);
+        setMainImage(null);
+        setMainImagePreview(null);
+      }
     } else {
       setMainImage(null);
       setMainImagePreview(null);
@@ -83,15 +111,33 @@ const ManagerOfficeRegister = () => {
   const handleAdditionalImageChange = async (e, index) => {
     const file = e.target.files[0];
     if (file) {
-      const compressedFile = await compressImage(file);
-      const updatedImages = [...additionalImages];
-      const updatedPreviews = [...additionalImagesPreview];
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        alert(`이미지 크기는 ${MAX_FILE_SIZE_MB}MB를 초과할 수 없습니다.`);
+        return;
+      }
 
-      updatedImages[index] = compressedFile;
-      updatedPreviews[index] = URL.createObjectURL(compressedFile);
+      try {
+        await checkImageResolution(file);
+        const compressedFile = await compressImage(file);
+        const updatedImages = [...additionalImages];
+        const updatedPreviews = [...additionalImagesPreview];
 
-      setAdditionalImages(updatedImages);
-      setAdditionalImagesPreview(updatedPreviews);
+        updatedImages[index] = compressedFile;
+        updatedPreviews[index] = URL.createObjectURL(compressedFile);
+
+        setAdditionalImages(updatedImages);
+        setAdditionalImagesPreview(updatedPreviews);
+      } catch (error) {
+        alert(error);
+        const updatedImages = [...additionalImages];
+        const updatedPreviews = [...additionalImagesPreview];
+
+        updatedImages[index] = null;
+        updatedPreviews[index] = null;
+
+        setAdditionalImages(updatedImages);
+        setAdditionalImagesPreview(updatedPreviews);
+      }
     } else {
       const updatedImages = [...additionalImages];
       const updatedPreviews = [...additionalImagesPreview];
