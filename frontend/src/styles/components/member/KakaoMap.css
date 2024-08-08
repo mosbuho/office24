@@ -1,4 +1,5 @@
 .custom-overlay {
+    pointer-events: auto;
     .custom-marker {
         position: relative;
         transform: translate(-50%, -100%);

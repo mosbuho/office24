@@ -51,7 +51,7 @@ function App() {
         <Route path="/member/findId" element={<MemberFindId />} />
         <Route path="/member/findIdResult" element={<MemberFindIdResult />} />
         <Route path="/member/resetPw" element={<MemberResetPw />} />
-        <Route path="/member/office/:no" element={<MemberOffice />} />
+        <Route path="/office/:no" element={<MemberOffice />} />
         <Route path="/manager/login" element={<ManagerLogin />} />
         <Route path="/manager/find-id" element={<ManagerFindId />} />
         <Route path="/manager/reset-pw" element={<ManagerResetPw />} />

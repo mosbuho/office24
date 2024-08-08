@@ -242,7 +242,7 @@ const ManagerMain = () => {
                   breakClassName={'break-me'}
                   pageCount={officePageCount}
                   marginPagesDisplayed={2}
-                  pageRangeDisplayed={5}
+                  pageRangeDisplayed={3}
                   onPageChange={handleOfficePageClick}
                   containerClassName={'office-pagination'}
                   pageClassName={'pagination-item'}

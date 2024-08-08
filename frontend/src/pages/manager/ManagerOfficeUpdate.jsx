@@ -6,6 +6,9 @@ import ManagerSidebar from '../../components/manager/ManagerSidebar';
 import ManagerHeader from "../../components/manager/ManagerHeader";
 import '../../styles/pages/manager/ManagerOfficeUpdate.css';
 import { getNo } from '../../utils/auth';
+import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 const ManagerOfficeUpdate = () => {
   const no = getNo();
@@ -16,7 +19,7 @@ const ManagerOfficeUpdate = () => {
   const [address, setAddress] = useState('');
   const [zipcode, setZipcode] = useState('');
   const [sido, setSido] = useState('');
-  const [content, setContent] = useState('');
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [capacity, setCapacity] = useState('');
   const [mainImageUrl, setMainImageUrl] = useState('');
   const [additionalImageUrls, setAdditionalImageUrls] = useState(['', '']);
@@ -38,11 +41,14 @@ const ManagerOfficeUpdate = () => {
         setAddress(data.address || '');
         setZipcode(data.zipCode || '');
         setSido(data.sido || '');
-        setContent(data.content || '');
         setCapacity(data.capacity || '');
         setMainImageUrl(data.titleImg ? `http://localhost:8080/img/${data.titleImg}` : '');
         setAdditionalImageUrls(data.additionalImageUrls.map(url => url ? `http://localhost:8080/img/${url}` : ''));
 
+        if (data.content) { //널처리?
+          const contentState = convertFromRaw(JSON.parse(data.content));
+          setEditorState(EditorState.createWithContent(contentState));
+        }
       } catch (error) {
         console.error("Error fetching office details:", error);
       }
@@ -124,6 +130,10 @@ const ManagerOfficeUpdate = () => {
     }).open();
   };
 
+  const handleEditorChange = (state) => {
+    setEditorState(state);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -133,8 +143,10 @@ const ManagerOfficeUpdate = () => {
     formData.append('address', address);
     formData.append('zipcode', zipcode);
     formData.append('sido', sido);
-    formData.append('content', content);
     formData.append('capacity', capacity);
+    
+    const contentState = editorState.getCurrentContent();
+    formData.append('content', JSON.stringify(convertToRaw(contentState)));
 
     const extractFileName = (url) => {
       const lastSlashIndex = url.lastIndexOf('/');
@@ -164,7 +176,7 @@ const ManagerOfficeUpdate = () => {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       alert("해당 오피스의 정보가 수정되었습니다.");
-      navigate(`/manager/office/${no}`);
+      navigate(`/manager/office`);
     } catch (error) {
       console.error("Error updating office:", error);
       alert("해당 오피스의 정보 수정에 실패하였습니다.");
@@ -173,7 +185,7 @@ const ManagerOfficeUpdate = () => {
 
   const handleCancel = () => {
     if (window.confirm("정말로 취소하시겠습니까? 변경사항이 저장되지 않습니다.")) {
-      navigate(`/manager/office/${no}`);
+      navigate(`/manager/office`);
     }
   };
 
@@ -242,12 +254,23 @@ const ManagerOfficeUpdate = () => {
             </div>
             <div className='form-group'>
               <label htmlFor="content">설명</label>
-              <textarea
-                id="content"
-                rows="4"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-              ></textarea>
+              <Editor
+                  editorState={editorState}
+                  onEditorStateChange={handleEditorChange}
+                  editorStyle={{
+                    height: "100px",
+                    border: "1px solid lightgray",
+                    padding: "5px",
+                  }}
+                  toolbar={{
+                    options: ['inline', 'blockType', 'list', 'textAlign', 'history'],
+                    inline: { options: ['bold', 'italic', 'underline'] },
+                    blockType: { inDropdown: true },
+                    list: { options: ['unordered', 'ordered'] },
+                    textAlign: { options: ['left', 'center', 'right'] },
+                    history: { options: ['undo', 'redo'] },
+                  }}
+                />
             </div>
             <div className='form-group'>
               <label htmlFor="capacity">수용인원</label>

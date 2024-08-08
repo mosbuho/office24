@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import ManagerHeader from "../../components/manager/ManagerHeader";
 import ManagerSidebar from "../../components/manager/ManagerSidebar";
@@ -6,6 +6,9 @@ import axios from '../../utils/axiosConfig';
 import imageCompression from 'browser-image-compression';
 import '../../styles/pages/manager/ManagerOfficeCreate.css';
 import { getNo } from '../../utils/auth';
+import { EditorState, convertToRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 const ManagerOfficeCreate = () => {
   const no = getNo();
@@ -14,13 +17,13 @@ const ManagerOfficeCreate = () => {
   const priceRef = useRef(null);
   const addressRef = useRef(null);
   const zipcodeRef = useRef(null);
-  const contentRef = useRef(null);
   const capacityRef = useRef(null);
   const [sido, setSido] = useState('');
   const [mainImage, setMainImage] = useState(null);
   const [additionalImages, setAdditionalImages] = useState([null, null, null]);
   const [mainImagePreview, setMainImagePreview] = useState(null);
   const [additionalImagesPreview, setAdditionalImagesPreview] = useState([null, null, null]);
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const MAX_FILE_SIZE_MB = 5;
   const MAX_WIDTH = 1280;
   const MAX_HEIGHT = 720;
@@ -151,6 +154,10 @@ const ManagerOfficeCreate = () => {
     }
   };
 
+  const handleEditorChange = (editorState) => {
+    setEditorState(editorState);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -159,12 +166,14 @@ const ManagerOfficeCreate = () => {
       !priceRef.current.value.trim() ||
       !addressRef.current.value.trim() ||
       !zipcodeRef.current.value.trim() ||
-      !contentRef.current.value.trim() ||
       !capacityRef.current.value.trim()
     ) {
       alert("모든 필수 항목을 입력해 주세요.");
       return;
     }
+
+    const contentState = editorState.getCurrentContent();
+    const contentRaw = JSON.stringify(convertToRaw(contentState));
 
     const data = new FormData();
     data.append('title', titleRef.current.value);
@@ -172,7 +181,7 @@ const ManagerOfficeCreate = () => {
     data.append('address', addressRef.current.value);
     data.append('zipcode', zipcodeRef.current.value);
     data.append('sido', sido);
-    data.append('content', contentRef.current.value);
+    data.append('content', contentRaw);
     data.append('capacity', capacityRef.current.value);
 
     if (mainImage) {
@@ -196,7 +205,7 @@ const ManagerOfficeCreate = () => {
         }
       });
       alert(response.data);
-      navigate(`/manager/office/${no}`);
+      navigate(`/manager/office`);
     } catch (error) {
       console.error("오피스 등록 중 오류 발생:", error);
       alert("오피스 등록 중 오류가 발생했습니다.");
@@ -257,7 +266,26 @@ const ManagerOfficeCreate = () => {
 
             <div className="form-group">
               <label htmlFor="content">설명</label>
-              <textarea id="content" ref={contentRef} className="input-content" rows="3"></textarea>
+              <div className="draft-editor">
+                <Editor
+                  placeholder="내용을 작성해주세요."
+                  editorState={editorState}
+                  onEditorStateChange={handleEditorChange}
+                  editorStyle={{
+                    height: "100px",
+                    border: "1px solid lightgray",
+                    padding: "5px",
+                  }}
+                  toolbar={{
+                    options: ['inline', 'blockType', 'list', 'textAlign', 'history'],
+                    inline: { options: ['bold', 'italic', 'underline'] },
+                    blockType: { inDropdown: true },
+                    list: { options: ['unordered', 'ordered'] },
+                    textAlign: { options: ['left', 'center', 'right'] },
+                    history: { options: ['undo', 'redo'] },
+                  }}
+                />
+              </div>
             </div>
 
             <div className="form-group">
