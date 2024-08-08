@@ -73,6 +73,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 115px;
 }
 
 .pw-reset-form .check-btn:hover {

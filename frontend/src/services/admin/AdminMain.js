@@ -3,7 +3,6 @@ import axios from '../../utils/axiosConfig';
 export const fetchAccumulate = async (setAccumulate) => {
     const response = await axios.get('/admin/accumulate');
     setAccumulate(response.data);
-    console.log(response.data);
 };
 
 export const fetchAgeGroup = async (setAgeGroup) => {
@@ -113,7 +112,7 @@ export const fetchNotices = async (noticePage, setNotices, fetchedNoticePages, s
     const response = await axios.get('/admin/main-notice', {
         params: { page: noticePage, size: 5 }
     });
-    
+
     setNotices(prev => ({
         ...prev,
         [noticePage]: response.data

@@ -1,5 +1,7 @@
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import PrivateRoute from './components/common/PrivateRoute';
+import PublicRoute from './components/common/PublicRoute';
+import NotFoundPage from './components/common/NotFound';
 
 import MemberDelete from './pages/member/MemberDelete';
 import MemberLogin from './pages/member/MemberLogin';
@@ -44,17 +46,19 @@ function App() {
       <Routes>
         {/* 공개 라우트 */}
         <Route path="/" element={<MemberMain />} />
-        <Route path="/login" element={<MemberLogin />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/member/register" element={<MemberRegister />} />
-        <Route path="/manager/create" element={<ManagerCreate />} />
-        <Route path="/member/findId" element={<MemberFindId />} />
-        <Route path="/member/findIdResult" element={<MemberFindIdResult />} />
-        <Route path="/member/resetPw" element={<MemberResetPw />} />
-        <Route path="/member/office/:no" element={<MemberOffice />} />
-        <Route path="/manager/login" element={<ManagerLogin />} />
-        <Route path="/manager/find-id" element={<ManagerFindId />} />
-        <Route path="/manager/reset-pw" element={<ManagerResetPw />} />
+        <Route path="/office/:no" element={<MemberOffice />} />
+
+        {/* 비로그인 라우트 */}
+        <Route path="/login" element={<PublicRoute><MemberLogin /></PublicRoute>} />
+        <Route path="/admin/login" element={<PublicRoute><AdminLogin /></PublicRoute>} />
+        <Route path="/member/register" element={<PublicRoute><MemberRegister /></PublicRoute>} />
+        <Route path="/manager/create" element={<PublicRoute><ManagerCreate /></PublicRoute>} />
+        <Route path="/member/find-id" element={<PublicRoute><MemberFindId /></PublicRoute>} />
+        <Route path="/member/find-id-result" element={<PublicRoute><MemberFindIdResult /></PublicRoute>} />
+        <Route path="/member/reset-pw" element={<PublicRoute><MemberResetPw /></PublicRoute>} />
+        <Route path="/manager/login" element={<PublicRoute><ManagerLogin /></PublicRoute>} />
+        <Route path="/manager/find-id" element={<PublicRoute><ManagerFindId /></PublicRoute>} />
+        <Route path="/manager/reset-pw" element={<PublicRoute><ManagerResetPw /></PublicRoute>} />
 
         {/* 멤버 라우트 */}
         <Route path="/member/update" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberUpdate /></PrivateRoute>} />
@@ -83,6 +87,9 @@ function App() {
         <Route path="/admin/notice" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminNoticeList /></PrivateRoute>} />
         <Route path="/admin/notice/:no" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminNotice /></PrivateRoute>} />
         <Route path="/admin/notice/create" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminNoticeCreate /></PrivateRoute>} />
+
+        {/* 에러 */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );
