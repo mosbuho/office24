@@ -59,7 +59,7 @@
     <update id="updateOfficeAvailability">
         UPDATE office
         SET availability = #{availability}
-        WHERE no = #{officeNo}
+        WHERE no = #{no}
     </update>
 
     <insert id="insertOffice" parameterType="com.kh.backend.office.Office">

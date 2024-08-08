@@ -4,10 +4,11 @@ import ManagerHeader from "../../components/manager/ManagerHeader";
 import ManagerSidebar from "../../components/manager/ManagerSidebar";
 import axios from '../../utils/axiosConfig';
 import imageCompression from 'browser-image-compression';
-import '../../styles/pages/manager/ManagerOfficeRegister.css';
+import '../../styles/pages/manager/ManagerOfficeCreate.css';
+import { getNo } from '../../utils/auth';
 
-const ManagerOfficeRegister = () => {
-  const { no } = useParams();
+const ManagerOfficeCreate = () => {
+  const no = getNo();
   const navigate = useNavigate();
   const titleRef = useRef(null);
   const priceRef = useRef(null);
@@ -58,7 +59,7 @@ const ManagerOfficeRegister = () => {
 
   const compressImage = async (file) => {
     const options = {
-      maxSizeMB: 5,
+      maxSizeMB: MAX_FILE_SIZE_MB,
       useWebWorker: true,
     };
 
@@ -189,7 +190,7 @@ const ManagerOfficeRegister = () => {
     }
 
     try {
-      const response = await axios.post(`/manager/office/register/${no}`, data, {
+      const response = await axios.post(`/manager/${no}/office/create`, data, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -291,4 +292,4 @@ const ManagerOfficeRegister = () => {
   );
 }
 
-export default ManagerOfficeRegister;
+export default ManagerOfficeCreate;

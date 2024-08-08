@@ -1,13 +1,14 @@
 import ManagerSidebar from '../../components/manager/ManagerSidebar';
 import ManagerHeader from "../../components/manager/ManagerHeader";
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import axios from '../../utils/axiosConfig';
 import ReactPaginate from 'react-paginate';
-import '../../styles/pages/manager/ManagerOffice.css';
+import '../../styles/pages/manager/ManagerOfficeList.css';
+import { getNo } from '../../utils/auth';
 
-const ManagerOffice = () => {
-  const { no } = useParams();
+const ManagerOfficeList = () => {
+  const no = getNo();
   const navigate = useNavigate();
   const [offices, setOffices] = useState([]);
   const [pageCount, setPageCount] = useState(1);
@@ -27,7 +28,7 @@ const ManagerOffice = () => {
     }
 
     try {
-      const response = await axios.get(`/manager/office/${no}`, {
+      const response = await axios.get(`/manager/${no}/office`, {
         params: {
           page,
           size: 10,
@@ -81,11 +82,11 @@ const ManagerOffice = () => {
   };
 
   const handleRegisterClick = () => {
-    navigate(`/manager/office/register/${no}`);
+    navigate(`/manager/office/create`);
   };
 
   const handleUpdateClick = (officeNo) => {
-    navigate(`/manager/office/update/${no}/${officeNo}`);
+    navigate(`/manager/office/${officeNo}/update`);
   };
 
   const handleResubmitClick = async (officeNo) => {
@@ -232,4 +233,4 @@ const ManagerOffice = () => {
   );
 };
 
-export default ManagerOffice;
+export default ManagerOfficeList;

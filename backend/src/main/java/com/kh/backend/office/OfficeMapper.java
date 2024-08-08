@@ -34,7 +34,7 @@ public interface OfficeMapper {
 
         String getOfficeTitleImage(int no);
 
-        void updateOfficeAvailability(@Param("officeNo") Integer officeNo, @Param("availability") int availability);
+        void updateOfficeAvailability(@Param("no") int no, @Param("availability") int availability);
 
         void insertOffice(Office office);
 

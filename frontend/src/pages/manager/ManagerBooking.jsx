@@ -5,9 +5,10 @@ import { useEffect, useState, useCallback } from 'react';
 import axios from '../../utils/axiosConfig';
 import ReactPaginate from 'react-paginate';
 import '../../styles/pages/manager/ManagerBooking.css'
+import { getNo } from '../../utils/auth';
 
 const ManagerBooking = () => {
-  const { no } = useParams();
+  const no = getNo();
   const [bookings, setBookings] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);

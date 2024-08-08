@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../../styles/pages/manager/ManagerRegister.css';
+import '../../styles/pages/manager/ManagerCreate.css';
 
-const ManagerRegister = () => {
+const ManagerCreate = () => {
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
   const [pwConfirm, setPwConfirm] = useState('');
@@ -122,7 +122,7 @@ const ManagerRegister = () => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:8080/manager/register', {
+      const response = await axios.post('http://localhost:8080/manager/create', {
         id,
         pw,
         name,
@@ -143,7 +143,7 @@ const ManagerRegister = () => {
 
   const handleIdCheck = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/manager/idCheck', {
+      const response = await axios.get('http://localhost:8080/manager/id-check', {
         params: { id }
       });
       if (response.status === 200) {
@@ -292,4 +292,4 @@ const ManagerRegister = () => {
   );
 };
 
-export default ManagerRegister;
+export default ManagerCreate;

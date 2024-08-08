@@ -113,12 +113,12 @@ public class OfficeService {
     }
 
     @Transactional
-    public void resubmitOffice(Integer officeNo) {
-        officeMapper.updateOfficeAvailability(officeNo, 0);
+    public void resubmitOffice(int no) {
+        officeMapper.updateOfficeAvailability(no, 0);
     }
 
     @Transactional
-    public ResponseEntity<String> registerOffice(int managerNo, String title, String address, String zipCode,
+    public ResponseEntity<String> createOffice(int managerNo, String title, String address, String zipCode,
             String sido, String content, int price, int capacity, MultipartFile mainImage,
             List<MultipartFile> additionalImages) {
         try {

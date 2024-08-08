@@ -35,17 +35,17 @@ public class ManagerController {
     }
 
     // 회원 가입 페이지
-    @PostMapping("/register")
-    public ResponseEntity<?> registerManager(@RequestBody Manager manager) {
+    @PostMapping("/create")
+    public ResponseEntity<?> createManager(@RequestBody Manager manager) {
         try {
-            managerService.registerManager(manager);
+            managerService.createManager(manager);
             return ResponseEntity.ok(null);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @GetMapping("/idCheck")
+    @GetMapping("/id-check")
     public ResponseEntity<String> idCheck(@RequestParam("id") String id) {
         if (managerService.idCheckManager(id)) {
             return ResponseEntity.ok(null);
@@ -55,13 +55,13 @@ public class ManagerController {
     }
 
     // 메인 페이지
-    @GetMapping("/office/stats/{no}")
+    @GetMapping("/{no}/office/stats")
     public ResponseEntity<Map<String, Object>> getStatistics(@PathVariable int no) {
         Map<String, Object> stats = officeService.getStatistics(no);
         return ResponseEntity.ok(stats);
     }
 
-    @GetMapping("/office/status/{no}")
+    @GetMapping("/{no}/office/status")
     public Map<String, Object> getOfficeStatusPaged(@PathVariable int no,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int size) {
@@ -69,7 +69,7 @@ public class ManagerController {
         return officeService.getOfficeStatusPaged(no, page, size);
     }
 
-    @GetMapping("/booking/simple/{no}")
+    @GetMapping("/{no}/booking/simple")
     public ResponseEntity<Map<String, Object>> getBookingsByManager(
             @PathVariable Integer no,
             @RequestParam(defaultValue = "1") int page,
@@ -79,7 +79,7 @@ public class ManagerController {
     }
 
     // 오피스 관리 페이지
-    @GetMapping("/office/{no}")
+    @GetMapping("/{no}/office")
     public Map<String, Object> getAllOffices(@PathVariable int no,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -95,10 +95,10 @@ public class ManagerController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/office/{officeNo}")
-    public ResponseEntity<String> resubmitOffice(@PathVariable("officeNo") Integer officeNo) {
+    @PatchMapping("/office/{no}")
+    public ResponseEntity<String> resubmitOffice(@PathVariable("no") int no) {
         try {
-            officeService.resubmitOffice(officeNo);
+            officeService.resubmitOffice(no);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
@@ -106,8 +106,8 @@ public class ManagerController {
     }
 
     // 오피스 등록 페이지
-    @PostMapping("/office/register/{managerNo}")
-    public ResponseEntity<String> registerOffice(@PathVariable("managerNo") int managerNo,
+    @PostMapping("/{managerNo}/office/create")
+    public ResponseEntity<String> createOffice(@PathVariable("managerNo") int managerNo,
             @RequestParam("title") String title,
             @RequestParam("address") String address,
             @RequestParam("zipcode") String zipCode,
@@ -118,18 +118,18 @@ public class ManagerController {
             @RequestParam("mainImage") MultipartFile mainImage,
             @RequestParam(value = "additionalImages[]", required = false) List<MultipartFile> additionalImages) {
 
-        return officeService.registerOffice(managerNo, title, address, zipCode, sido, content, price, capacity,
+        return officeService.createOffice(managerNo, title, address, zipCode, sido, content, price, capacity,
                 mainImage, additionalImages);
     }
 
     // 오피스 수정 페이지
-    @GetMapping("/office/info/{officeNo}")
+    @GetMapping("/office/{officeNo}/info")
     public ResponseEntity<Map<String, Object>> getOfficeByNo(@PathVariable int officeNo) {
         Map<String, Object> officeInfo = officeService.getOfficeInfo(officeNo);
         return ResponseEntity.ok(officeInfo);
     }
 
-    @PutMapping("/office/update/{no}/{officeNo}")
+    @PutMapping("/{no}/office/{officeNo}/update")
     public ResponseEntity<String> updateOffice(@PathVariable("no") int managerNo,
             @PathVariable("officeNo") int officeNo,
             @RequestParam("title") String title,
