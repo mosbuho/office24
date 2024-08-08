@@ -1,7 +1,9 @@
 package com.kh.backend.member;
 
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,33 +12,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kh.backend.office.OfficeMapper;
-
 @RestController
 @RequestMapping("/member")
 public class MemberController {
 
     private final MemberService memberService;
 
-    public MemberController(MemberService memberService, OfficeMapper officeMapper) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
-    @GetMapping("/idCheck")
-    public ResponseEntity<String> idCheck(@RequestParam String id) {
-        if (memberService.idCheck(id)) {
+    @GetMapping("/check-id")
+    public ResponseEntity<String> idCheck(@RequestParam String id,
+            @RequestParam(required = false, defaultValue = "true") boolean checkDuplicate) {
+        boolean exists = memberService.idCheck(id);
+        if (checkDuplicate && exists) {
+            return ResponseEntity.ok(null);
+        } else if (!checkDuplicate && !exists) {
             return ResponseEntity.ok(null);
         } else {
             return ResponseEntity.badRequest().body(null);
         }
     }
 
-    @GetMapping("/checkId")
-    public ResponseEntity<?> checkId(@RequestParam String id) {
-        if (!memberService.idCheck(id)) {
-            return ResponseEntity.ok(null);
+    @GetMapping("/id-exist")
+    public ResponseEntity<?> idExist(@RequestParam String phone) {
+        List<String> ids = memberService.idExist(phone);
+        if (ids != null && !ids.isEmpty()) {
+            return new ResponseEntity<>(ids, HttpStatus.OK);
         } else {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().body("아이디가 존재하지 않습니다.");
         }
     }
 
@@ -53,7 +58,7 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/resetPw")
+    @PostMapping("/reset-pw")
     public ResponseEntity<?> resetPw(@RequestBody Map<String, String> map) {
         String pw = map.get("pw");
         String id = map.get("id");
