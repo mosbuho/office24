@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.backend.office.OfficeMapper">
+
     <select id="getTotalRevenue" parameterType="int" resultType="int"> SELECT NVL(SUM(b.price), 0) AS
         total_revenue FROM booking b JOIN office o ON b.office_no = o.no WHERE o.manager_no = #{no} </select>
+
 
     <select id="getTotalUsage" parameterType="int" resultType="int"> SELECT COUNT(b.no) AS
         total_bookings FROM booking b JOIN office o ON b.office_no = o.no WHERE o.manager_no = #{no} </select>
@@ -39,12 +41,14 @@
         longitude, content, price, capacity, title_img AS titleImg, availability, reg_date FROM
         office WHERE manager_no = #{no} <if test="availability != null"> AND availability =
         #{availability} </if>
-                <if test="searchText != null and searchText != ''"> AND title LIKE '%'
-        || #{searchText} || '%' </if> ORDER BY no desc ) A WHERE ROWNUM &lt;= #{offset} + #{limit} )
-        WHERE rnum &gt; #{offset} </select>
+                <if
+            test="searchText != null and searchText != ''"> AND title LIKE '%' || #{searchText} ||
+        '%' </if> ORDER BY no desc ) A WHERE ROWNUM &lt;= #{offset} + #{limit} ) WHERE rnum &gt;
+        #{offset} </select>
 
     <select id="getOfficeCount" resultType="int"> SELECT COUNT(*) FROM office WHERE manager_no =
-        #{no} <if test="availability != null"> AND availability = #{availability} </if>
+        #{no} <if
+            test="availability != null"> AND availability = #{availability} </if>
         <if
             test="searchText != null and searchText != ''"> AND title LIKE '%' || #{searchText} ||
         '%' </if>
@@ -139,11 +143,15 @@
 
     <update id="refuseOffice">UPDATE office SET availability = 2 WHERE no = #{no}</update>
 
-    <select id="selectOfficeList" resultType="map"> SELECT * FROM ( SELECT a.*, ROWNUM rnum FROM (
-        SELECT o.no as no, o.title as title, NVL(AVG(r.rating), 0) as rating, o.address as location,
-        o.price as pricePerDay, o.title_img as officeImgURL, o.longitude as longitude, o.latitude as
-        latitude FROM office o LEFT JOIN review r ON o.no = r.office_no WHERE o.availability = 1
-        GROUP BY o.no, o.title, o.address, o.price, o.title_img, o.longitude, o.latitude ORDER BY
-        o.no DESC ) a WHERE ROWNUM &lt;= #{endRow} ) WHERE rnum &gt; #{startRow} </select>
+
+    <select id="selectOfficeList" resultType="map"> SELECT o.no, o.title, o.address as location,
+        o.price as pricePerDay, o.title_img as officeImgURL, o.longitude, o.latitude, o.capacity,
+        (o.capacity - NVL(b.booked_count, 0)) as available_capacity FROM office o LEFT JOIN ( SELECT
+        office_no, COUNT(*) as booked_count FROM booking WHERE start_date &lt;= TO_DATE(#{endDate},
+        'YYYY-MM-DD') AND end_date &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD') GROUP BY office_no ) b
+        ON o.no = b.office_no WHERE o.availability = 1 AND (#{location} IS NULL OR o.address LIKE
+        '%' || #{location} || '%' OR o.title LIKE '%' || #{location} || '%') AND (o.capacity -
+        NVL(b.booked_count, 0)) &gt;= #{attendance} ORDER BY o.no DESC OFFSET #{startRow} ROWS FETCH
+        NEXT (#{endRow} - #{startRow}) ROWS ONLY </select>
 
 </mapper>

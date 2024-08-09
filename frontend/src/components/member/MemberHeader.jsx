@@ -80,7 +80,7 @@ function koreanFilter(input, target) {
 }
 
 const MemberHeader = () => {
-  // state //
+  // State and other hooks
   const [popupState, dispatch] = useReducer(popupReducer, initialState);
   const [expanded, setExpanded] = useState(true);
   const [location, setLocation] = useState("");
@@ -96,6 +96,7 @@ const MemberHeader = () => {
   const searchContainerRef = useRef(null);
   const dropdownRef = useRef(null);
   const optionsRef = useRef(null);
+  const navigate = useNavigate();
 
   // event handler: 이벤트 분류 //
   useEffect(() => {
@@ -186,12 +187,14 @@ const MemberHeader = () => {
 
   // function: 검색 실행 //
   const search = () => {
-    console.log("Searching:", {
+    const searchParams = {
       location,
-      dates: { startDate, endDate },
+      startDate: startDate ? formatDate(startDate) : "",
+      endDate: endDate ? formatDate(endDate) : "",
       attendance,
-    });
-    // TODO: Implement the search functionality
+    };
+
+    navigate("/", { state: { searchParams } });
   };
 
   // function: 날짜 포맷 //
@@ -220,8 +223,6 @@ const MemberHeader = () => {
     setAttendance((prev) => Math.max(1, prev + change));
   };
 
-  const navigate = useNavigate();
-
   // render: 헤더 컴포넌트 //
   return (
     <div className="header-container">
@@ -245,7 +246,7 @@ const MemberHeader = () => {
                     id="location-search"
                     type="text"
                     className="search-input"
-                    placeholder="어떤것을 찾고 계신가요?"
+                    placeholder="어떤 것을 찾고 계신가요?"
                     value={searchInput}
                     onChange={handleSearchInputChange}
                     onFocus={handleSearchFocus}
@@ -300,7 +301,6 @@ const MemberHeader = () => {
             </button>
           </div>
         </div>
-
         <div className="search-option-popups" ref={optionsRef}>
           {popupState.showCalendar && (
             <div className="date-options-sections">
@@ -381,7 +381,7 @@ const MemberHeader = () => {
       </div>
       <div className="fixed-logo-wrapper" onClick={() => navigate("/")}>
         OFFICE24
-      </div>{" "}
+      </div>
       <div
         className="fixed-menu-wrapper"
         onClick={toggleDropdown}
@@ -402,11 +402,6 @@ const MemberHeader = () => {
               </div>
               <div className="dropdown-divider"></div>
               <div className="dropdown-option">Q&A</div>
-
-              {/* <div className="dropdown-option">사용자 정보</div>
-              <div className="dropdown-option">로그아웃 </div>
-              <div className="dropdown-divider"></div>
-              <div className="dropdown-option">Q&A</div> */}
             </div>
           )}
         </div>

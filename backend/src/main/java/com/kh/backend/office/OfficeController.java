@@ -22,10 +22,17 @@ public class OfficeController {
         return officeService.serveImage(filename);
     }
 
-    @GetMapping("/office")
-    public List<Map<String, Object>> getOfficeList(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "24") int size) {
-        return officeService.getOfficeList(page, size);
-    }
+@GetMapping("/api/office")
+public List<Map<String, Object>> getOfficeList(
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "24") int size,
+        @RequestParam(required = false) String location,
+        @RequestParam(required = false) String startDate,
+        @RequestParam(required = false) String endDate,
+        @RequestParam(defaultValue = "0") int attendance) {
+    return officeService.getOfficeList(page, size, location, startDate, endDate, attendance);
 }
+}
+
+
+

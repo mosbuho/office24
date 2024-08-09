@@ -3,17 +3,19 @@ import PrivateRoute from './components/common/PrivateRoute';
 import PublicRoute from './components/common/PublicRoute';
 import NotFoundPage from './components/common/NotFound';
 
-import MemberDelete from './pages/member/MemberDelete';
-import MemberLogin from './pages/member/MemberLogin';
-import MemberRegister from './pages/member/MemberRegister';
-import MemberMain from './pages/member/MemberMain';
-import MemberPayment from './pages/member/MemberPayment';
-import MemberSearch from './pages/member/MemberSearch';
-import MemberUpdate from './pages/member/MemberUpdate';
+
+import MemberDelete from "./pages/member/MemberDelete";
 import MemberFindId from "./pages/member/MemberFindId";
-import MemberResetPw from "./pages/member/MemberResetPw";
 import MemberFindIdResult from "./pages/member/MemberFindIResult";
+import MemberLogin from "./pages/member/MemberLogin";
+import MemberMain from "./pages/member/MemberMain";
 import MemberOffice from "./pages/member/MemberOffice";
+import MemberPayment from "./pages/member/MemberPayment";
+import MemberRegister from "./pages/member/MemberRegister";
+import MemberResetPw from "./pages/member/MemberResetPw";
+import MemberSearch from "./pages/member/MemberSearch";
+import MemberUpdate from "./pages/member/MemberUpdate";
+
 
 import ManagerCreate from './pages/manager/ManagerCreate';
 import ManagerLogin from './pages/manager/ManagerLogin';
@@ -26,19 +28,19 @@ import ManagerInfo from './pages/manager/ManagerInfo';
 import ManagerFindId from './pages/manager/ManagerFindId';
 import ManagerResetPw from './pages/manager/ManagerResetPw';
 
-import AdminLogin from './pages/admin/AdminLogin';
-import AdminMain from './pages/admin/AdminMain';
-import AdminOffice from './pages/admin/AdminOffice';
-import AdminOfficeList from './pages/admin/AdminOfficeList';
-import AdminManager from './pages/admin/AdminManager';
-import AdminManagerList from './pages/admin/AdminManagerList';
-import AdminMember from './pages/admin/AdminMember';
-import AdminMemberList from './pages/admin/AdminMemberList';
-import AdminReviewList from './pages/admin/AdminReviewList';
-import AdminBookingList from './pages/admin/AdminBookingList';
-import AdminNoticeList from './pages/admin/AdminNoticeList';
-import AdminNoticeCreate from './pages/admin/AdminNoticeCreate';
-import AdminNotice from './pages/admin/AdminNotice';
+import AdminBookingList from "./pages/admin/AdminBookingList";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminMain from "./pages/admin/AdminMain";
+import AdminManager from "./pages/admin/AdminManager";
+import AdminManagerList from "./pages/admin/AdminManagerList";
+import AdminMember from "./pages/admin/AdminMember";
+import AdminMemberList from "./pages/admin/AdminMemberList";
+import AdminNotice from "./pages/admin/AdminNotice";
+import AdminNoticeCreate from "./pages/admin/AdminNoticeCreate";
+import AdminNoticeList from "./pages/admin/AdminNoticeList";
+import AdminOffice from "./pages/admin/AdminOffice";
+import AdminOfficeList from "./pages/admin/AdminOfficeList";
+import AdminReviewList from "./pages/admin/AdminReviewList";
 
 function App() {
   return (
@@ -60,11 +62,40 @@ function App() {
         <Route path="/manager/find-id" element={<PublicRoute><ManagerFindId /></PublicRoute>} />
         <Route path="/manager/reset-pw" element={<PublicRoute><ManagerResetPw /></PublicRoute>} />
 
+
         {/* 멤버 라우트 */}
-        <Route path="/member/update" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberUpdate /></PrivateRoute>} />
-        <Route path="/member/delete" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberDelete /></PrivateRoute>} />
-        <Route path="/payment" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberPayment /></PrivateRoute>} />
-        <Route path="/search" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberSearch /></PrivateRoute>} />
+        <Route
+          path="/member/update"
+          element={
+            <PrivateRoute requiredRole="ROLE_MEMBER">
+              <MemberUpdate />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/member/delete"
+          element={
+            <PrivateRoute requiredRole="ROLE_MEMBER">
+              <MemberDelete />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/payment"
+          element={
+            <PrivateRoute requiredRole="ROLE_MEMBER">
+              <MemberPayment />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            <PrivateRoute requiredRole="ROLE_MEMBER">
+              <MemberSearch />
+            </PrivateRoute>
+          }
+        />
 
         {/* 매니저 라우트 */}
         <Route path="/manager/" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerMain /></PrivateRoute>} />
@@ -90,6 +121,7 @@ function App() {
 
         {/* 에러 */}
         <Route path="*" element={<NotFoundPage />} />
+
       </Routes>
     </BrowserRouter>
   );
