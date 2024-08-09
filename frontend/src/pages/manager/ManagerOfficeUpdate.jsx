@@ -238,7 +238,7 @@ const ManagerOfficeUpdate = () => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="address">주소<button type="button" onClick={handleAddressSearch}>검색</button></label>
+              <label htmlFor="address">주소<button type="button" className='searchAddress' onClick={handleAddressSearch}>검색</button></label>
               <input
                 type="text"
                 id="address"
