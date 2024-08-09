@@ -62,4 +62,12 @@ public interface OfficeMapper {
 
         List<Map<String, Object>> selectOfficeList(@Param("startRow") int startRow, @Param("endRow") int endRow);
 
+      List<Map<String, Object>> selectOfficeList(
+    @Param("startRow") int startRow,
+    @Param("endRow") int endRow,
+    @Param("location") String location,
+    @Param("startDate") String startDate,
+    @Param("endDate") String endDate,
+    @Param("attendance") int attendance
+);
 }

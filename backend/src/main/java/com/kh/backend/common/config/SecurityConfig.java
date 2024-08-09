@@ -41,13 +41,14 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(authz -> authz
+                        // .anyRequest().permitAll()
                         .requestMatchers("/img/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/office/**").permitAll()
+                        .requestMatchers("/api/office/**").permitAll()
                         // .requestMatchers("/auth/kakao/**").permitAll()
                         // .requestMatchers("/auth/naver/**").permitAll()
                         // .requestMatchers("/auth/google/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/office/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/office/**").permitAll()
                         .requestMatchers("/member/register", "/manager/register").permitAll()
                         .requestMatchers("/member/idCheck", "/manager/idCheck").permitAll()
                         .requestMatchers("/member/checkId").permitAll()
@@ -56,7 +57,9 @@ public class SecurityConfig {
                         .requestMatchers("/message/**").permitAll()
                         .requestMatchers("/manager/**").hasRole("MANAGER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().hasRole("MEMBER"))
+                        .anyRequest().hasRole(
+                                "MEMBER")
+                        )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);

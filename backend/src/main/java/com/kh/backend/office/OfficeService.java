@@ -308,9 +308,16 @@ public class OfficeService {
         officeMapper.refuseOffice(no);
     }
 
-    public List<Map<String, Object>> getOfficeList(int page, int size) {
+    public List<Map<String, Object>> getOfficeList(int page, int size, String location, String startDate, String endDate, int attendance) {
         int startRow = (page - 1) * size;
-        int endRow = page * size;
-        return officeMapper.selectOfficeList(startRow, endRow);
+        int endRow = startRow + size;
+    try {
+        return officeMapper.selectOfficeList(startRow, endRow, location, startDate, endDate, attendance);
+    } catch (Exception e) {
+        // Log the error
+        e.printStackTrace();
+        // You might want to throw a custom exception here or return an empty list
+        return new ArrayList<>();
     }
+}
 }
