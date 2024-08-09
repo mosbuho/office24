@@ -29,10 +29,10 @@ const ManagerBooking = () => {
     }));
   };
 
-  const fetchBookings = async (page) => {
+  const fetchBookings = async (page, useCache = true) => {
     const cacheKey = `${filter}_${searchInput}_${sortOrder}_${page}`;
 
-    if (pageDataCache[cacheKey]) {
+    if (useCache && pageDataCache[cacheKey]) {
       setBookings(pageDataCache[cacheKey].bookings);
       setPageCount(pageDataCache[cacheKey].pageCount);
       setCurrentPage(page - 1);
@@ -104,8 +104,9 @@ const ManagerBooking = () => {
     try {
       await axios.delete(`/manager/booking/${bookingNo}`, { withCredentials: true });
       alert("예약이 성공적으로 삭제되었습니다.");
+      setBookings([]);
       setPageDataCache({});
-      fetchBookings(currentPage + 1);
+      fetchBookings(currentPage + 1, false);
     } catch (error) {
       console.error("예약 삭제 중 오류 발생:", error);
       alert("예약 삭제 중 오류가 발생했습니다.");

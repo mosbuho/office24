@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/components/member/KakaoMap.css";
 
 export default function KakaoMap(props) {
-  const { mapData, onItemSelect } = props;
+  const { mapData } = props;
   const [kakaoMap, setKakaoMap] = useState(null);
   const [markers, setMarkers] = useState([]);
   const [scriptLoaded, setScriptLoaded] = useState(false);
@@ -29,12 +29,10 @@ export default function KakaoMap(props) {
     }
   }, [kakaoMap]);
 
-  // 사용자 위치 가져오기
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          console.log("User Location:", position.coords.latitude, position.coords.longitude);
           setUserLocation({
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
@@ -42,8 +40,7 @@ export default function KakaoMap(props) {
         },
         (error) => {
           console.error("Error getting geolocation:", error);
-          // 기본 위치 설정 (서울시청)
-          setUserLocation({ latitude: 37.5665, longitude: 126.9780 });
+          setUserLocation({ latitude: 37.5665, longitude: 126.9780 }); // 기본 위치 (서울시청)
         },
         { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
       );
@@ -53,11 +50,9 @@ export default function KakaoMap(props) {
     }
   }, []);
 
-  // Kakao 지도 스크립트 로드
   useEffect(() => {
     const script = document.createElement("script");
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAO_API_KEY
-      }&autoload=false`;
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAO_API_KEY}&autoload=false`;
     script.async = true;
     document.head.appendChild(script);
 
@@ -70,39 +65,33 @@ export default function KakaoMap(props) {
     };
   }, []);
 
-  // Kakao 지도 초기화
   const initializeMap = useCallback((lat, lng) => {
-    console.log("Initializing map with:", lat, lng);
     kakao.maps.load(() => {
       const mapOptions = {
         center: new kakao.maps.LatLng(lat, lng),
         level: 3,
-        draggable: true // 드래그 가능하도록 설정
+        draggable: true,
       };
 
       const map = new kakao.maps.Map(container.current, mapOptions);
 
-      // 사용자 위치 마커 추가
       new kakao.maps.Marker({
         position: new kakao.maps.LatLng(lat, lng),
-        map: map
+        map: map,
       });
 
       setKakaoMap(map);
     });
   }, []);
 
-  // 지도 초기화 및 사용자 위치 업데이트
   useEffect(() => {
     if (scriptLoaded && userLocation) {
-      console.log("Script loaded and user location available");
       if (!kakaoMap) {
         initializeMap(userLocation.latitude, userLocation.longitude);
       }
     }
   }, [scriptLoaded, userLocation, kakaoMap, initializeMap]);
 
-  // 상품들 마커 세팅
   useEffect(() => {
     if (!kakaoMap || !mapData.length) return;
 
@@ -115,13 +104,18 @@ export default function KakaoMap(props) {
         position,
         content: ReactDOMServer.renderToString(
           <div className="custom-overlay">
-            <div className="custom-marker" onClick={() => onItemSelect(item)}>
+            <div
+              className="custom-marker"
+              onClick={() => navigate(`/office/${item.NO}`)}
+            >
               <MdLocationOn />
             </div>
             <div className="info-window">
               <h3>{item.TITLE}</h3>
               <div className="info-window-content">
-                <div className="price">{item.PRICEPERDAY.toLocaleString()}원/1일</div>
+                <div className="price">
+                  {item.PRICEPERDAY.toLocaleString()}원/1일
+                </div>
                 <div className="item-rating">
                   <FaStar />
                   <div className="rate">{item.RATING}</div>
@@ -133,11 +127,11 @@ export default function KakaoMap(props) {
         zIndex: 3,
       });
 
-      customOverlay.setMap(kakaoMap);
-
-      kakao.maps.event.addListener(customOverlay, "click", () => {
-        onItemSelect(item);
+      kakao.maps.event.addListener(customOverlay, 'click', () => {
+        navigate(`/office/${item.NO}`);
       });
+
+      customOverlay.setMap(kakaoMap);
 
       return customOverlay;
     });
@@ -149,7 +143,7 @@ export default function KakaoMap(props) {
       newMarkers.forEach((marker) => bounds.extend(marker.getPosition()));
       kakaoMap.setBounds(bounds);
     }
-  }, [kakaoMap, mapData, onItemSelect]);
+  }, [kakaoMap, mapData, navigate]);
 
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
@@ -164,7 +158,10 @@ export default function KakaoMap(props) {
         }}
       ></div>
 
-      <div className="on-map zoom-buttons" style={{ position: "absolute", top: "10px", right: "10px" }}>
+      <div
+        className="on-map zoom-buttons"
+        style={{ position: "absolute", top: "10px", right: "10px" }}
+      >
         <button className="map-button zoom" onClick={handleZoomIn}>
           +
         </button>

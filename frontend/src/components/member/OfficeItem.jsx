@@ -35,8 +35,17 @@ const OfficeItem = ({
           ></div>
           <div className="office-item-like-on-image">
             <PiHeartThin />
-            {/* <PiHeartStraightFill style={{ color: "red" }} /> */}
           </div>
+          <div
+            className="office-item-image"
+            style={{
+              backgroundImage: `url(${imageUrl})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              width: "100%",
+              height: "100%",
+            }}
+          ></div>{" "}
         </div>
       </div>
       <div className="office-item-content">

@@ -61,41 +61,12 @@ function App() {
         <Route path="/manager/login" element={<PublicRoute><ManagerLogin /></PublicRoute>} />
         <Route path="/manager/find-id" element={<PublicRoute><ManagerFindId /></PublicRoute>} />
         <Route path="/manager/reset-pw" element={<PublicRoute><ManagerResetPw /></PublicRoute>} />
-
-
+                                      
         {/* 멤버 라우트 */}
-        <Route
-          path="/member/update"
-          element={
-            <PrivateRoute requiredRole="ROLE_MEMBER">
-              <MemberUpdate />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/member/delete"
-          element={
-            <PrivateRoute requiredRole="ROLE_MEMBER">
-              <MemberDelete />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/payment"
-          element={
-            <PrivateRoute requiredRole="ROLE_MEMBER">
-              <MemberPayment />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/search"
-          element={
-            <PrivateRoute requiredRole="ROLE_MEMBER">
-              <MemberSearch />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/member/update" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberUpdate /></PrivateRoute>}/>
+        <Route path="/member/delete" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberDelete /></PrivateRoute>}/>
+        <Route path="/payment" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberPayment /></PrivateRoute>}/>
+        <Route path="/search" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberSearch /></PrivateRoute>}/>
 
         {/* 매니저 라우트 */}
         <Route path="/manager/" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerMain /></PrivateRoute>} />
