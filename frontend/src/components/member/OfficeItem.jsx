@@ -14,23 +14,23 @@ const OfficeItem = ({ NO, TITLE, RATING, LOCATION, PRICEPERDAY, OFFICEIMGURL }) 
 
   return (
     <>
-      <div className="office-item" onClick={handleClick}>
+      <div className="office-item">
+      <div onClick={handleClick}>
         <div className="office-item-image-box">
           <div className="office-item-like-on-image">
             <PiHeartThin />
-            {/* <PiHeartStraightFill style={{ color: "red" }} /> */}
           </div>
+          <div
+            className="office-item-image"
+            style={{
+              backgroundImage: `url(${imageUrl})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              width: "100%",
+              height: "100%",
+            }}
+          ></div>{" "}
         </div>
-        <div
-          className="office-item-image"
-          style={{
-            backgroundImage: `url(${imageUrl})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            width: "100%",
-            height: "100%",
-          }}
-        ></div>{" "}
       </div>
 
       <div className="office-item-content">
@@ -57,6 +57,7 @@ const OfficeItem = ({ NO, TITLE, RATING, LOCATION, PRICEPERDAY, OFFICEIMGURL }) 
           </div>
         </div>
       </div>
+    </div>
     </>
   );
 };
