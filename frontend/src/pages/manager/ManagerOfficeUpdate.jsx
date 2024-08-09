@@ -103,6 +103,8 @@ const ManagerOfficeUpdate = () => {
     if (file) {
       if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
         alert(`이미지 크기는 ${MAX_FILE_SIZE_MB}MB를 초과할 수 없습니다.`);
+        e.target.value = null;
+        setter(null);
         return;
       }
 
@@ -112,6 +114,8 @@ const ManagerOfficeUpdate = () => {
         setter(compressedFile);
       } catch (error) {
         alert(error);
+        e.target.value = null;
+        setter(null);
       }
     }
   };

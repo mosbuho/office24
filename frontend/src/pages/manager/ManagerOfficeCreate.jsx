@@ -94,6 +94,9 @@ const ManagerOfficeCreate = () => {
     if (file) {
       if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
         alert(`이미지 크기는 ${MAX_FILE_SIZE_MB}MB를 초과할 수 없습니다.`);
+        e.target.value = null;
+        setMainImage(null);
+        setMainImagePreview(null);
         return;
       }
       try {
@@ -103,6 +106,7 @@ const ManagerOfficeCreate = () => {
         setMainImagePreview(URL.createObjectURL(compressedFile));
       } catch (error) {
         alert(error);
+        e.target.value = null;
         setMainImage(null);
         setMainImagePreview(null);
       }
@@ -117,6 +121,15 @@ const ManagerOfficeCreate = () => {
     if (file) {
       if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
         alert(`이미지 크기는 ${MAX_FILE_SIZE_MB}MB를 초과할 수 없습니다.`);
+        e.target.value = null;
+        const updatedImages = [...additionalImages];
+        const updatedPreviews = [...additionalImagesPreview];
+
+        updatedImages[index] = null;
+        updatedPreviews[index] = null;
+
+        setAdditionalImages(updatedImages);
+        setAdditionalImagesPreview(updatedPreviews);
         return;
       }
 
@@ -133,6 +146,7 @@ const ManagerOfficeCreate = () => {
         setAdditionalImagesPreview(updatedPreviews);
       } catch (error) {
         alert(error);
+        e.target.value = null;
         const updatedImages = [...additionalImages];
         const updatedPreviews = [...additionalImagesPreview];
 
@@ -172,6 +186,11 @@ const ManagerOfficeCreate = () => {
       return;
     }
 
+    if (!mainImage || additionalImages.every(image => image === null)) {
+      alert("모든 이미지를 업로드해 주세요.");
+      return;
+    }
+
     const contentState = editorState.getCurrentContent();
     const contentRaw = JSON.stringify(convertToRaw(contentState));
 
@@ -193,10 +212,6 @@ const ManagerOfficeCreate = () => {
         data.append(`additionalImages[]`, image);
       }
     });
-
-    for (let [key, value] of data.entries()) {
-      console.log(`${key}: ${value.name || value}`);
-    }
 
     try {
       const response = await axios.post(`/manager/${no}/office/create`, data, {
