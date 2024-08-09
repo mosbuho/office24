@@ -11,4 +11,30 @@
     </select>
 
     <delete id="deleteReview">delete from review where no = #{no}</delete>
+
+    <select id="getReviewsByOfficeNo" parameterType="int" resultType="java.util.Map">
+        SELECT 
+            r.no AS no, 
+            m.name AS username, 
+            r.rating AS rating, 
+            r.content AS content, 
+            r.reg_date AS reg_date
+        FROM 
+            review r
+        JOIN 
+            member m 
+        ON 
+            r.member_no = m.no
+        WHERE 
+            r.office_no = #{officeNo}
+    </select>
+
+    <select id="getReviewCountByOfficeNo" parameterType="int" resultType="int">
+        SELECT 
+            COUNT(*) 
+        FROM 
+            review 
+        WHERE 
+            office_no = #{officeNo}
+    </select>
 </mapper>

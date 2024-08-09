@@ -48,7 +48,7 @@ function App() {
       <Routes>
         {/* 공개 라우트 */}
         <Route path="/" element={<MemberMain />} />
-        <Route path="/office/:no" element={<MemberOffice />} />
+        <Route path="/office/:officeNo" element={<MemberOffice />} />
 
         {/* 비로그인 라우트 */}
         <Route path="/login" element={<PublicRoute><MemberLogin /></PublicRoute>} />

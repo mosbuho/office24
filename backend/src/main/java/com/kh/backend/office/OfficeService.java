@@ -22,12 +22,20 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.backend.common.geocoding.GeocodingService;
+import com.kh.backend.manager.ManagerMapper;
+import com.kh.backend.review.ReviewMapper;
 
 @Service
 public class OfficeService {
 
     @Autowired
     private OfficeMapper officeMapper;
+
+    @Autowired
+    private ReviewMapper reviewMapper;
+
+    @Autowired
+    private ManagerMapper managerMapper;
 
     @Autowired
     private GeocodingService geocodingService;
@@ -323,16 +331,36 @@ public class OfficeService {
         officeMapper.refuseOffice(no);
     }
 
-    public List<Map<String, Object>> getOfficeList(int page, int size, String location, String startDate, String endDate, int attendance) {
+    public List<Map<String, Object>> getOfficeList(int page, int size, String location, String startDate,
+            String endDate, int attendance) {
         int startRow = (page - 1) * size;
         int endRow = startRow + size;
-    try {
-        return officeMapper.selectOfficeList(startRow, endRow, location, startDate, endDate, attendance);
-    } catch (Exception e) {
-        // Log the error
-        e.printStackTrace();
-        // You might want to throw a custom exception here or return an empty list
-        return new ArrayList<>();
+        try {
+            return officeMapper.selectOfficeList(startRow, endRow, location, startDate, endDate, attendance);
+        } catch (Exception e) {
+            // Log the error
+            e.printStackTrace();
+            // You might want to throw a custom exception here or return an empty list
+            return new ArrayList<>();
+        }
     }
-}
+
+    // 오피스 상세 페이지 정보 가져오기
+    public Map<String, Object> getOfficeDetails(int officeNo) {
+        Office office = officeMapper.getOfficeByNo(officeNo);
+        List<String> additionalImageUrls = officeMapper.getOfficeImagesByOfficeNo(officeNo);
+        List<Map<String, Object>> reviews = reviewMapper.getReviewsByOfficeNo(officeNo);
+        int noOfReview = reviewMapper.getReviewCountByOfficeNo(officeNo);
+        String managerName = managerMapper.getManagerByOfficeNo(officeNo);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("office", office);
+        response.put("additionalImageUrls", additionalImageUrls);
+        response.put("reviews", reviews);
+        response.put("noOfReview", noOfReview);
+        response.put("managerName", managerName);
+
+        return response;
+
+    }
 }

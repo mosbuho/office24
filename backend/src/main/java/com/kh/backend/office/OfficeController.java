@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,17 +23,22 @@ public class OfficeController {
         return officeService.serveImage(filename);
     }
 
-@GetMapping("/api/office")
-public List<Map<String, Object>> getOfficeList(
-        @RequestParam(defaultValue = "1") int page,
-        @RequestParam(defaultValue = "24") int size,
-        @RequestParam(required = false) String location,
-        @RequestParam(required = false) String startDate,
-        @RequestParam(required = false) String endDate,
-        @RequestParam(defaultValue = "0") int attendance) {
-    return officeService.getOfficeList(page, size, location, startDate, endDate, attendance);
+    @GetMapping("/office")
+    public List<Map<String, Object>> getOfficeList(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "24") int size,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(defaultValue = "0") int attendance) {
+        return officeService.getOfficeList(page, size, location, startDate, endDate, attendance);
+    }
+
+    // 오피스 상세 페이지
+    @GetMapping("/office/{officeNo}")
+    public ResponseEntity<Map<String, Object>> getOfficeDetails(@PathVariable int officeNo) {
+        System.out.println(officeNo);
+        Map<String, Object> officeDetails = officeService.getOfficeDetails(officeNo);
+        return officeDetails != null ? ResponseEntity.ok(officeDetails) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
 }
-}
-
-
-

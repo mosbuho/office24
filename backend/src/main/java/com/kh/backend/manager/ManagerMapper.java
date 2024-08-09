@@ -31,4 +31,6 @@ public interface ManagerMapper {
 
     void updateManagerPassword(@Param("id") String id, @Param("pw") String pw);
 
+    String getManagerByOfficeNo(int officeNo);
+
 }

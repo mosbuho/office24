@@ -43,11 +43,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/img/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/office/**").permitAll()
+                        .requestMatchers("/office/**").permitAll()
                         // .requestMatchers("/auth/kakao/**").permitAll()
                         // .requestMatchers("/auth/naver/**").permitAll()
                         // .requestMatchers("/auth/google/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/office/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/office/**").permitAll()
                        
                         // .requestMatchers(HttpMethod.GET, "/office/**").permitAll()
                         .requestMatchers("/member/register", "/manager/create").permitAll()

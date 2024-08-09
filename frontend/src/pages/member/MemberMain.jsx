@@ -21,7 +21,7 @@ function MemberMain() {
 
   const fetchData = async (page = currentPage) => {
     try {
-      const response = await axios.get("http://localhost:8080/api/office", {
+      const response = await axios.get("http://localhost:8080/office", {
         params: {
           page,
           size: itemsPerPage,
