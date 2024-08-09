@@ -40,7 +40,7 @@ const ManagerLogin = () => {
                     <button type="submit" className="login-btn">로그인</button>
                 </form>
                 <div className="login-options">
-                    <button onClick={() => navigate('/manager/register')}>회원가입</button>
+                    <button onClick={() => navigate('/manager/create')}>회원가입</button>
                     <button onClick={() => navigate('/manager/find-id')}>아이디/비밀번호 찾기</button>
                 </div>
             </div>

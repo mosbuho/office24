@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface ManagerMapper {
-    void insertManager(Manager manager);
+    void createManager(Manager manager);
 
     Manager findById(String id);
 

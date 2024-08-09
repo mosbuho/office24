@@ -1,10 +1,8 @@
 package com.kh.backend.common.auth;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -85,7 +83,7 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/kakao/login-url")
+    @GetMapping("/kakao/login")
     public ResponseEntity<String> getKakaoLoginUrl() {
         String kakaoLoginUrl = memberService.getKakaoLoginUrl();
         return ResponseEntity.ok(kakaoLoginUrl);
@@ -94,15 +92,21 @@ public class AuthController {
     @GetMapping("/kakao/callback")
     public void kakaoCallback(@RequestParam String code, HttpServletResponse response) throws IOException {
         try {
-            memberService.findOrCreateKakaoUser(code);
-            response.sendRedirect("http://localhost:5173/login?message=success");
+            Member member = memberService.findOrCreateKakaoUser(code);
+            String accessToken = jwtUtil.generateAccessToken(member.getId(), "ROLE_MEMBER", member.getNo());
+            String refreshToken = jwtUtil.generateRefreshToken(member.getId(), "ROLE_MEMBER", member.getNo());
+            int userNo = member.getNo();
+            response.sendRedirect(
+                    "http://localhost:5173/login?accessToken=" + accessToken + "&refreshToken=" + refreshToken
+                            + "&userNo="
+                            + userNo);
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("http://localhost:5173/login?message=error");
         }
     }
 
-    @GetMapping("/naver/login-url")
+    @GetMapping("/naver/login")
     public ResponseEntity<String> getNaverLoginUrl() {
         String naverLoginUrl = memberService.getNaverLoginUrl();
         return ResponseEntity.ok(naverLoginUrl);
@@ -111,15 +115,21 @@ public class AuthController {
     @GetMapping("/naver/callback")
     public void naverCallback(@RequestParam String code, HttpServletResponse response) throws IOException {
         try {
-            memberService.findOrCreateNaverUser(code);
-            response.sendRedirect("http://localhost:5173/login?message=success");
+            Member member = memberService.findOrCreateNaverUser(code);
+            String accessToken = jwtUtil.generateAccessToken(member.getEmail(), "ROLE_MEMBER", member.getNo());
+            String refreshToken = jwtUtil.generateRefreshToken(member.getEmail(), "ROLE_MEMBER", member.getNo());
+            int userNo = member.getNo();
+            response.sendRedirect(
+                    "http://localhost:5173/login?accessToken=" + accessToken + "&refreshToken=" + refreshToken
+                            + "&userNo="
+                            + userNo);
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("http://localhost:5173/login?message=error");
         }
     }
 
-    @GetMapping("/google/login-url")
+    @GetMapping("/google/login")
     public ResponseEntity<String> getGoogleLoginUrl() {
         String googleLoginURl = memberService.getGoogleLoginUrl();
         return ResponseEntity.ok(googleLoginURl);
@@ -128,21 +138,17 @@ public class AuthController {
     @GetMapping("/google/callback")
     public void googleCallback(@RequestParam String code, HttpServletResponse response) throws IOException {
         try {
-            memberService.findOrCreateGoogleUser(code);
-            response.sendRedirect("http://localhost:5173/login?message=success");
+            Member member = memberService.findOrCreateGoogleUser(code);
+            String accessToken = jwtUtil.generateAccessToken(member.getId(), "ROLE_MEMBER", member.getNo());
+            String refreshToken = jwtUtil.generateRefreshToken(member.getId(), "ROLE_MEMBER", member.getNo());
+            int userNo = member.getNo();
+            response.sendRedirect(
+                    "http://localhost:5173/login?accessToken=" + accessToken + "&refreshToken=" + refreshToken
+                            + "&userNo="
+                            + userNo);
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("http://localhost:5173/login?message=error");
-        }
-    }
-
-    @GetMapping("/idExist")
-    public ResponseEntity<?> idExist(@RequestParam String phone) {
-        List<String> ids = memberService.idExist(phone);
-        if (ids != null && !ids.isEmpty()) {
-            return new ResponseEntity<>(ids, HttpStatus.OK);
-        } else {
-            return ResponseEntity.badRequest().body("아이디가 존재하지 않습니다.");
         }
     }
 }

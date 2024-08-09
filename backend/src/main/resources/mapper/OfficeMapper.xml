@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.backend.office.OfficeMapper">
-    <select id="getTotalRevenue" parameterType="int" resultType="int"> SELECT NVL(SUM(b.price), 0)
-        AS total_revenue FROM booking b JOIN office o ON b.office_no = o.no WHERE o.manager_no =
-        #{no} </select>
+
+    <select id="getTotalRevenue" parameterType="int" resultType="int"> SELECT NVL(SUM(b.price), 0) AS
+        total_revenue FROM booking b JOIN office o ON b.office_no = o.no WHERE o.manager_no = #{no} </select>
+
 
     <select id="getTotalUsage" parameterType="int" resultType="int"> SELECT COUNT(b.no) AS
         total_bookings FROM booking b JOIN office o ON b.office_no = o.no WHERE o.manager_no = #{no} </select>
@@ -54,6 +55,16 @@
     </select>
 
     <delete id="deleteOffice"> DELETE FROM office WHERE no = #{no} </delete>
+
+    <select id="getOfficeTitleImage" parameterType="int" resultType="string">
+        SELECT title_img FROM office WHERE no = #{no}
+    </select>
+
+    <update id="updateOfficeAvailability">
+        UPDATE office
+        SET availability = #{availability}
+        WHERE no = #{no}
+    </update>
 
     <insert id="insertOffice" parameterType="com.kh.backend.office.Office">
         <selectKey keyProperty="no" order="BEFORE" resultType="int"> SELECT office_seq.nextval FROM

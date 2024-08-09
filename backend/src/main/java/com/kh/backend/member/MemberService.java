@@ -1,5 +1,6 @@
 package com.kh.backend.member;
 
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -171,8 +172,7 @@ public class MemberService {
 
         Member member = memberMapper.findByEmail(kakaoUser.getEmail());
         if (member == null) {
-            String pw = "office24";
-            registerMember(kakaoUser.getEmail(), pw, kakaoUser.getName(), kakaoUser.getPhone(),
+            registerMember(kakaoUser.getEmail(), generatePassword(), kakaoUser.getName(), kakaoUser.getPhone(),
                     kakaoUser.getEmail(), kakaoUser.getBirth(), kakaoUser.getGender());
             member = memberMapper.findByEmail(kakaoUser.getEmail());
         }
@@ -256,17 +256,17 @@ public class MemberService {
         }
     }
 
-    public void findOrCreateNaverUser(String code) {
+    public Member findOrCreateNaverUser(String code) {
         String accessToken = getNaverAccessToken(code);
         Member naverUser = getNaverUser(accessToken);
 
         Member member = memberMapper.findByEmail(naverUser.getEmail());
         if (member == null) {
-            String generatedPw = "office24";
-            registerMember(naverUser.getEmail(), generatedPw, naverUser.getName(), naverUser.getPhone(),
+            registerMember(naverUser.getEmail(), generatePassword(), naverUser.getName(), naverUser.getPhone(),
                     naverUser.getEmail(), naverUser.getBirth(), naverUser.getGender());
             member = memberMapper.findByEmail(naverUser.getEmail());
         }
+        return member;
     }
 
     public String getGoogleLoginUrl() {
@@ -305,7 +305,7 @@ public class MemberService {
 
     public Member getGoogleUser(String accessToken) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "https://people.googleapis.com/v1/people/me?personFields=birthdays,phoneNumbers,genders,emailAddresses,names";
+        String url = "https://people.googleapis.com/v1/people/me?personFields=birthdays,genders,emailAddresses,names";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
@@ -315,13 +315,13 @@ public class MemberService {
         ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, request, Map.class);
         if (response.getStatusCode() == HttpStatus.OK) {
             Map<String, Object> responseBody = response.getBody();
-
             Member member = new Member();
-            member.setId((String) responseBody.get("resourceName"));
 
             List<Map<String, Object>> emails = (List<Map<String, Object>>) responseBody.get("emailAddresses");
             if (emails != null && !emails.isEmpty()) {
-                member.setEmail((String) emails.get(0).get("value"));
+                String email = (String) emails.get(0).get("value");
+                member.setEmail(email);
+                member.setId(email);
             }
 
             List<Map<String, Object>> names = (List<Map<String, Object>>) responseBody.get("names");
@@ -330,20 +330,7 @@ public class MemberService {
             }
 
             List<Map<String, Object>> genders = (List<Map<String, Object>>) responseBody.get("genders");
-            if (genders != null && !genders.isEmpty()) {
-                member.setGender("male".equals(genders.get(0).get("value")) ? "M" : "W");
-            } else {
-                member.setGender("U");
-            }
-
-            List<Map<String, Object>> phones = (List<Map<String, Object>>) responseBody.get("phoneNumbers");
-            if (phones != null && !phones.isEmpty()) {
-                String phone = (String) phones.get(0).get("value");
-                if (phone != null) {
-                    phone = phone.replaceAll("[^0-9]", "");
-                    member.setPhone(phone);
-                }
-            }
+            member.setGender("male".equals(genders.get(0).get("value")) ? "M" : "W");
 
             List<Map<String, Object>> birthdays = (List<Map<String, Object>>) responseBody.get("birthdays");
             if (birthdays != null && !birthdays.isEmpty()) {
@@ -374,17 +361,30 @@ public class MemberService {
         }
     }
 
-    public void findOrCreateGoogleUser(String code) {
+    public Member findOrCreateGoogleUser(String code) {
         String accessToken = getGoogleAccessToken(code);
         Member googleUser = getGoogleUser(accessToken);
 
         Member member = memberMapper.findByEmail(googleUser.getEmail());
         if (member == null) {
-            String pw = "office24";
-            registerMember(googleUser.getEmail(), pw, googleUser.getName(), googleUser.getPhone(),
+            registerMember(googleUser.getEmail(), generatePassword(), googleUser.getName(), "00000000000",
                     googleUser.getEmail(), googleUser.getBirth(), googleUser.getGender());
             member = memberMapper.findByEmail(googleUser.getEmail());
         }
+        return member;
+    }
+
+    public static String generatePassword() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder(32);
+
+        for (int i = 0; i < 32; i++) {
+            int index = random.nextInt(characters.length());
+            password.append(characters.charAt(index));
+        }
+
+        return password.toString();
     }
 
     public boolean resetPw(String pw, String id) {

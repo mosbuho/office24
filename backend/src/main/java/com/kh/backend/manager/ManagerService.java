@@ -20,10 +20,10 @@ public class ManagerService {
     }
 
     @Transactional
-    public void registerManager(Manager manager) {
+    public void createManager(Manager manager) {
         manager.setPw(passwordEncoder.encode(manager.getPw()));
         try {
-            managerMapper.insertManager(manager);
+            managerMapper.createManager(manager);
         } catch (DataIntegrityViolationException e) {
             throw new RuntimeException("알 수 없는 오류가 발생했습니다.");
         }

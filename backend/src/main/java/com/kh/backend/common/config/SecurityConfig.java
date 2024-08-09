@@ -41,7 +41,6 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(authz -> authz
-                        // .anyRequest().permitAll()
                         .requestMatchers("/img/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/office/**").permitAll()
@@ -49,11 +48,11 @@ public class SecurityConfig {
                         // .requestMatchers("/auth/naver/**").permitAll()
                         // .requestMatchers("/auth/google/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/office/**").permitAll()
-                        .requestMatchers("/member/register", "/manager/register").permitAll()
-                        .requestMatchers("/member/idCheck", "/manager/idCheck").permitAll()
-                        .requestMatchers("/member/checkId").permitAll()
-                        .requestMatchers("/member/resetPw").permitAll()
-                        .requestMatchers("/manager/find-id", "/manager/reset-pw").permitAll()
+                       
+                        // .requestMatchers(HttpMethod.GET, "/office/**").permitAll()
+                        .requestMatchers("/member/register", "/manager/create").permitAll()
+                        .requestMatchers("/member/check-id", "/member/reset-pw", "member/id-exist").permitAll()
+                        .requestMatchers("/manager/id-check", "/manager/find-id", "/manager/reset-pw").permitAll()
                         .requestMatchers("/message/**").permitAll()
                         .requestMatchers("/manager/**").hasRole("MANAGER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")

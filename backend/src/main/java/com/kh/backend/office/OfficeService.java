@@ -98,11 +98,27 @@ public class OfficeService {
     }
 
     public void deleteOffice(int no) {
+        String titleImageName = officeMapper.getOfficeTitleImage(no);
+        List<String> imageNames = officeMapper.getOfficeImagesByOfficeNo(no);
+
+        if (titleImageName != null && !titleImageName.isEmpty()) {
+            deleteImageFile(titleImageName);
+        }
+
+        for (String imageName : imageNames) {
+            deleteImageFile(imageName);
+        }
+
         officeMapper.deleteOffice(no);
     }
 
     @Transactional
-    public ResponseEntity<String> registerOffice(int managerNo, String title, String address, String zipCode,
+    public void resubmitOffice(int no) {
+        officeMapper.updateOfficeAvailability(no, 0);
+    }
+
+    @Transactional
+    public ResponseEntity<String> createOffice(int managerNo, String title, String address, String zipCode,
             String sido, String content, int price, int capacity, MultipartFile mainImage,
             List<MultipartFile> additionalImages) {
         try {
@@ -298,7 +314,6 @@ public class OfficeService {
         response.put("totalCount", totalCount);
         return response;
     }
-
 
     public void acceptOffice(int no) {
         officeMapper.acceptOffice(no);

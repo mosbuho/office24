@@ -5,9 +5,11 @@ import imageCompression from 'browser-image-compression';
 import ManagerSidebar from '../../components/manager/ManagerSidebar';
 import ManagerHeader from "../../components/manager/ManagerHeader";
 import '../../styles/pages/manager/ManagerOfficeUpdate.css';
+import { getNo } from '../../utils/auth';
 
 const ManagerOfficeUpdate = () => {
-  const { no, officeNo } = useParams();
+  const no = getNo();
+  const { officeNo } = useParams();
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
@@ -20,11 +22,14 @@ const ManagerOfficeUpdate = () => {
   const [additionalImageUrls, setAdditionalImageUrls] = useState(['', '']);
   const [mainImage, setMainImage] = useState(null);
   const [additionalImages, setAdditionalImages] = useState([null, null]);
+  const MAX_FILE_SIZE_MB = 5;
+  const MAX_WIDTH = 1280;
+  const MAX_HEIGHT = 720;
 
   useEffect(() => {
     const fetchOfficeDetails = async () => {
       try {
-        const { data } = await axios.get(`/manager/office/info/${officeNo}`, {
+        const { data } = await axios.get(`/manager/office/${officeNo}/info`, {
           withCredentials: true,
         });
 
@@ -59,7 +64,7 @@ const ManagerOfficeUpdate = () => {
 
   const compressImage = async (file) => {
     const options = {
-      maxSizeMB: 5,
+      maxSizeMB: MAX_FILE_SIZE_MB,
       useWebWorker: true,
     };
 
@@ -72,11 +77,36 @@ const ManagerOfficeUpdate = () => {
     }
   };
 
+  const checkImageResolution = (file) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        if (img.width > MAX_WIDTH || img.height > MAX_HEIGHT) {
+          reject(`이미지 해상도는 최대 ${MAX_WIDTH}x${MAX_HEIGHT}px이어야 합니다.`);
+        } else {
+          resolve();
+        }
+      };
+    });
+  };
+
+
   const handleImageChange = async (e, setter) => {
     const file = e.target.files[0];
     if (file) {
-      const compressedFile = await compressImage(file);
-      setter(compressedFile);
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        alert(`이미지 크기는 ${MAX_FILE_SIZE_MB}MB를 초과할 수 없습니다.`);
+        return;
+      }
+
+      try {
+        await checkImageResolution(file);
+        const compressedFile = await compressImage(file);
+        setter(compressedFile);
+      } catch (error) {
+        alert(error);
+      }
     }
   };
 
@@ -129,7 +159,7 @@ const ManagerOfficeUpdate = () => {
     });
 
     try {
-      await axios.put(`/manager/office/update/${no}/${officeNo}`, formData, {
+      await axios.put(`/manager/${no}/office/${officeNo}/update`, formData, {
         withCredentials: true,
         headers: { 'Content-Type': 'multipart/form-data' }
       });

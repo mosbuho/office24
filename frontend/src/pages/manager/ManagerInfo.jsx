@@ -4,9 +4,10 @@ import axios from '../../utils/axiosConfig';
 import ManagerHeader from "../../components/manager/ManagerHeader";
 import ManagerSidebar from "../../components/manager/ManagerSidebar";
 import '../../styles/pages/manager/ManagerInfo.css';
+import { getNo } from '../../utils/auth';
 
 const ManagerInfo = () => {
-  const { no } = useParams();
+  const no = getNo();
   const [originalData, setOriginalData] = useState({});
   const [formData, setFormData] = useState({
     id: '',

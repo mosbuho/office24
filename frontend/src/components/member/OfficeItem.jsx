@@ -49,6 +49,7 @@ const OfficeItem = ({
             <div className="rate">{RATING}</div>
           </div>
         </div>
+
         <div className="office-item-middle">
           <p>{LOCATION}</p>
         </div>
