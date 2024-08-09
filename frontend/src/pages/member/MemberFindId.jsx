@@ -66,7 +66,7 @@ const MemberFindId = () => {
     };
 
     const findIdByPhone = () => {
-        axios.get(`http://localhost:8080/auth/idExist`, {
+        axios.get(`http://localhost:8080/member/id-exist`, {
             params: { phone: formData.phone }
         })
             .then(response => {

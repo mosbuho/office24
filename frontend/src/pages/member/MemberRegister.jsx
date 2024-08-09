@@ -50,7 +50,11 @@ const MemberRegister = () => {
             alert('아이디는 6자 이상 12자 이하의 영문자와 숫자로만 구성되어야 합니다.');
             return false;
         }
-        axios.get(`http://localhost:8080/member/idCheck`, { params: { id }, withCredentials: true })
+
+        axios.get('http://localhost:8080/member/check-id', {
+            params: { id },
+            withCredentials: true
+        })
             .then(response => {
                 if (response.status === 200) {
                     alert('사용 가능한 아이디입니다.');
@@ -58,7 +62,7 @@ const MemberRegister = () => {
                 }
             })
             .catch(error => {
-                alert('이미 사용중인 아이디입니다.')
+                alert('이미 사용중인 아이디입니다.');
                 return false;
             });
         return false;
@@ -159,7 +163,7 @@ const MemberRegister = () => {
                         <label htmlFor="id">아이디</label>
                         <div className="input-group">
                             <input type="text" id="id" name="id" value={formData.id} onChange={handleChange} required
-                                   onKeyUp={idCheck} placeholder="6~12자, 영문자와 숫자만"/>
+                                onKeyUp={idCheck} placeholder="6~12자, 영문자와 숫자만" />
                             <button type="button" className="check-btn" onClick={idDuplicate}>중복확인</button>
                         </div>
                         <span id="idInfo" className="info-message"></span>
@@ -167,32 +171,32 @@ const MemberRegister = () => {
                     <div className="form-group">
                         <label htmlFor="pw">비밀번호</label>
                         <input type="password" id="pw" name="pw" value={formData.pw} onChange={handleChange}
-                               onKeyUp={pwCheck} required placeholder="8~16자, 영문, 숫자, 특수문자 포함"/>
+                            onKeyUp={pwCheck} required placeholder="8~16자, 영문, 숫자, 특수문자 포함" />
                         <span id="pwInfo" className="info-message"></span>
                     </div>
                     <div className="form-group">
                         <label htmlFor="pwCheck">비밀번호 확인</label>
                         <input type="password" id="pwCheck" name="pwCheck" value={formData.pwCheck}
-                               onChange={handleChange}
-                               onKeyUp={pwCheckCheck} required placeholder="비밀번호를 다시 입력하세요"/>
+                            onChange={handleChange}
+                            onKeyUp={pwCheckCheck} required placeholder="비밀번호를 다시 입력하세요" />
                         <span id="pwCheckInfo" className="info-message"></span>
                     </div>
                     <div className="form-group">
                         <label htmlFor="name">이름</label>
                         <input type="text" id="name" name="name" value={formData.name} onChange={handleChange}
-                               onKeyUp={nameCheck} required placeholder="2~12자, 한글만"/>
+                            onKeyUp={nameCheck} required placeholder="2~12자, 한글만" />
                         <span id="nameInfo" className="info-message"></span>
                     </div>
                     <div className="form-group">
                         <label htmlFor="email">[선택] 이메일주소</label>
                         <input type="email" id="email" name="email" value={formData.email} onChange={handleChange}
-                               onKeyUp={emailCheck} placeholder="(선택 항목)"/>
+                            onKeyUp={emailCheck} placeholder="(선택 항목)" />
                         <span id="emailInfo" className=""></span>
                     </div>
                     <div className="form-group">
                         <label htmlFor="birth">생년월일</label>
                         <input type="date" id="birth" name="birth" value={formData.birth} onChange={handleChange}
-                               required/>
+                            required />
                         <span id="birthInfo" className="info-message"></span>
                     </div>
                     <div className="form-group">
@@ -206,7 +210,7 @@ const MemberRegister = () => {
                         <label htmlFor="phone">휴대전화번호</label>
                         <div className="input-group">
                             <input type="text" id="phone" name="phone" value={formData.phone} onChange={handleChange}
-                                   onKeyUp={phoneCheck} required placeholder="'-' 를 제외한 11자리 숫자"/>
+                                onKeyUp={phoneCheck} required placeholder="'-' 를 제외한 11자리 숫자" />
                             <button type="button" className="check-btn" onClick={sendVerificationCode}>번호 인증</button>
                         </div>
                         <span id="phoneInfo" className="info-message"></span>
@@ -216,8 +220,8 @@ const MemberRegister = () => {
                             <label htmlFor="verificationCode">인증 코드</label>
                             <div className="input-group">
                                 <input type="text" id="verificationCode" name="verificationCode"
-                                       value={verification.verificationCode} onChange={handleVerificationChange}
-                                       required/>
+                                    value={verification.verificationCode} onChange={handleVerificationChange}
+                                    required />
                                 <button type="button" className="check-btn" onClick={verifyCode}>인증</button>
                             </div>
                             {verification.isVerified && (

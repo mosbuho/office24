@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import '../../styles/pages/member/MemberResetPw.css';
-import {useNavigate} from "react-router-dom";
-import {newPwCheck, newPwCheckCheck} from "../../utils/MemberResetPw.js";
-import {phoneCheck} from "../../utils/MemberRegister.js";
+import { useNavigate } from "react-router-dom";
+import { newPwCheck, newPwCheckCheck } from "../../utils/MemberResetPw.js";
+import { phoneCheck } from "../../utils/MemberRegister.js";
 
 const MemberResetPw = () => {
     const navigate = useNavigate();
@@ -21,7 +21,7 @@ const MemberResetPw = () => {
     });
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         setFormData({
             ...formData,
             [name]: value,
@@ -35,32 +35,39 @@ const MemberResetPw = () => {
     };
 
     const handleIdCheck = () => {
-        axios.get('http://localhost:8080/member/checkId', {params: {id: formData.id}},
-            {headers: {'Content-Type': 'application/x-www-form-urlencoded'}, withCredentials: true})
+        const id = formData.id;
+        if (!id) {
+            alert('아이디를 입력하세요.');
+            return false;
+        }
+
+        axios.get('http://localhost:8080/member/check-id', {
+            params: { id, checkDuplicate: false },
+            withCredentials: true
+        })
             .then(response => {
                 if (response.status === 200) {
-                    alert('아이디 확인 완료')
+                    alert('아이디 확인 완료');
                     setVerification({
-                            ...verification,
-                            idCheck: true
-                        }
-                    )
+                        ...verification,
+                        idCheck: true
+                    });
                     return true;
                 } else {
-                    alert('존재하지 않는 아이디입니다.')
+                    alert('존재하지 않는 아이디입니다.');
                     return false;
                 }
             })
             .catch(error => {
-                alert('존재하지 않는 아이디입니다.')
+                alert('존재하지 않는 아이디입니다.');
                 return false;
             });
     };
 
     const sendVerificationCode = () => {
         if (phoneCheck()) {
-            axios.post('http://localhost:8080/message/send-one', {to: formData.phone},
-                {headers: {'Content-Type': 'application/json'}, withCredentials: true})
+            axios.post('http://localhost:8080/message/send-one', { to: formData.phone },
+                { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
                 .then(response => {
                     if (response.status === 200) {
                         setVerification({
@@ -82,13 +89,13 @@ const MemberResetPw = () => {
     };
 
     const verifyCode = () => {
-        axios.post(`http://localhost:8080/message/verify-code`, {text: verification.verificationCode}, {
-            headers: {'Content-Type': 'application/json'},
+        axios.post(`http://localhost:8080/message/verify-code`, { text: verification.verificationCode }, {
+            headers: { 'Content-Type': 'application/json' },
             withCredentials: true
         })
             .then(response => {
                 if (response.data) {
-                    setVerification({...verification, isVerified: true});
+                    setVerification({ ...verification, isVerified: true });
                     alert("인증 성공");
                     return true;
                 } else {
@@ -105,8 +112,8 @@ const MemberResetPw = () => {
 
     const resetPw = () => {
         if (newPwCheck() && newPwCheckCheck()) {
-            axios.post("http://localhost:8080/member/resetPw",
-                {pw: formData.newPw, id: formData.id},
+            axios.post("http://localhost:8080/member/reset-pw",
+                { pw: formData.newPw, id: formData.id },
                 {
                     headers: {
                         'Content-Type': 'application/json'
@@ -147,7 +154,7 @@ const MemberResetPw = () => {
                     <label htmlFor="id">아이디</label>
                     <div className="input-group">
                         <input type="text" id="id" name="id" value={formData.id} onChange={handleChange} required
-                               placeholder="아이디를 입력하세요"/>
+                            placeholder="아이디를 입력하세요" />
                         <button type="button" className="check-btn" onClick={handleIdCheck}>
                             아이디 확인
                         </button>
@@ -196,8 +203,8 @@ const MemberResetPw = () => {
                         <label htmlFor="newPw">새로운 비밀번호</label>
                         <div className="input-group">
                             <input type="password" id="newPw" name="newPw" value={formData.newPw}
-                                   onChange={handleChange}
-                                   onKeyUp={newPwCheck} required/>
+                                onChange={handleChange}
+                                onKeyUp={newPwCheck} required />
                         </div>
                         <span id="newPwInfo" className="info-message"></span>
                     </div>
@@ -207,7 +214,7 @@ const MemberResetPw = () => {
                         <label htmlFor="newPwCheck"></label>
                         <div className="input-group">
                             <input type="password" id="newPwCheck" name="newPwCheck" value={formData.newPwCheck}
-                                   onChange={handleChange} onKeyUp={newPwCheckCheck} required/>
+                                onChange={handleChange} onKeyUp={newPwCheckCheck} required />
                             <button type="button" className="check-btn" onClick={resetPw}>
                                 비밀번호 재설정
                             </button>
