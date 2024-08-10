@@ -2,6 +2,7 @@ package com.kh.backend.office;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -12,11 +13,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kh.backend.booking.BookingService;
+
 @RestController
 public class OfficeController {
 
     @Autowired
     private OfficeService officeService;
+
+    @Autowired
+    private BookingService bookingService;
 
     @GetMapping("/img/{filename:.+}")
     public ResponseEntity<Resource> serveImage(@PathVariable String filename) {
@@ -40,5 +46,10 @@ public class OfficeController {
         System.out.println(officeNo);
         Map<String, Object> officeDetails = officeService.getOfficeDetails(officeNo);
         return officeDetails != null ? ResponseEntity.ok(officeDetails) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
+    @GetMapping("/office/{officeNo}/notallowed-dates")
+    public List<Date> getNotAllowedDates(@PathVariable int officeNo) {
+        return bookingService.getUnavailableDates(officeNo);
     }
 }

@@ -138,7 +138,6 @@ const LocationSection = ({ resultItemData }) => {
 
 const MemberOffice = () => {
   const { officeNo } = useParams();
-  console.log(officeNo);
   const [officeData, setOfficeData] = useState(null);
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
@@ -147,7 +146,6 @@ const MemberOffice = () => {
       try {
         const response = await axios.get(`/office/${officeNo}`);
         setOfficeData(response.data);
-        console.log(response.data); //log
 
         if (response.data.office.content) {
           const contentState = convertFromRaw(JSON.parse(response.data.office.content));
@@ -174,13 +172,14 @@ const MemberOffice = () => {
   } = officeData;
 
   const averageRating = calculateAverageRating(reviews);
-  console.log('averageRating = ' + averageRating);
 
   const ratingsDistribution = reviews.reduce((acc, review) => {
     const rating = review.RATING;
     acc[rating] = (acc[rating] || 0) + 1;
     return acc;
   }, {});
+
+  
 
   //render LeftCol
   const LeftColumn = ({ office, averageRating, noOfReview, managerName }) => {
@@ -225,7 +224,7 @@ const MemberOffice = () => {
     );
   };
 
-  //Component RightCol
+  //Component RightColumn
   const RightColumn = ({ office }) => {
     const today = new Date();
     const [startDate, setStartDate] = useState(today);
@@ -235,6 +234,50 @@ const MemberOffice = () => {
     const [extendAttendInput, setExtendAttendInput] = useState(false);
     const attendanceInputRef = useRef(null);
     const navigate = useNavigate();
+    const [notallowedDates, setNotallowedDates] = useState([]);
+
+    useEffect(() => {
+      const fetchNotAllowedDates = async () => {
+        try {
+          const response = await axios.get(`/office/${office.no}/notallowed-dates`);
+          const dates = response.data.map(date => new Date(date));
+          setNotallowedDates(dates);
+        } catch (error) {
+          console.error("Error fetching unavailable dates:", error);
+        }
+      };
+      fetchNotAllowedDates();
+    }, [office.no]);
+
+    const isSameDay = (date1, date2) => {
+      return (
+        date1.getFullYear() === date2.getFullYear() &&
+        date1.getMonth() === date2.getMonth() &&
+        date1.getDate() === date2.getDate()
+      );
+    };
+
+    const isDateRangeAvailable = (startDate, endDate) => {
+      const datesInRange = getDatesInRange(startDate, endDate);
+      return !datesInRange.some(date => 
+        notallowedDates.some(notAllowedDate => 
+          isSameDay(notAllowedDate, date)
+        )
+      );
+    };
+
+    const getDatesInRange = (startDate, endDate) => {
+      let dates = [];
+      let currentDate = new Date(startDate);
+  
+      while (currentDate <= endDate) {
+        dates.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+  
+      return dates;
+    };
+  
 
     useEffect(() => {
       const handleClickOutside = (event) => {
@@ -307,21 +350,29 @@ const MemberOffice = () => {
       return diffDays * (attendance || 1) * office.price;
     };
 
+    const handleReservationClick = (e) => {
+      e.preventDefault();
+      const isAvailable = isDateRangeAvailable(startDate, endDate);
+
+      if (isAvailable) {
+        navigate("/payment", {
+          state: {
+            startDate: startDate,
+            endDate: endDate,
+            attendance,
+            officeNo: office.no,
+            officeData: officeData,
+            notallowedDates: notallowedDates
+          },
+        });
+      } else {
+        alert("선택하신 날짜는 예약이 불가능합니다.");
+      }
+    };
+
     return (
       <>
-        <button
-          className="mobile-reservation-button"
-          onClick={() =>
-            navigate("/payment", {
-              state: {
-                startDate: startDate,
-                endDate: endDate,
-                attendance,
-                officeNo: office.no,
-              },
-            })
-          }
-        >
+        <button className="mobile-reservation-button">
           예약하기
         </button>
         <div className="right-column">
@@ -369,7 +420,7 @@ const MemberOffice = () => {
                       }}
                       onBlur={() => {
                         setAttendance((prev) => prev || 1);
-                        setExtendAttendInput(false);
+                        //setExtendAttendInput(false);
                       }}
                       min="1"
                       max="100"
@@ -381,7 +432,7 @@ const MemberOffice = () => {
                 <button
                   onMouseDown={(e) => {
                     e.preventDefault();
-                    setAttendance((prev) => Math.min(100, (prev || 0) + 1));
+                    //setAttendance((prev) => Math.min(100, (prev || 0) + 1));
                   }}
                 >
                   +
@@ -389,7 +440,7 @@ const MemberOffice = () => {
                 <button
                   onMouseDown={(e) => {
                     e.preventDefault();
-                    setAttendance((prev) => Math.max(1, (prev || 1) - 1));
+                    //setAttendance((prev) => Math.max(1, (prev || 1) - 1));
                   }}
                 >
                   -
@@ -397,16 +448,7 @@ const MemberOffice = () => {
               </div>
               <button
                 className="reservation-button"
-                onClick={() =>
-                  navigate("/payment", {
-                    state: {
-                      startDate: startDate,
-                      endDate: endDate,
-                      attendance,
-                      officeNo: office.no,
-                    },
-                  })
-                }
+                onClick={handleReservationClick}
               >
                 예약하기
               </button>
@@ -419,6 +461,7 @@ const MemberOffice = () => {
                     settingEndDate={setEndDate}
                     startDate={startDate}
                     endDate={endDate}
+                    excludeDates={notallowedDates}
                   />
                 </div>
               </div>

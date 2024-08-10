@@ -66,4 +66,14 @@
             test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if>
     </select>
 
+    <select id="getBookingsByOfficeNo" resultType="com.kh.backend.booking.Booking">
+        SELECT start_date, end_date
+        FROM booking
+        WHERE office_no = #{officeNo}
+    </select>
+
+    <insert id="insertBooking">
+        INSERT INTO booking (office_no, member_no, name, phone, price, payment, start_date, end_date)
+        VALUES (#{office_no}, #{member_no}, #{name}, #{phone}, #{price}, #{payment}, #{start_date}, #{end_date})
+    </insert>
 </mapper>

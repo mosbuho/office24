@@ -28,4 +28,8 @@ public interface BookingMapper {
 
     int getTotalBookingCount(@Param("f") String f, @Param("q") String q);
 
+    List<Booking> getBookingsByOfficeNo(int officeNo);
+
+    void insertBooking(Map<String, Object> bookingData) throws Exception;
+
 }

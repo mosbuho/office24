@@ -5,7 +5,7 @@ import "../../styles/components/member/Calendar.css";
 // render: 각 월의 일수 //
 const dayCountList = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-const Calendar = ({ settingStartDate, settingEndDate, startDate, endDate }) => {
+const Calendar = ({ settingStartDate, settingEndDate, startDate, endDate, excludeDates = [] }) => {
   // render: 현재 표시 중인 날짜 상태 //
   const [showDate, setShowDate] = useState({
     year: new Date().getFullYear(),
@@ -69,10 +69,29 @@ const Calendar = ({ settingStartDate, settingEndDate, startDate, endDate }) => {
       }
     }
   };
+  
+  // function: 예약 불가 날짜인지 확인 //
+  const isDateExcluded = (date) => {
+    return excludeDates
+      .map((excludedDate) => {
+        if (typeof excludedDate === "string" || typeof excludedDate === "number") {
+          return new Date(excludedDate);
+        }
+        return excludedDate;
+      })
+      .filter((excludedDate) => excludedDate instanceof Date)
+      .some((excludedDate) => {
+        return (
+          excludedDate.getFullYear() === date.year &&
+          excludedDate.getMonth() === date.month &&
+          excludedDate.getDate() === date.date
+        );
+      });
+  };
 
   // function: 날짜 선택 처리 //
   const selectDateHandler = (date) => {
-    if (date.year <= 0 || isBeforeToday(date)) return;
+    if (date.year <= 0 || isBeforeToday(date) || isDateExcluded(date)) return;
     const selectedDate = new Date(date.year, date.month, date.date);
 
     if (
@@ -98,7 +117,7 @@ const Calendar = ({ settingStartDate, settingEndDate, startDate, endDate }) => {
   // function: 날짜 클래스 이름 생성 //
   const makeDateClassName = (thisDate) => {
     if (thisDate.year <= 0) return "disabled not_selected";
-    if (isBeforeToday(thisDate)) return "disabled";
+    if (isBeforeToday(thisDate) || isDateExcluded(thisDate)) return "disabled";
 
     const tDate = new Date(thisDate.year, thisDate.month, thisDate.date);
 

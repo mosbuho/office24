@@ -20,8 +20,8 @@ const OfficeItem = ({
   };
 
   return (
-    <div className="office-item">
-      <div onClick={handleClick}>
+    <div className="office-item" onClick={handleClick}>
+      <div>
         <div className="office-item-image-box">
           <div
             className="office-item-image"
