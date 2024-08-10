@@ -3,10 +3,15 @@ package com.kh.backend.member;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/member")
 public class MemberController {
 
+    private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
     private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
@@ -70,4 +76,50 @@ public class MemberController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+
+    @GetMapping("/{no}")
+    public Member getMember(@PathVariable int no) {
+        return memberService.getMemberById(no);
+    }
+
+    @PutMapping("/{no}")
+    public ResponseEntity<String> updateMember(@PathVariable("no") int no, @RequestBody Member member) {
+        try {
+            member.setNo(no);
+            memberService.updateMember(member);
+            return ResponseEntity.ok("Member updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating member");
+        }
+    }
+
+@PutMapping("/password/{no}")
+public ResponseEntity<?> updatePassword(@PathVariable int no, @RequestBody Map<String, String> passwordData) {
+    String currentPassword = passwordData.get("currentPassword");
+    String newPassword = passwordData.get("newPassword");
+
+    boolean updated = memberService.updateMemberPassword(no, currentPassword, newPassword);
+    if (updated) {
+        return ResponseEntity.ok().body("Password updated successfully");
+    } else {
+        return ResponseEntity.badRequest().body("Failed to update password");
+    }
 }
+
+@DeleteMapping("/delete")
+public ResponseEntity<?> deleteSelfAccount(@RequestBody Map<String, String> deleteRequest) {
+    int no = Integer.parseInt(deleteRequest.get("no"));
+    String password = deleteRequest.get("password");
+    
+    boolean deleted = memberService.deleteSelfAccount(no, password);
+    if (deleted) {
+        return ResponseEntity.ok().body("Account successfully deleted");
+    } else {
+        return ResponseEntity.badRequest().body("Failed to delete account. Please check your credentials.");
+    }
+}
+
+
+}
+
+

@@ -29,4 +29,10 @@ public interface MemberMapper {
     void updateMember(Member member);
 
     void deleteMember(int no);
+
+    Member getMemberById(int no);
+
+    void updateMemberProfile(Member member);
+
+    void updatePassword(int no, String newPassword);
 }
