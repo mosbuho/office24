@@ -357,7 +357,7 @@ const MemberHeader = () => {
           {popupState.showAttendance && (
             <div className="attendance-options-sections">
               <div className="attendance-counter">
-                <span>일반석</span>
+                <span>인원</span>
                 <button
                   className={`attendance-button ${attendance === 1 ? "disabled" : ""
                     }`}

@@ -5,7 +5,6 @@ import java.util.Collections;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -43,22 +42,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/img/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/office/**").permitAll()
-                        // .requestMatchers("/auth/kakao/**").permitAll()
-                        // .requestMatchers("/auth/naver/**").permitAll()
-                        // .requestMatchers("/auth/google/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/office/**").permitAll()
-                       
-                        // .requestMatchers(HttpMethod.GET, "/office/**").permitAll()
+                        .requestMatchers("/office/**").permitAll()
                         .requestMatchers("/member/register", "/manager/create").permitAll()
                         .requestMatchers("/member/check-id", "/member/reset-pw", "member/id-exist").permitAll()
                         .requestMatchers("/manager/id-check", "/manager/find-id", "/manager/reset-pw").permitAll()
                         .requestMatchers("/message/**").permitAll()
                         .requestMatchers("/manager/**").hasRole("MANAGER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().hasRole(
-                                "MEMBER")
-                        )
+                        .anyRequest().hasRole("MEMBER"))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);

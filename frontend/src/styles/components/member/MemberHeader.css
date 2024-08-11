@@ -13,7 +13,7 @@
         left: 0;
         width: 100%;
         background-color: var(--background-color);
-        box-shadow: 1px 5px 4px var(--shaded-color);
+        box-shadow: 1px 1px 1px var(--shaded-color);
         transition: all 0.3s ease;
         z-index: -1;
         height: 75px;
