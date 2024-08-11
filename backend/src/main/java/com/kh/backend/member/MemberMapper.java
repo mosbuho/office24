@@ -1,6 +1,7 @@
 package com.kh.backend.member;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -35,4 +36,16 @@ public interface MemberMapper {
     void updateMemberProfile(Member member);
 
     void updatePassword(int no, String newPassword);
+
+    boolean checkLikeExists(@Param("userNo") int userNo, @Param("officeNo") int officeNo);
+
+    void addLike(@Param("userNo") int userNo, @Param("officeNo") int officeNo);
+
+    void removeLike(@Param("userNo") int userNo, @Param("officeNo") int officeNo);
+
+    int getLikeCount(@Param("officeNo") int officeNo);
+
+    List<Map<String, Object>> getFavoriteOffices(@Param("userNo") int userNo);
+
+    List<Integer> getLikedOfficeNumbers(@Param("userNo") int userNo);
 }

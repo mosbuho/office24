@@ -1,12 +1,12 @@
 package com.kh.backend.member;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -133,4 +133,34 @@ public class MemberController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+        @PutMapping("/{officeNo}/like")
+    public ResponseEntity<?> toggleLike(@PathVariable int officeNo, @RequestBody Map<String, Integer> request) {
+        int userNo = request.get("userNo");
+        boolean isLiked = memberService.toggleLike(userNo, officeNo);
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("isLiked", isLiked);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{userNo}/favorites")
+    public ResponseEntity<List<Map<String, Object>>> getFavorites(@PathVariable int userNo) {
+    try {
+        List<Map<String, Object>> favorites = memberService.getFavoriteOffices(userNo);
+        return ResponseEntity.ok(favorites);
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body(null);
+    }
+}
+
+    @GetMapping("/{userNo}/liked-offices")
+    public ResponseEntity<?> getLikedOffices(@PathVariable int userNo) {
+    try {
+        List<Integer> likedOffices = memberService.getLikedOfficeNumbers(userNo);
+        return ResponseEntity.ok(likedOffices);
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+    }
+}
 }
