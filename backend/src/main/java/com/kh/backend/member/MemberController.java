@@ -5,8 +5,12 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,7 +43,7 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/id-exist")
+    @GetMapping("/exist-id")
     public ResponseEntity<?> idExist(@RequestParam String phone) {
         List<String> ids = memberService.idExist(phone);
         if (ids != null && !ids.isEmpty()) {
@@ -81,8 +85,52 @@ public class MemberController {
             bookingService.createBooking(bookingData);
             return ResponseEntity.ok("예약이 성공적으로 완료되었습니다!");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("예약에 실패했습니다. 다시 시도해주세요.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약에 실패했습니다. 다시 시도해주세요.");
+        }
+    }
+      
+    @GetMapping("/{no}")
+    @PreAuthorize("#no == authentication.details")
+    public Member getMember(@PathVariable int no) {
+        return memberService.getMemberById(no);
+    }
+
+    @PutMapping("/{no}")
+    @PreAuthorize("#no == authentication.details")
+    public ResponseEntity<String> updateMember(@PathVariable("no") int no, @RequestBody Member member) {
+        try {
+            member.setNo(no);
+            memberService.updateMember(member);
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("/{no}/change-pw")
+    @PreAuthorize("#no == authentication.details")
+    public ResponseEntity<?> updatePassword(@PathVariable int no, @RequestBody Map<String, String> passwordData) {
+        String currentPassword = passwordData.get("currentPassword");
+        String newPassword = passwordData.get("newPassword");
+
+        boolean updated = memberService.updateMemberPassword(no, currentPassword, newPassword);
+        if (updated) {
+            return ResponseEntity.ok(null);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("{no}/delete")
+    @PreAuthorize("#no == authentication.details")
+    public ResponseEntity<?> deleteSelfAccount(@PathVariable int no, @RequestBody Map<String, Object> request) {
+        Map<String, String> data = (Map<String, String>) request.get("data");
+        String password = data.get("password");
+        boolean deleted = memberService.deleteSelfAccount(no, password);
+        if (deleted) {
+            return ResponseEntity.ok(null);
+        } else {
+            return ResponseEntity.badRequest().build();
         }
     }
 }

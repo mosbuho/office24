@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { default as React, useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa6";
 import { IoCloseCircle } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,8 @@ import MemberFooter from "../../components/member/MemberFooter";
 import MemberHeader from "../../components/member/MemberHeader";
 import OfficeItem from "../../components/member/OfficeItem";
 import "../../styles/pages/member/MemberMyPage.css";
+import { getNo, removeTokens } from "../../utils/auth";
+import axios from "../../utils/axiosConfig";
 
 //mock data
 const OfficeMockData = [
@@ -300,20 +302,25 @@ const OfficeMockData = [
   },
 ];
 
-//Component CancelPopup
-function CancelPopup({ onConfirm, onCancel, msg }) {
+// Function formateDate
+const formatDate = (date) => {
+  if (!date) return "";
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+};
+
+//Component VerifyPopup
+function VerifyPopup({ onConfirm, onCancel, msg }) {
   return (
     <div className="popup-overlay" onClick={onCancel}>
       <div className="popup" onClick={(e) => e.stopPropagation()}>
         <div className="popup-header">
-          <h3>예약 취소</h3>
+          <h3>{msg}</h3>
           <button className="popup-close" onClick={onCancel}>
             <IoCloseCircle />
           </button>
         </div>
         <div className="popup-content">
           <div className="popup-form">
-            <p>{msg}</p>
             <div className="popup-buttons verification">
               <button className="yes" onClick={() => onConfirm("yes")}>
                 예
@@ -322,6 +329,143 @@ function CancelPopup({ onConfirm, onCancel, msg }) {
                 아니오
               </button>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+//Component PasswordConfirmPopupForDeleteUser
+function PasswordDeletePopup({ onClose }) {
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const no = getNo();
+      const response = await axios.post(`/member/${no}/delete`, {
+        data: { password },
+      });
+      if (response.status === 200) {
+        removeTokens();
+        alert("회원 탈퇴 되었습니다.");
+        navigate("/login");
+      }
+    } catch (error) {
+      alert("회원 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      onClose();
+    }
+  };
+
+  return (
+    <div className="popup-overlay" onClick={onClose}>
+      <div className="popup" onClick={(e) => e.stopPropagation()}>
+        <div className="popup-header">
+          <h3>계정 삭제 확인</h3>
+          <button className="popup-close" onClick={onClose}>
+            <IoCloseCircle />
+          </button>
+        </div>
+        <div className="popup-content">
+          <p>계정을 삭제하려면 비밀번호를 입력하세요.</p>
+          <form className="popup-form" onSubmit={handleSubmit}>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="비밀번호"
+              required
+            />
+            <div className="popup-buttons">
+              <button type="button" onClick={onClose}>
+                취소
+              </button>
+              <button type="submit">삭제</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+//Component Update Password
+function UpdatePassword({ onClose }) {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      setError("새로운 비밀번호가 일치하지 않습니다.");
+      return;
+    }
+    try {
+      const response = await axios.put(`/member/${getNo()}/change-pw`, {
+        currentPassword,
+        newPassword,
+      });
+      if (response.status === 200) {
+        alert("비밀번호가 변경되었습니다.");
+        onClose();
+      }
+    } catch {
+      setError(error.response?.data || "비밀번호 변경 실패");
+    }
+  };
+  const [showPassword, setShowPassword] = useState(false);
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  return (
+    <div className="popup-overlay update-password" onClick={onClose}>
+      <div className="popup" onClick={(e) => e.stopPropagation()}>
+        <div className="popup-header">
+          <h3>비밀번호 변경</h3>
+          <button className="popup-close" onClick={onClose}>
+            <IoCloseCircle />
+          </button>
+        </div>
+        <div className="popup-content">
+          <div className="popup-form">
+            <form onSubmit={handleSubmit}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="현재 비밀번호"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                required
+              />
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="새 비밀번호"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+              />
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="새 비밀번호 확인"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+              {error && <p className="error">{error}</p>}
+
+              <div className="popup-buttons">
+                <button type="button" onClick={toggleShowPassword}>
+                  {showPassword ? "비밀번호 숨김" : "비밀번호 확인"}
+                </button>
+                <button type="submit">저장</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -347,11 +491,6 @@ function EditPopup({ reservation, onClose, onSave }) {
   const getDiffDays = (start, end) => {
     const diffTime = Math.max(end - start, 0);
     return Math.max(Math.ceil(diffTime / (1000 * 60 * 60 * 24)), 1);
-  };
-  // Function formateDate
-  const formatDate = (date) => {
-    if (!date) return "";
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   };
 
   return (
@@ -485,7 +624,7 @@ function EmailPopup({ initialValue, onSave, onClose }) {
   //function handle email save
   const handleSave = () => {
     if (validateEmail(email)) {
-      onSave("email", email);
+      onSave("email", email || null);
       onClose();
     } else {
       setError("올바른 이메일 주소를 입력해주세요.");
@@ -526,7 +665,7 @@ function NamePopup({ initialValue, onSave, onClose }) {
   const [error, setError] = useState("");
 
   const validateName = (value) => {
-    const namePattern = /^[가-힣]{2,12}$/;
+    const namePattern = /^[가-힣]{2,6}$/;
     return namePattern.test(value);
   };
 
@@ -535,7 +674,7 @@ function NamePopup({ initialValue, onSave, onClose }) {
       onSave("name", name);
       onClose();
     } else {
-      setError("2자 이상 12자 이하의 한글만 가능합니다.");
+      setError("2자 이상 6자 이하의 한글만 가능합니다.");
     }
   };
 
@@ -763,11 +902,57 @@ function ReviewItem({ customTitle, ...review }) {
   );
 }
 
-//component viewInfor
-function ViewInfo({ mockMemberData, updateMemberData }) {
+//component viewInfo
+function ViewInfo() {
   //view info states
-  const [activePopup, setActivePopup] = useState(null);
 
+  const navigate = useNavigate();
+  const [activePopup, setActivePopup] = useState(null);
+  const [modifiedFields, setModifiedFields] = useState({});
+
+  const [memberData, setMemberData] = useState({
+    no: "",
+    id: "",
+    name: "",
+    phone: "",
+    email: "",
+    birth: "",
+    gender: "",
+    reg_date: "",
+  });
+
+  useEffect(() => {
+    const fetchMemberData = async () => {
+      try {
+        const no = getNo();
+        const response = await axios.get(`/member/${no}`);
+        const formattedData = {
+          ...response.data,
+          birth: response.data.birth ? response.data.birth.split("T")[0] : "",
+          reg_date: response.data.reg_date
+            ? response.data.reg_date.split("T")[0]
+            : "",
+        };
+        setMemberData(formattedData);
+      } catch (error) {
+        console.error("Error fetching member data:", error);
+      }
+    };
+
+    fetchMemberData();
+  }, []);
+
+  //function updateLocalMemberData(field, value) {
+  const updateLocalMemberData = (field, value) => {
+    setMemberData((prevData) => ({
+      ...prevData,
+      [field]: value === "" ? null : value,
+    }));
+    setModifiedFields((prevFields) => ({
+      ...prevFields,
+      [field]: true,
+    }));
+  };
   //function edit handler
   const handleEdit = (field) => {
     setActivePopup(field);
@@ -775,7 +960,7 @@ function ViewInfo({ mockMemberData, updateMemberData }) {
 
   //function save handler
   const handleSave = (field, value) => {
-    updateMemberData(field, value);
+    updateLocalMemberData(field, value);
     setActivePopup(null);
   };
 
@@ -784,80 +969,113 @@ function ViewInfo({ mockMemberData, updateMemberData }) {
     setActivePopup(null);
   };
 
+  //function put updatemember
+  const submitMemberDataToServer = async () => {
+    const no = getNo();
+    console.log("Data being sent to server:", memberData);
+    try {
+      const response = await axios.put(`/member/${no}`, memberData);
+      console.log("Server response:", response.data);
+      alert("회원 정보가 성공적으로 업데이트되었습니다.");
+    } catch (error) {
+      console.error("Error updating member data:", error);
+      console.log("Error response from server:", error.response?.data);
+      alert("회원 정보 업데이트에 실패했습니다.");
+    }
+  };
+
   //render ViewInfo
   return (
     <div className="info-container">
       <h2>내 정보</h2>
       <div className="info-row">
-        <label>아이디:</label>
-        <span>{mockMemberData.id}</span>
+        <label>아이디</label>
+        <span>{memberData.id}</span>
       </div>
-      <div className="info-row bt">
+      <div className="info-row bt" onClick={() => handleEdit("updatePassword")}>
         <label>비밀번호 변경</label>
       </div>
-      <div className="info-row" onClick={() => handleEdit("name")}>
-        <label>이름:</label>
-        <span>{mockMemberData.name}</span>
+      <div
+        className={`info-row ${modifiedFields.name ? "modified" : ""}`}
+        onClick={() => handleEdit("name")}
+      >
+        <label>이름</label>
+        <span>{memberData.name}</span>
         <u>수정</u>
       </div>
-      <div className="info-row" onClick={() => handleEdit("phone")}>
-        <label>전화번호:</label>
-        <span>{mockMemberData.phone}</span>
+      <div
+        className={`info-row ${modifiedFields.phone ? "modified" : ""}`}
+        onClick={() => handleEdit("phone")}
+      >
+        <label>전화번호</label>
+        <span>{memberData.phone}</span>
         <u>수정</u>
       </div>
-      <div className="info-row" onClick={() => handleEdit("email")}>
-        <label>이메일:</label>
-        <span>{mockMemberData.email}</span>
+      <div
+        className={`info-row ${modifiedFields.email ? "modified" : ""}`}
+        onClick={() => handleEdit("email")}
+      >
+        <label>이메일</label>
+        <span>{memberData.email}</span>
         <u>수정</u>
       </div>
-      <div className="info-row" onClick={() => handleEdit("birth")}>
-        <label>생년월일:</label>
-        <span>{mockMemberData.birth}</span>
+      <div
+        className={`info-row ${modifiedFields.birth ? "modified" : ""}`}
+        onClick={() => handleEdit("birth")}
+      >
+        <label>생년월일</label>
+        <span>{memberData.birth}</span>
         <u>수정</u>
       </div>
-
-      <div className="info-row bt">
-        <label>변경사항 적용</label>
-      </div>
-
+      {Object.keys(modifiedFields).length > 0 && (
+        <div className="info-row bt" onClick={submitMemberDataToServer}>
+          <label>변경사항 적용</label>
+        </div>
+      )}
       <div className="info-row">
-        <label>성별:</label>
-        <span>{mockMemberData.gender === "M" ? "남성" : "여성"}</span>
+        <label>성별</label>
+        <span>{memberData.gender === "M" ? "남성" : "여성"}</span>
       </div>
       <div className="info-row">
-        <label>가입일:</label>
-        <span>{mockMemberData.reg_date}</span>
+        <label>가입일</label>
+        <span>{memberData.reg_date.split(' ')[0]}</span>
       </div>
-      <div className="info-row bt">
-        <label>변경사항 적용</label>
+      <div className="info-row bt" onClick={() => handleEdit("deleteUser")}>
+        <label>회원 탈퇴</label>
       </div>
       {activePopup === "phone" && (
         <PhonePopup
-          initialValue={mockMemberData.phone}
+          initialValue={memberData.phone}
           onSave={handleSave}
           onClose={handleClose}
         />
       )}
       {activePopup === "email" && (
         <EmailPopup
-          initialValue={mockMemberData.email}
+          initialValue={memberData.email}
           onSave={handleSave}
           onClose={handleClose}
         />
       )}
       {activePopup === "name" && (
         <NamePopup
-          initialValue={mockMemberData.name}
+          initialValue={memberData.name}
           onSave={handleSave}
           onClose={handleClose}
         />
       )}
       {activePopup === "birth" && (
         <BirthPopup
-          initialValue={mockMemberData.birth}
+          initialValue={memberData.birth}
           onSave={handleSave}
           onClose={handleClose}
         />
+      )}
+      {activePopup === "updatePassword" && (
+        <UpdatePassword onClose={handleClose} />
+      )}
+      {activePopup === "deleteUser" && (
+        <PasswordDeletePopup onClose={handleClose} />
       )}
     </div>
   );
@@ -883,8 +1101,9 @@ function Reservations() {
   const [isReviewPopupOpen, setIsReviewPopupOpen] = useState(false);
 
   const [selectedReservation, setSelectedReservation] = useState(null);
-  const [isCancelPopupOpen, setIsCancelPopupOpen] = useState(false);
+  const [isVerifyPopupOpen, setIsVerifyPopupOpen] = useState(false);
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+  const [memberData, setMemberData] = useState(null);
 
   const mockReservations = [
     {
@@ -905,119 +1124,6 @@ function Reservations() {
     },
     {
       no: 2,
-      title: "홍대입구 코워킹스페이스",
-      rating: "4.8",
-      noOfRating: "55",
-      description: "홍대입구 코워킹스페이스",
-      location: "홍대입구",
-      pricePerDay: "12000",
-      officeImgURL: "/demooffice2.webp",
-      longitude: 126.9237741555385,
-      latitude: 37.5575341555385,
-      regdate: "2024-05-16T10:05:00",
-      startDate: "2024-05-16T10:00:00",
-      endDate: "2024-12-19T10:00:00",
-      attendance: 1,
-    },
-    {
-      no: 3,
-      title: "역삼동 비즈니스 센터",
-      rating: "4.6",
-      noOfRating: "32",
-      description: "역삼동 비즈니스 센터",
-      location: "역삼동",
-      pricePerDay: "15000",
-      officeImgURL: "/demooffice3.webp",
-      longitude: 127.036346,
-      latitude: 37.501362,
-      regdate: "2024-05-15T09:30:00",
-      startDate: "2024-01-15T09:00:00",
-      endDate: "2024-12-18T09:00:00",
-      attendance: 2,
-    },
-    {
-      no: 4,
-      title: "신촌 스타트업 허브",
-      rating: "4.3",
-      noOfRating: "28",
-      description: "신촌 스타트업 허브",
-      location: "신촌",
-      pricePerDay: "11000",
-      officeImgURL: "/demooffice1.webp",
-      longitude: 126.936893,
-      latitude: 37.555348,
-      regdate: "2024-05-17T11:15:00",
-      startDate: "2024-05-17T11:00:00",
-      endDate: "2024-05-20T11:00:00",
-
-      attendance: 4,
-    },
-    {
-      no: 5,
-      title: "판교 테크노밸리 오피스",
-      rating: "4.7",
-      noOfRating: "45",
-      description: "판교 테크노밸리 오피스",
-      location: "판교",
-      pricePerDay: "13000",
-      officeImgURL: "/demooffice2.webp",
-      longitude: 127.108705,
-      latitude: 37.402111,
-      regdate: "2024-06-01T09:00:00",
-      startDate: "2024-03-01T09:00:00",
-      endDate: "2024-08-31T18:00:00",
-      attendance: 3,
-    },
-    {
-      no: 6,
-      title: "여의도 금융 센터",
-      rating: "4.9",
-      noOfRating: "60",
-      description: "여의도 금융 센터",
-      location: "여의도",
-      pricePerDay: "18000",
-      officeImgURL: "/demooffice3.webp",
-      longitude: 126.925381,
-      latitude: 37.525732,
-      regdate: "2023-06-15T10:30:00",
-      startDate: "2023-09-01T09:00:00",
-      endDate: "2023-09-30T18:00:00",
-      attendance: 1,
-    },
-    {
-      no: 7,
-      title: "성수동 창업 공간",
-      rating: "4.4",
-      noOfRating: "35",
-      description: "성수동 창업 공간",
-      location: "성수동",
-      pricePerDay: "9000",
-      officeImgURL: "/demooffice1.webp",
-      longitude: 127.055723,
-      latitude: 37.544323,
-      regdate: "2022-07-01T11:00:00",
-      startDate: "2022-10-01T09:00:00",
-      endDate: "2022-10-07T18:00:00",
-      attendance: 2,
-    },
-    {
-      no: 8,
-      title: "광화문 비즈니스 라운지",
-      rating: "4.8",
-      noOfRating: "50",
-      description: "광화문 비즈니스 라운지",
-      location: "광화문",
-      pricePerDay: "16000",
-      officeImgURL: "/demooffice2.webp",
-      longitude: 126.976882,
-      latitude: 37.572736,
-      regdate: "2021-07-15T14:00:00",
-      startDate: "2021-11-01T09:00:00",
-      endDate: "2021-11-30T18:00:00",
-      attendance: 1,
-    },
-    {
-      no: 9,
       title: "송파 공유 오피스",
       rating: "4.5",
       noOfRating: "38",
@@ -1036,7 +1142,7 @@ function Reservations() {
 
   const reviews = [
     {
-      no: 4,
+      no: 1,
       title: "신촌 스타트업 허브",
       content:
         "Solid performance and reasonable price. Satisfied with my purchase.",
@@ -1044,7 +1150,7 @@ function Reservations() {
       date: "2023-05-18",
     },
     {
-      no: 5,
+      no: 1,
       title: "판교 테크노밸리 오피스",
       content:
         "Decent product overall, but there are a few minor issues that could be addressed.",
@@ -1106,9 +1212,9 @@ function Reservations() {
     setIsEditPopupOpen(true);
   };
 
-  const handleCancelPopup = (item) => {
+  const handleVerifyPopup = (item) => {
     setSelectedReservation(item);
-    setIsCancelPopupOpen(true);
+    setIsVerifyPopupOpen(true);
   };
 
   return (
@@ -1135,7 +1241,7 @@ function Reservations() {
                   </div>
                   <div
                     className="btn-cancel"
-                    onClick={() => handleCancelPopup(item)}
+                    onClick={() => handleVerifyPopup(item)}
                   >
                     취소
                   </div>
@@ -1154,17 +1260,17 @@ function Reservations() {
             />
           )}
 
-          {isCancelPopupOpen && (
-            <CancelPopup
+          {isVerifyPopupOpen && (
+            <VerifyPopup
               onConfirm={(result) => {
-                setIsCancelPopupOpen(false);
+                setIsVerifyPopupOpen(false);
                 // Handle
                 if (result === "yes") {
                   // cancellation
                 }
               }}
               onCancel={(result) => {
-                setIsCancelPopupOpen(false);
+                setIsVerifyPopupOpen(false);
                 // Handle 'no'
               }}
               msg="예약을 취소하시겠습니까?"
@@ -1333,24 +1439,6 @@ function Reviews() {
 function MemberMyPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("viewInfo");
-  const [mockMemberData, setMockMemberData] = useState({
-    no: 1,
-    id: "user123",
-    name: "홍길동",
-    phone: "010-1234-5678",
-    email: "user123@example.com",
-    birth: "1990-01-01",
-    gender: "M",
-    reg_date: "2023-05-01",
-  });
-
-  //function updateMemberData(field, value) {
-  const updateMemberData = (field, value) => {
-    setMockMemberData((prevData) => ({
-      ...prevData,
-      [field]: value,
-    }));
-  };
 
   // interface tabs
   const tabs = [
@@ -1364,12 +1452,7 @@ function MemberMyPage() {
   const renderTabContent = () => {
     switch (activeTab) {
       case "viewInfo":
-        return (
-          <ViewInfo
-            mockMemberData={mockMemberData}
-            updateMemberData={updateMemberData}
-          />
-        );
+        return <ViewInfo />;
       case "reservations":
         return <Reservations />;
       case "reviews":
@@ -1380,13 +1463,14 @@ function MemberMyPage() {
         return null;
     }
   };
+
   //render my page
   return (
     <div className="member-my-page">
       <MemberHeader />
       <main className="member-content-wrapper">
-        <section className="tab-container">
-          <div className="tabs">
+        <>
+          <section className="tab-container">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
@@ -1396,9 +1480,9 @@ function MemberMyPage() {
                 {tab.label}
               </button>
             ))}
-          </div>
-        </section>
-        <section className="tab-content">{renderTabContent()}</section>
+          </section>
+          <section className="tab-content">{renderTabContent()}</section>
+        </>
       </main>
       <MemberFooter />
     </div>

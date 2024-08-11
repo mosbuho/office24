@@ -16,6 +16,7 @@ function MemberMain() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(24);
   const location = useLocation();
+  const [pageLength, setPageLength] = useState(0);
 
   const searchParams = location.state?.searchParams || {};
 
@@ -32,7 +33,7 @@ function MemberMain() {
         },
       });
       const data = response.data;
-
+      setPageLength(data.length);
       if (Array.isArray(data)) {
         if (page === 1) {
           setMapData(data);
@@ -47,15 +48,13 @@ function MemberMain() {
     }
   };
 
-  // Fetch data when currentPage changes
   useEffect(() => {
     fetchData();
   }, [currentPage]);
 
-  // Reset page and fetch data when searchParams change
   useEffect(() => {
     setCurrentPage(1);
-    fetchData(1); // Fetch data for the first page with new search parameters
+    fetchData(1);
   }, [location.state?.searchParams]);
 
   useEffect(() => {
@@ -65,7 +64,7 @@ function MemberMain() {
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
       const distanceFromBottom = documentHeight - (scrollTop + windowHeight);
 
-      setIsButtonVisible(distanceFromBottom <= 1000);
+      setIsButtonVisible(distanceFromBottom <= 500);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -84,10 +83,7 @@ function MemberMain() {
     setCurrentPage((prevPage) => prevPage + 1);
   };
 
-  const itemsInRow = 6;
-  const dummyItems = Array(itemsInRow - (mapData.length % itemsInRow)).fill(
-    null
-  );
+  console.log(itemsPerPage);
 
   return (
     <>
@@ -97,9 +93,8 @@ function MemberMain() {
           {!isMapFullExpanded && (
             <div style={{ margin: "auto" }}>
               <div
-                className={`office-item-list ${
-                  isMapExpanded ? " expanded" : ""
-                }`}
+                className={`office-item-list ${isMapExpanded ? " expanded" : ""
+                  }`}
               >
                 {mapData.map((item, index) => (
                   <OfficeItem
@@ -112,21 +107,17 @@ function MemberMain() {
                     OFFICEIMGURL={item.OFFICEIMGURL}
                   />
                 ))}
-                {dummyItems.map((_, index) => (
-                  <div
-                    key={`dummy-${index}`}
-                    className="office-item dummy"
-                  ></div>
-                ))}
               </div>
 
               <div className="item-list-button-container">
-                <button
-                  className={`more-button ${isButtonVisible ? "visible" : ""}`}
-                  onClick={handleLoadMore}
-                >
-                  더보기
-                </button>
+                {pageLength === itemsPerPage && (
+                  <button
+                    className={`more-button ${isButtonVisible ? "visible" : ""}`}
+                    onClick={handleLoadMore}
+                  >
+                    더보기
+                  </button>
+                )}
                 <button
                   className="expand-map-button"
                   onClick={() => toggleMap()}
@@ -139,9 +130,9 @@ function MemberMain() {
 
           {isMapExpanded && (
             <div
-              className={`map-container ${
-                isMapFullExpanded ? "full-expanded" : ""
-              }`}
+              className={`map-container ${isMapFullExpanded ? "full-expanded" : ""
+                }`}
+              style={{ display: pageLength < 24 ? 'none' : 'block' }}
             >
               <button
                 className="map-button full-extend"
@@ -153,7 +144,7 @@ function MemberMain() {
             </div>
           )}
         </div>
-      </div>
+      </div >
       <MemberFooter />
     </>
   );

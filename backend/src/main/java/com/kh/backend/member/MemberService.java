@@ -420,4 +420,43 @@ public class MemberService {
     public void deleteMember(int no) {
         memberMapper.deleteMember(no);
     }
+
+    public Member getMemberById(int no) {
+        return memberMapper.getMemberById(no);
+    }
+
+    public void updateMemberProfile(Member member) {
+        Member existingMember = memberMapper.getMemberById(member.getNo());
+        if (existingMember != null) {
+            if (member.getEmail() != null && !member.getEmail().isEmpty()) {
+                existingMember.setEmail(member.getEmail());
+            }
+            // Update other fields similarly
+            memberMapper.updateMember(existingMember);
+        } else {
+            throw new RuntimeException("Member not found");
+        }
+    }
+
+    public boolean updateMemberPassword(int no, String currentPassword, String newPassword) {
+        Member member = memberMapper.getMemberById(no);
+        if (member != null && passwordEncoder.matches(currentPassword, member.getPw())) {
+            String encodedNewPassword = passwordEncoder.encode(newPassword);
+            memberMapper.updatePassword(no, encodedNewPassword);
+            return true;
+        }
+        return false;
+    }
+
+    @Transactional
+    public boolean deleteSelfAccount(int no, String password) {
+        Member member = memberMapper.getMemberById(no);
+        System.out.println(password);
+        System.out.println(member.getPw());
+        if (member != null && passwordEncoder.matches(password, member.getPw())) {
+            memberMapper.deleteMember(no);
+            return true;
+        }
+        return false;
+    }
 }
