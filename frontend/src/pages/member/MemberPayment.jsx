@@ -28,6 +28,17 @@ const MemberPayment = () => {
     window.scrollTo(0, 0);
   }, [location]);
 
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://cdn.iamport.kr/js/iamport.payment-1.2.0.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   const formatDate = (date) => {
     if (!date) return "";
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -247,88 +258,85 @@ const MemberPayment = () => {
   const totalPrice = office.price * period;
   const [phoneNumber, setPhoneNumber] = useState("");
   const [name, setName] = useState("");
-
-  const [cardNumber, setCardNumber] = useState("");
-  const [expiryDate, setExpiryDate] = useState("");
-  const [cvv, setCvv] = useState("");
-
-  const handleCardNumberChange = (e) => {
-    const value = e.target.value.replace(/\D/g, "");
-    let formattedValue;
-
-    const cardPatterns = {
-      mastercard: /^5[1-5]/,
-      visa: /^4/,
-      amex: /^3[47]/,
-      discover: /^6011/,
-    };
-
-    if (cardPatterns.amex.test(value)) {
-      formattedValue = value
-        .replace(/(\d{4})(\d{6})?(\d{5})?/, "$1-$2-$3")
-        .trim();
-      setCardNumber(formattedValue.slice(0, 17));
-    } else if (
-      cardPatterns.mastercard.test(value) ||
-      cardPatterns.visa.test(value) ||
-      cardPatterns.discover.test(value)
-    ) {
-      formattedValue = value.replace(/(\d{4})(?=\d)/g, "$1-");
-      setCardNumber(formattedValue.slice(0, 19));
-    } else {
-      formattedValue = value.replace(/(\d{4})(?=\d)/g, "$1-");
-      setCardNumber(formattedValue.slice(0, 19));
-    }
-
-    const cardRegex =
-      /(5[1-5]\d{14})|(4\d{12})(\d{3}?)|3[47]\d{13}|(6011\d{12})/;
-    const isValid = cardRegex.test(value);
-
-    console.log("Is valid card number:", isValid);
-  };
-
-  const handleExpiryDateChange = (e) => {
-    const value = e.target.value.replace(/\D/g, "");
-    if (value.length <= 2) {
-      setExpiryDate(value);
-    } else {
-      setExpiryDate(value.slice(0, 2) + "/" + value.slice(2, 4));
-    }
-  };
-
-  const handleCvvChange = (e) => {
-    const value = e.target.value.replace(/\D/g, "");
-    setCvv(value.slice(0, 3));
-  };
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [postcode, setPostcode] = useState("");
 
   const isNameValid = /^[가-힣]{1,12}$/.test(name);
   const isPhoneNumberValid = /^\d{11}$/.test(phoneNumber);
+  const isEmailValid = email.includes("@");
+  const isAddressValid = address.length > 0;
+  const isPostcodeValid = postcode.length > 0;
+  const IMP_MERCHANT_ID = import.meta.env.VITE_IMP_MERCHANT_ID;
 
   const handlePayment = async () => {
-    try {
-      const bookingData = {
-        office_no: office?.no,
-        member_no: no,
-        name: name,
-        phone: phoneNumber,
-        price: totalPrice,
-        payment: paymentMethod,
-        start_date: startDate.toISOString().split('T')[0], 
-        end_date: endDate.toISOString().split('T')[0], 
-      };
-
-      const response = await axios.post('/member/booking', bookingData);
-
-      if (response.status === 200) {
-        alert("예약이 성공적으로 완료되었습니다!");
-        navigate('/');
-      } else {
-        alert("예약에 실패했습니다. 다시 시도해주세요.");
-      }
-    } catch (error) {
-      console.error("결제 처리 중 오류가 발생했습니다:", error);
-      alert("결제 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+    if (!isNameValid) {
+      alert("이름을 12자 이하의 한글로 입력해주세요.");
+      return;
     }
+    if (!isPhoneNumberValid) {
+      alert("전화번호는 11자리 숫자로 입력해주세요.");
+      return;
+    }
+    if (!isEmailValid) {
+      alert("유효한 이메일 주소를 입력해주세요.");
+      return;
+    }
+    if (!isAddressValid) {
+      alert("주소를 입력해주세요.");
+      return;
+    }
+    if (!isPostcodeValid) {
+      alert("우편번호를 입력해주세요.");
+      return;
+    }
+
+    const { IMP } = window;
+    IMP.init(IMP_MERCHANT_ID);
+
+    const paymentData = {
+      pg: paymentMethod === 'kakao-pay' ? 'kakaopay.TC0ONETIME' : 'html5_inicis.INIpayTest',
+      pay_method: paymentMethod === 'kakao-pay' ? 'kakaopay' : 'card',
+      merchant_uid: `merchant_${new Date().getTime()}`,
+      name: 'Office Booking Payment',
+      amount: totalPrice,
+      buyer_email: email,
+      buyer_name: name,
+      buyer_tel: phoneNumber,
+      buyer_addr: address,
+      buyer_postcode: postcode,
+      m_redirect_url: 'http://localhost:3000/payments/complete',
+    };
+
+    IMP.request_pay(paymentData, async (response) => {
+      if (response.success) {
+        try {
+          const bookingData = {
+            office_no: office?.no,
+            member_no: no,
+            name: name,
+            phone: phoneNumber,
+            price: totalPrice,
+            payment: paymentMethod,
+            start_date: startDate.toISOString().split('T')[0],
+            end_date: endDate.toISOString().split('T')[0],
+          };
+
+          const result = await axios.post('/member/booking', bookingData);
+          if (result.status === 200) {
+            alert("예약이 성공적으로 완료되었습니다!");
+            navigate('/');
+          } else {
+            alert("예약에 실패했습니다. 다시 시도해주세요.");
+          }
+        } catch (error) {
+          console.error("결제 처리 중 오류가 발생했습니다:", error);
+          alert("결제 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+        }
+      } else {
+        alert(`결제에 실패했습니다: ${response.error_msg}`);
+      }
+    });
   };
 
   return (
@@ -378,40 +386,9 @@ const MemberPayment = () => {
                   onChange={(e) => setPaymentMethod(e.target.value)}
                 >
                   <option value="credit-card">신용카드</option>
-                  <option value="naver-pay">네이버페이</option>
                   <option value="kakao-pay">카카오페이</option>
                 </select>
               </div>
-              {paymentMethod === "credit-card" && (
-                <form>
-                  <div className="credit-card-form">
-                    <input
-                      type="text"
-                      placeholder="카드 번호"
-                      value={cardNumber}
-                      onChange={handleCardNumberChange}
-                      maxLength={19}
-                    />
-                    <input
-                      type="text"
-                      placeholder="카드 만료일 (MM/YY)"
-                      value={expiryDate}
-                      onChange={handleExpiryDateChange}
-                      maxLength={5}
-                    />
-                    <input
-                      type="text"
-                      placeholder="CVV"
-                      value={cvv}
-                      onChange={handleCvvChange}
-                      maxLength={3}
-                    />
-                  </div>
-                </form>
-              )}
-              {paymentMethod === "kakao-pay" && (
-                  <button className="payment-button" onClick={handlePayment}>카카오페이로 결제하기</button>
-              )}
             </div>
             <hr />
             <div className="reservation-content">
@@ -459,6 +436,31 @@ const MemberPayment = () => {
                       <p className="error">전화번호는 11자리 숫자로 입력해주세요.</p>
                     )}
                     <u>수정</u>
+                  </div>
+                </div>
+                <div className="required-information-item">
+                  <div className="credit-card-form">
+                    <input
+                      type="text"
+                      placeholder="이메일"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                    <input
+                      type="text"
+                      placeholder="주소"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      required
+                    />
+                    <input
+                      type="text"
+                      placeholder="우편번호"
+                      value={postcode}
+                      onChange={(e) => setPostcode(e.target.value)}
+                      required
+                    />
                   </div>
                 </div>
               </div>
