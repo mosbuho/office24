@@ -447,14 +447,35 @@ public class MemberService {
         }
         return false;
     }
-@Transactional
-public boolean deleteSelfAccount(int no, String password) {
-    Member member = memberMapper.getMemberById(no);
-    if (member != null && passwordEncoder.matches(password, member.getPw())) {
-        memberMapper.deleteMember(no);
-        return true;
+    
+    @Transactional
+    public boolean deleteSelfAccount(int no, String password) {
+        Member member = memberMapper.getMemberById(no);
+        if (member != null && passwordEncoder.matches(password, member.getPw())) {
+            memberMapper.deleteMember(no);
+            return true;
+        }
+        return false;
     }
-    return false;
+
+    @Transactional
+    public boolean toggleLike(int userNo, int officeNo) {
+        boolean exists = memberMapper.checkLikeExists(userNo, officeNo);
+        if (exists) {
+            memberMapper.removeLike(userNo, officeNo);
+            return false;
+        } else {
+            memberMapper.addLike(userNo, officeNo);
+            return true;
+        }
+    }
+
+    public List<Map<String, Object>> getFavoriteOffices(int userNo) {
+        return memberMapper.getFavoriteOffices(userNo);
 }
 
+
+    public List<Integer> getLikedOfficeNumbers(int userNo) {
+    return memberMapper.getLikedOfficeNumbers(userNo);
+}
 }

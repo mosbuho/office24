@@ -1,5 +1,4 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { useLocation } from "react-router-dom";
 import KakaoMap from "../../components/member/KakaoMap";
@@ -7,56 +6,62 @@ import MemberFooter from "../../components/member/MemberFooter";
 import MemberHeader from "../../components/member/MemberHeader";
 import OfficeItem from "../../components/member/OfficeItem";
 import "../../styles/pages/member/MemberMain.css";
+import { getNo } from "../../utils/auth";
+import axios from "../../utils/axiosConfig";
 
 function MemberMain() {
+  const [mapData, setMapData] = useState([]);
+  const [userLikes, setUserLikes] = useState(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
   const [isMapExpanded, setIsMapExpanded] = useState(false);
   const [isMapFullExpanded, setIsMapFullExpanded] = useState(false);
   const [isButtonVisible, setIsButtonVisible] = useState(false);
-  const [mapData, setMapData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(24);
   const location = useLocation();
 
-  const searchParams = location.state?.searchParams || {};
+  const searchParams = useMemo(
+    () => location.state?.searchParams || {},
+    [location.state]
+  );
 
-  const fetchData = async (page = currentPage) => {
+  const fetchUserLikes = useCallback(async () => {
+    const userNo = getNo();
+    if (!userNo) return;
     try {
-      const response = await axios.get("http://localhost:8080/api/office", {
-        params: {
-          page,
-          size: itemsPerPage,
-          location: searchParams.location || "",
-          startDate: searchParams.startDate || "",
-          endDate: searchParams.endDate || "",
-          attendance: searchParams.attendance || 1,
-        },
-      });
-      const data = response.data;
-
-      if (Array.isArray(data)) {
-        if (page === 1) {
-          setMapData(data);
-        } else {
-          setMapData((prevData) => [...prevData, ...data]);
-        }
-      } else {
-        console.error("Expected an array but got:", data);
-      }
+      const response = await axios.get(`/member/${userNo}/liked-offices`);
+      setUserLikes(new Set(response.data));
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error(error);
     }
-  };
+  }, []);
 
-  // Fetch data when currentPage changes
-  useEffect(() => {
-    fetchData();
-  }, [currentPage]);
+  const fetchData = useCallback(
+    async (page = currentPage) => {
+      try {
+        const response = await axios.get("/api/office", {
+          params: {
+            page,
+            size: 24,
+            location: searchParams.location || "",
+            startDate: searchParams.startDate || "",
+            endDate: searchParams.endDate || "",
+            attendance: searchParams.attendance || 1,
+          },
+        });
+        const newData = response.data;
+        setMapData((prevData) =>
+          page === 1 ? newData : [...prevData, ...newData]
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [currentPage, searchParams]
+  );
 
-  // Reset page and fetch data when searchParams change
   useEffect(() => {
-    setCurrentPage(1);
-    fetchData(1); // Fetch data for the first page with new search parameters
-  }, [location.state?.searchParams]);
+    fetchUserLikes();
+    fetchData(1);
+  }, [fetchUserLikes, fetchData]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,6 +77,11 @@ function MemberMain() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleLoadMore = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+    fetchData(currentPage + 1);
+  };
+
   const toggleMap = () => {
     setIsMapExpanded(!isMapExpanded);
   };
@@ -79,15 +89,6 @@ function MemberMain() {
   const toggleMapFullExpanded = () => {
     setIsMapFullExpanded(!isMapFullExpanded);
   };
-
-  const handleLoadMore = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
-  };
-
-  const itemsInRow = 6;
-  const dummyItems = Array(itemsInRow - (mapData.length % itemsInRow)).fill(
-    null
-  );
 
   return (
     <>
@@ -101,25 +102,14 @@ function MemberMain() {
                   isMapExpanded ? " expanded" : ""
                 }`}
               >
-                {mapData.map((item, index) => (
+                {mapData.map((item) => (
                   <OfficeItem
-                    key={index}
-                    NO={item.NO}
-                    TITLE={item.TITLE}
-                    RATING={item.RATING}
-                    LOCATION={item.LOCATION}
-                    PRICEPERDAY={item.PRICEPERDAY.toLocaleString()}
-                    OFFICEIMGURL={item.OFFICEIMGURL}
+                    key={item.NO}
+                    {...item}
+                    initialLikeStatus={userLikes.has(item.NO)}
                   />
                 ))}
-                {dummyItems.map((_, index) => (
-                  <div
-                    key={`dummy-${index}`}
-                    className="office-item dummy"
-                  ></div>
-                ))}
               </div>
-
               <div className="item-list-button-container">
                 <button
                   className={`more-button ${isButtonVisible ? "visible" : ""}`}
@@ -127,16 +117,12 @@ function MemberMain() {
                 >
                   더보기
                 </button>
-                <button
-                  className="expand-map-button"
-                  onClick={() => toggleMap()}
-                >
+                <button className="expand-map-button" onClick={toggleMap}>
                   <FaMapLocationDot />
                 </button>
               </div>
             </div>
           )}
-
           {isMapExpanded && (
             <div
               className={`map-container ${
@@ -145,7 +131,7 @@ function MemberMain() {
             >
               <button
                 className="map-button full-extend"
-                onClick={() => toggleMapFullExpanded()}
+                onClick={toggleMapFullExpanded}
               >
                 {isMapFullExpanded ? "접기 >" : "< 확장"}
               </button>

@@ -49,4 +49,23 @@
 
     <update id="updatePassword"> UPDATE member SET pw = #{newPassword} WHERE no = #{no} </update>
 
+    <select id="checkLikeExists" resultType="boolean"> SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0
+        END FROM wish WHERE member_no = #{userNo} AND office_no = #{officeNo} </select>
+
+    <insert id="addLike"> INSERT INTO wish (member_no, office_no) VALUES (#{userNo}, #{officeNo}) </insert>
+
+    <delete id="removeLike"> DELETE FROM wish WHERE member_no = #{userNo} AND office_no =
+        #{officeNo} </delete>
+
+    <select id="getLikeCount" resultType="int"> SELECT COUNT(*) FROM wish WHERE office_no =
+        #{officeNo} </select>
+
+    <select id="getLikedOfficeNumbers" resultType="java.lang.Integer"> SELECT OFFICE_NO FROM WISH
+        WHERE MEMBER_NO = #{userNo} </select>
+
+    <select id="getFavoriteOffices" parameterType="int" resultType="map"> SELECT o.NO, o.TITLE,
+        o.ADDRESS as LOCATION, o.PRICE as PRICEPERDAY, o.TITLE_IMG as OFFICEIMGURL,
+        NVL(AVG(r.RATING), 0) as RATING FROM OFFICE o JOIN WISH w ON o.NO = w.OFFICE_NO LEFT JOIN
+        REVIEW r ON o.NO = r.OFFICE_NO WHERE w.MEMBER_NO = #{userNo} GROUP BY o.NO, o.TITLE,
+        o.ADDRESS, o.PRICE, o.TITLE_IMG </select>
 </mapper>
