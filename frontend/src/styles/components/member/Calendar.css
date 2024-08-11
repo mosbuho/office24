@@ -32,7 +32,6 @@
   }
 
   .weekdays {
-    color: var(--primary-color);
     font-weight: 900;
     cursor: default;
   }

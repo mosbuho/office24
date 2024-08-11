@@ -149,9 +149,9 @@ const MemberHeader = () => {
 
   //  event handler: 스크롤 처리 //
   const handleScroll = () => {
-    if (window.scrollY < 500) {
+    if (window.scrollY < 0) {
       setExpanded(true);
-    } else if (window.scrollY > 300) {
+    } else if (window.scrollY > 0) {
       setExpanded(false);
       collapse();
     } else {
@@ -179,7 +179,7 @@ const MemberHeader = () => {
 
   // function: 검색창 축소 //
   const collapse = () => {
-    if (window.scrollY > 300) {
+    if (window.scrollY > 0) {
       setExpanded(false);
       dispatch({ type: "HIDE_ALL" });
     }
@@ -359,9 +359,8 @@ const MemberHeader = () => {
               <div className="attendance-counter">
                 <span>일반석</span>
                 <button
-                  className={`attendance-button ${
-                    attendance === 1 ? "disabled" : ""
-                  }`}
+                  className={`attendance-button ${attendance === 1 ? "disabled" : ""
+                    }`}
                   onClick={() => handleAttendanceChange(-1)}
                   disabled={attendance === 1}
                 >
