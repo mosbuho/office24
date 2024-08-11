@@ -16,7 +16,6 @@ import MemberResetPw from "./pages/member/MemberResetPw";
 import MemberMyPage from "./pages/member/MemberMyPage";
 import MemberUpdate from "./pages/member/MemberUpdate";
 
-
 import ManagerCreate from './pages/manager/ManagerCreate';
 import ManagerLogin from './pages/manager/ManagerLogin';
 import ManagerMain from './pages/manager/ManagerMain';

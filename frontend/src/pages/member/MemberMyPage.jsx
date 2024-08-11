@@ -307,10 +307,6 @@ const formatDate = (date) => {
   if (!date) return "";
   return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 };
-const preprocessDate = (dateString) => {
-  if (!dateString) return "";
-  return dateString.split("T")[0]; // This will extract the date part: YYYY-MM-DD
-};
 
 //Component VerifyPopup
 function VerifyPopup({ onConfirm, onCancel, msg }) {
@@ -349,8 +345,8 @@ function PasswordDeletePopup({ onClose }) {
     e.preventDefault();
     try {
       const no = getNo();
-      const response = await axios.delete("/member/delete", {
-        data: { no, password },
+      const response = await axios.post(`/member/${no}/delete`, {
+        data: { password },
       });
       if (response.status === 200) {
         removeTokens();
@@ -410,7 +406,7 @@ function UpdatePassword({ onClose }) {
       return;
     }
     try {
-      const response = await axios.put(`/member/password/${getNo()}`, {
+      const response = await axios.put(`/member/${getNo()}/change-pw`, {
         currentPassword,
         newPassword,
       });
