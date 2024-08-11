@@ -1,5 +1,7 @@
 package com.kh.backend.booking;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +15,7 @@ public class BookingService {
     @Autowired
     private BookingMapper bookingMapper;
 
-    public Map<String, Object> getBookingsByManager(Integer managerNo, int page, int size) {
+    public Map<String, Object> getBookingsByManager(int managerNo, int page, int size) {
         int offset = (page - 1) * size;
         List<Map<String, Object>> bookings = bookingMapper.selectBookingsByManager(managerNo, size, offset);
         int totalBookings = bookingMapper.countBookingsByManager(managerNo);
@@ -26,7 +28,7 @@ public class BookingService {
         return result;
     }
 
-    public Map<String, Object> getDetailedBookingsByManager(Integer managerNo, int page, int size, String filter,
+    public Map<String, Object> getDetailedBookingsByManager(int managerNo, int page, int size, String filter,
             String searchText, String sortOrder) {
         int offset = (page - 1) * size;
         List<Map<String, Object>> bookings = bookingMapper.selectDetailedBookingsByManager(managerNo, size, offset,
@@ -55,5 +57,25 @@ public class BookingService {
         response.put("bookings", bookings);
         response.put("totalCount", totalCount);
         return response;
+    }
+
+    public List<Date> getUnavailableDates(int officeNo) {
+        List<Booking> bookings = bookingMapper.getBookingsByOfficeNo(officeNo);
+        List<Date> unavailableDates = new ArrayList<>();
+
+        for (Booking booking : bookings) {
+            Date start = booking.getStart_date();
+            Date end = booking.getEnd_date();
+
+            while (!start.after(end)) {
+                unavailableDates.add(start);
+                start = new Date(start.getTime() + (1000 * 60 * 60 * 24));
+            }
+        }
+        return unavailableDates;
+    }
+
+    public void createBooking(Map<String, Object> bookingData) throws Exception {
+        bookingMapper.insertBooking(bookingData);
     }
 }

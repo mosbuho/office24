@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class Booking {
     private int no;
-    private int oiffice_no;
+    private int office_no;
     private int member_no;
     private String name;
     private String phone;

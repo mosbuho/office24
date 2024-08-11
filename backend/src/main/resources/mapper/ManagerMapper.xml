@@ -55,4 +55,17 @@
         SET pw = #{pw}
         WHERE id = #{id}
     </update>
+    
+    <select id="getManagerByOfficeNo" parameterType="int" resultType="java.lang.String">
+        SELECT 
+            m.name AS name
+        FROM 
+            manager m
+        JOIN 
+            office o 
+        ON 
+            m.no = o.manager_no
+        WHERE 
+            o.no = #{officeNo}
+    </select>
 </mapper>

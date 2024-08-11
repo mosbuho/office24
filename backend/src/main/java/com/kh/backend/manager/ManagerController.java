@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -179,7 +180,8 @@ public class ManagerController {
         }
     }
 
-    @PutMapping("/update/{no}")
+    @PostMapping("/update/{no}")
+    @PreAuthorize("#no == authentication.details.no")
     public ResponseEntity<String> updateManagerInfo(@PathVariable int no,
             @RequestBody Map<String, Object> updatedData) {
         try {
