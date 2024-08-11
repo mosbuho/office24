@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FaMapLocationDot } from "react-icons/fa6";
 import { useLocation } from "react-router-dom";
 import KakaoMap from "../../components/member/KakaoMap";
 import MemberFooter from "../../components/member/MemberFooter";
@@ -17,7 +16,6 @@ function MemberMain() {
   const [isMapFullExpanded, setIsMapFullExpanded] = useState(false);
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const location = useLocation();
-  const [pageLength, setPageLength] = useState(0);
 
   const searchParams = useMemo(
     () => location.state?.searchParams || {},
@@ -31,7 +29,7 @@ function MemberMain() {
       const response = await axios.get(`/member/${userNo}/liked-offices`);
       setUserLikes(new Set(response.data));
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching user likes:", error);
     }
   }, []);
 
@@ -53,7 +51,7 @@ function MemberMain() {
           page === 1 ? newData : [...prevData, ...newData]
         );
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching data:", error);
       }
     },
     [currentPage, searchParams]
@@ -71,7 +69,7 @@ function MemberMain() {
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
       const distanceFromBottom = documentHeight - (scrollTop + windowHeight);
 
-      setIsButtonVisible(distanceFromBottom <= 500);
+      setIsButtonVisible(distanceFromBottom <= 1000);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -99,8 +97,9 @@ function MemberMain() {
           {!isMapFullExpanded && (
             <div style={{ margin: "auto" }}>
               <div
-                className={`office-item-list ${isMapExpanded ? " expanded" : ""
-                  }`}
+                className={`office-item-list ${
+                  isMapExpanded ? " expanded" : ""
+                }`}
               >
                 {mapData.map((item) => (
                   <OfficeItem
@@ -111,28 +110,23 @@ function MemberMain() {
                 ))}
               </div>
               <div className="item-list-button-container">
-                {pageLength === itemsPerPage && (
-                  <button
-                    className={`more-button ${isButtonVisible ? "visible" : ""}`}
-                    onClick={handleLoadMore}
-                  >
-                    더보기
-                  </button>
-                )}
                 <button
-                  className="expand-map-button"
-                  onClick={() => toggleMap()}
+                  className={`more-button ${isButtonVisible ? "visible" : ""}`}
+                  onClick={handleLoadMore}
                 >
-                  <FaMapLocationDot />
+                  더보기
+                </button>
+                <button className="expand-map-button" onClick={toggleMap}>
+                  {/* Add map icon here */}
                 </button>
               </div>
             </div>
           )}
           {isMapExpanded && (
             <div
-              className={`map-container ${isMapFullExpanded ? "full-expanded" : ""
-                }`}
-              style={{ display: pageLength < 24 ? 'none' : 'block' }}
+              className={`map-container ${
+                isMapFullExpanded ? "full-expanded" : ""
+              }`}
             >
               <button
                 className="map-button full-extend"
@@ -144,7 +138,7 @@ function MemberMain() {
             </div>
           )}
         </div>
-      </div >
+      </div>
       <MemberFooter />
     </>
   );
