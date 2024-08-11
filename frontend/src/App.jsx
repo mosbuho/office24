@@ -13,7 +13,7 @@ import MemberOffice from "./pages/member/MemberOffice";
 import MemberPayment from "./pages/member/MemberPayment";
 import MemberRegister from "./pages/member/MemberRegister";
 import MemberResetPw from "./pages/member/MemberResetPw";
-import MemberSearch from "./pages/member/MemberSearch";
+import MemberMyPage from "./pages/member/MemberMyPage";
 import MemberUpdate from "./pages/member/MemberUpdate";
 
 
@@ -66,7 +66,7 @@ function App() {
         <Route path="/member/update" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberUpdate /></PrivateRoute>}/>
         <Route path="/member/delete" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberDelete /></PrivateRoute>}/>
         <Route path="/payment" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberPayment /></PrivateRoute>}/>
-        <Route path="/search" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberSearch /></PrivateRoute>}/>
+        <Route path="/member/:no/mypage" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberMyPage /></PrivateRoute>}/>
 
         {/* 매니저 라우트 */}
         <Route path="/manager/" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerMain /></PrivateRoute>} />

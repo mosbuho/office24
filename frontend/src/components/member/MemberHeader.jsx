@@ -5,7 +5,7 @@ import { IoSearch } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import "../../styles/components/member/MemberHeader.css";
 import Calendar from "./Calendar";
-import { isAuthenticated } from "../../utils/auth";
+import { getNo, isAuthenticated, removeTokens } from "../../utils/auth";
 
 // render: 지역 옵션 목록 //
 const LOCATION_OPTIONS = [
@@ -99,6 +99,7 @@ const MemberHeader = () => {
   const optionsRef = useRef(null);
   const navigate = useNavigate();
   const [authenticated, setAuthenticated] = useState(false);
+  const no = getNo();
 
   // event handler: 이벤트 분류 //
   useEffect(() => {
@@ -230,6 +231,12 @@ const MemberHeader = () => {
   // function: 인원 변경 처리 //
   const handleAttendanceChange = (change) => {
     setAttendance((prev) => Math.max(1, prev + change));
+  };
+
+  const handleLogout = () => {
+    removeTokens();
+    setAuthenticated(false);
+    navigate('/');
   };
 
   // render: 헤더 컴포넌트 //
@@ -404,11 +411,10 @@ const MemberHeader = () => {
             <div className="profile-dropdown">
               {authenticated ? (
                 <>
-                  <div className="dropdown-option" onClick={() => navigate("/myinfo")}>
+                  <div className="dropdown-option" onClick={() => navigate(`/member/${no}/mypage`)}>
                     내 정보
                   </div>
-                  <div className="dropdown-option" onClick={() => {
-                  }}>
+                  <div className="dropdown-option" onClick={handleLogout}>
                     로그아웃
                   </div>
                 </>
