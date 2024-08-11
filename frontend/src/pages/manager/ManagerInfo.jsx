@@ -154,7 +154,7 @@ const ManagerInfo = () => {
 
     console.log('Updated data being sent:', JSON.stringify(updatedData, null, 2));
     try {
-      const response = await axios.put(`/manager/update/${no}`, updatedData, { withCredentials: true });
+      const response = await axios.post(`/manager/update/${no}`, updatedData, { withCredentials: true });
       console.log(response.data);
       alert('정보가 성공적으로 수정되었습니다.');
       navigate('/manager');

@@ -5,7 +5,7 @@ import java.util.Collections;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,6 +20,7 @@ import com.kh.backend.common.jwt.JwtUtil;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
@@ -35,7 +36,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
-                    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE"));
+                    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
                     config.setAllowedHeaders(Arrays.asList("*"));
                     config.setAllowCredentials(true);
                     return config;
@@ -43,22 +44,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/img/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/office/**").permitAll()
-                        // .requestMatchers("/auth/kakao/**").permitAll()
-                        // .requestMatchers("/auth/naver/**").permitAll()
-                        // .requestMatchers("/auth/google/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/office/**").permitAll()
-                       
-                        // .requestMatchers(HttpMethod.GET, "/office/**").permitAll()
+                        .requestMatchers("/office/**").permitAll()
                         .requestMatchers("/member/register", "/manager/create").permitAll()
                         .requestMatchers("/member/check-id", "/member/reset-pw", "member/id-exist").permitAll()
                         .requestMatchers("/manager/id-check", "/manager/find-id", "/manager/reset-pw").permitAll()
                         .requestMatchers("/message/**").permitAll()
                         .requestMatchers("/manager/**").hasRole("MANAGER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().hasRole(
-                                "MEMBER")
-                        )
+                        .anyRequest().hasRole("MEMBER"))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);

@@ -16,10 +16,6 @@ const formatDate = (date) => {
   if (!date) return "";
   return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 };
-const preprocessDate = (dateString) => {
-  if (!dateString) return "";
-  return dateString.split("T")[0]; // This will extract the date part: YYYY-MM-DD
-};
 
 //Component VerifyPopup
 function VerifyPopup({ onConfirm, onCancel, msg }) {
@@ -58,8 +54,8 @@ function PasswordDeletePopup({ onClose }) {
     e.preventDefault();
     try {
       const no = getNo();
-      const response = await axios.delete("/member/delete", {
-        data: { no, password },
+      const response = await axios.post(`/member/${no}/delete`, {
+        data: { password },
       });
       if (response.status === 200) {
         removeTokens();
@@ -67,7 +63,7 @@ function PasswordDeletePopup({ onClose }) {
         navigate("/login");
       }
     } catch (error) {
-      alert("탈퇴 실패");
+      alert("회원 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.");
     } finally {
       onClose();
     }
@@ -115,20 +111,19 @@ function UpdatePassword({ onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      setError("New passwords do not match");
+      setError("새로운 비밀번호가 일치하지 않습니다.");
       return;
     }
     try {
-      const response = await axios.put(`/member/password/${getNo()}`, {
+      const response = await axios.put(`/member/${getNo()}/change-pw`, {
         currentPassword,
         newPassword,
       });
       if (response.status === 200) {
-        alert("비밀번호 변경");
+        alert("비밀번호가 변경되었습니다.");
         onClose();
       }
-    } catch (error) {
-      console.error("Password update error:", error.response?.data);
+    } catch {
       setError(error.response?.data || "비밀번호 변경 실패");
     }
   };
@@ -703,7 +698,7 @@ function ViewInfo() {
     <div className="info-container">
       <h2>내 정보</h2>
       <div className="info-row">
-        <label>아이디:</label>
+        <label>아이디</label>
         <span>{memberData.id}</span>
       </div>
       <div className="info-row bt" onClick={() => handleEdit("updatePassword")}>
@@ -713,7 +708,7 @@ function ViewInfo() {
         className={`info-row ${modifiedFields.name ? "modified" : ""}`}
         onClick={() => handleEdit("name")}
       >
-        <label>이름:</label>
+        <label>이름</label>
         <span>{memberData.name}</span>
         <u>수정</u>
       </div>
@@ -721,7 +716,7 @@ function ViewInfo() {
         className={`info-row ${modifiedFields.phone ? "modified" : ""}`}
         onClick={() => handleEdit("phone")}
       >
-        <label>전화번호:</label>
+        <label>전화번호</label>
         <span>{memberData.phone}</span>
         <u>수정</u>
       </div>
@@ -729,7 +724,7 @@ function ViewInfo() {
         className={`info-row ${modifiedFields.email ? "modified" : ""}`}
         onClick={() => handleEdit("email")}
       >
-        <label>이메일:</label>
+        <label>이메일</label>
         <span>{memberData.email}</span>
         <u>수정</u>
       </div>
@@ -737,22 +732,22 @@ function ViewInfo() {
         className={`info-row ${modifiedFields.birth ? "modified" : ""}`}
         onClick={() => handleEdit("birth")}
       >
-        <label>생년월일:</label>
+        <label>생년월일</label>
         <span>{memberData.birth}</span>
         <u>수정</u>
       </div>
       {Object.keys(modifiedFields).length > 0 && (
-        <div className="info-row bt">
-          <label onClick={submitMemberDataToServer}>변경사항 적용</label>
+        <div className="info-row bt" onClick={submitMemberDataToServer}>
+          <label>변경사항 적용</label>
         </div>
       )}
       <div className="info-row">
-        <label>성별:</label>
+        <label>성별</label>
         <span>{memberData.gender === "M" ? "남성" : "여성"}</span>
       </div>
       <div className="info-row">
-        <label>가입일:</label>
-        <span>{memberData.reg_date}</span>
+        <label>가입일</label>
+        <span>{memberData.reg_date.split(' ')[0]}</span>
       </div>
       <div className="info-row bt" onClick={() => handleEdit("deleteUser")}>
         <label>회원 탈퇴</label>

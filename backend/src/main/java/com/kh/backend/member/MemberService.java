@@ -447,7 +447,7 @@ public class MemberService {
         }
         return false;
     }
-    
+  
     @Transactional
     public boolean deleteSelfAccount(int no, String password) {
         Member member = memberMapper.getMemberById(no);

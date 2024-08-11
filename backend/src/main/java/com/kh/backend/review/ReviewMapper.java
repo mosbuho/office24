@@ -1,6 +1,7 @@
 package com.kh.backend.review;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -13,4 +14,8 @@ public interface ReviewMapper {
     int getTotalReviewCount(@Param("f") String f, @Param("q") String q);
 
     void deleteReview(@Param("no") int no);
+
+    List<Map<String, Object>> getReviewsByOfficeNo(@Param("officeNo") int officeNo);
+
+    int getReviewCountByOfficeNo(int officeNo);
 }

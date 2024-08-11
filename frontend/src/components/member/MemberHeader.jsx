@@ -5,6 +5,7 @@ import { IoSearch } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import "../../styles/components/member/MemberHeader.css";
 import Calendar from "./Calendar";
+import { getNo, isAuthenticated, removeTokens } from "../../utils/auth";
 
 // render: 지역 옵션 목록 //
 const LOCATION_OPTIONS = [
@@ -97,9 +98,18 @@ const MemberHeader = () => {
   const dropdownRef = useRef(null);
   const optionsRef = useRef(null);
   const navigate = useNavigate();
+  const [authenticated, setAuthenticated] = useState(false);
+  const no = getNo();
 
   // event handler: 이벤트 분류 //
   useEffect(() => {
+    const checkAuthentication = async () => {
+      const authStatus = await isAuthenticated();
+      setAuthenticated(authStatus);
+    };
+
+    checkAuthentication();
+
     document.addEventListener("click", handleClickOutside);
     window.addEventListener("scroll", handleScroll);
     return () => {
@@ -149,9 +159,9 @@ const MemberHeader = () => {
 
   //  event handler: 스크롤 처리 //
   const handleScroll = () => {
-    if (window.scrollY < 500) {
+    if (window.scrollY < 0) {
       setExpanded(true);
-    } else if (window.scrollY > 300) {
+    } else if (window.scrollY > 0) {
       setExpanded(false);
       collapse();
     } else {
@@ -179,7 +189,7 @@ const MemberHeader = () => {
 
   // function: 검색창 축소 //
   const collapse = () => {
-    if (window.scrollY > 300) {
+    if (window.scrollY > 0) {
       setExpanded(false);
       dispatch({ type: "HIDE_ALL" });
     }
@@ -221,6 +231,12 @@ const MemberHeader = () => {
   // function: 인원 변경 처리 //
   const handleAttendanceChange = (change) => {
     setAttendance((prev) => Math.max(1, prev + change));
+  };
+
+  const handleLogout = () => {
+    removeTokens();
+    setAuthenticated(false);
+    navigate('/');
   };
 
   // render: 헤더 컴포넌트 //
@@ -357,11 +373,10 @@ const MemberHeader = () => {
           {popupState.showAttendance && (
             <div className="attendance-options-sections">
               <div className="attendance-counter">
-                <span>일반석</span>
+                <span>인원</span>
                 <button
-                  className={`attendance-button ${
-                    attendance === 1 ? "disabled" : ""
-                  }`}
+                  className={`attendance-button ${attendance === 1 ? "disabled" : ""
+                    }`}
                   onClick={() => handleAttendanceChange(-1)}
                   disabled={attendance === 1}
                 >
@@ -394,12 +409,25 @@ const MemberHeader = () => {
           <FaCircleUser style={{ color: "gray" }} />
           {showDropdown && (
             <div className="profile-dropdown">
-              <div className="dropdown-option" onClick={handleLogin}>
-                로그인
-              </div>
-              <div className="dropdown-option" onClick={handleRegister}>
-                회원가입
-              </div>
+              {authenticated ? (
+                <>
+                  <div className="dropdown-option" onClick={() => navigate(`/member/${no}/mypage`)}>
+                    내 정보
+                  </div>
+                  <div className="dropdown-option" onClick={handleLogout}>
+                    로그아웃
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="dropdown-option" onClick={handleLogin}>
+                    로그인
+                  </div>
+                  <div className="dropdown-option" onClick={handleRegister}>
+                    회원가입
+                  </div>
+                </>
+              )}
               <div className="dropdown-divider"></div>
               <div className="dropdown-option">Q&A</div>
             </div>

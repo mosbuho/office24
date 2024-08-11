@@ -264,6 +264,7 @@
 
         .left-column {
             flex: 2;
+            position: relative;
 
             hr {
                 margin: 40px 0 40px 0;
@@ -328,7 +329,7 @@
 
             .content {
                 margin: 10px;
-
+                z-index: -3;
             }
 
             .more-information {
@@ -351,11 +352,12 @@
                 .owner {
                     font-weight: 700;
                     margin: 3px 0 3px 0;
+                    font-size: 14px;
                 }
 
-                :last-child {
+                /* :last-child {
                     color: var(--shaded-color);
-                }
+                } */
             }
         }
 
@@ -367,6 +369,7 @@
             align-self: flex-start;
             max-height: calc(100vh - 40px);
             max-width: 35%;
+            z-index: 5;
 
             .background-for-input-wrapper {
                 position: relative;

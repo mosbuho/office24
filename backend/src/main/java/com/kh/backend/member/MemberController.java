@@ -4,10 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,15 +17,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kh.backend.booking.BookingService;
+
 @RestController
 @RequestMapping("/member")
 public class MemberController {
 
-    private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
     private final MemberService memberService;
+    private final BookingService bookingService;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, BookingService bookingService) {
         this.memberService = memberService;
+        this.bookingService = bookingService;
     }
 
     @GetMapping("/check-id")
@@ -42,7 +44,7 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/id-exist")
+    @GetMapping("/exist-id")
     public ResponseEntity<?> idExist(@RequestParam String phone) {
         List<String> ids = memberService.idExist(phone);
         if (ids != null && !ids.isEmpty()) {
@@ -78,45 +80,46 @@ public class MemberController {
         }
     }
 
+    @PostMapping("/booking")
+    public ResponseEntity<String> createBooking(@RequestBody Map<String, Object> bookingData) {
+        try {
+            bookingService.createBooking(bookingData);
+            return ResponseEntity.ok("예약이 성공적으로 완료되었습니다!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약에 실패했습니다. 다시 시도해주세요.");
+        }
+    }
+      
     @GetMapping("/{no}")
+    @PreAuthorize("#no == authentication.details")
     public Member getMember(@PathVariable int no) {
         return memberService.getMemberById(no);
     }
 
     @PutMapping("/{no}")
+    @PreAuthorize("#no == authentication.details")
     public ResponseEntity<String> updateMember(@PathVariable("no") int no, @RequestBody Member member) {
         try {
             member.setNo(no);
             memberService.updateMember(member);
-            return ResponseEntity.ok("Member updated successfully");
+            return ResponseEntity.ok(null);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating member");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-@PutMapping("/password/{no}")
-public ResponseEntity<?> updatePassword(@PathVariable int no, @RequestBody Map<String, String> passwordData) {
-    String currentPassword = passwordData.get("currentPassword");
-    String newPassword = passwordData.get("newPassword");
+    @PutMapping("/{no}/change-pw")
+    @PreAuthorize("#no == authentication.details")
+    public ResponseEntity<?> updatePassword(@PathVariable int no, @RequestBody Map<String, String> passwordData) {
+        String currentPassword = passwordData.get("currentPassword");
+        String newPassword = passwordData.get("newPassword");
 
-    boolean updated = memberService.updateMemberPassword(no, currentPassword, newPassword);
-    if (updated) {
-        return ResponseEntity.ok().body("Password updated successfully");
-    } else {
-        return ResponseEntity.badRequest().body("Failed to update password");
-    }
-}
-
-@DeleteMapping("/delete")
-public ResponseEntity<?> deleteSelfAccount(@RequestBody Map<String, String> deleteRequest) {
-    int no = Integer.parseInt(deleteRequest.get("no"));
-    String password = deleteRequest.get("password");
-    
-    boolean deleted = memberService.deleteSelfAccount(no, password);
-    if (deleted) {
-        return ResponseEntity.ok().body("Account successfully deleted");
-    } else {
-        return ResponseEntity.badRequest().body("Failed to delete account. Please check your credentials.");
+        boolean updated = memberService.updateMemberPassword(no, currentPassword, newPassword);
+        if (updated) {
+            return ResponseEntity.ok(null);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
 
@@ -149,5 +152,16 @@ public ResponseEntity<?> deleteSelfAccount(@RequestBody Map<String, String> dele
         return ResponseEntity.badRequest().body("Error: " + e.getMessage());
     }
 }
-
+    @PostMapping("{no}/delete")
+    @PreAuthorize("#no == authentication.details")
+    public ResponseEntity<?> deleteSelfAccount(@PathVariable int no, @RequestBody Map<String, Object> request) {
+        Map<String, String> data = (Map<String, String>) request.get("data");
+        String password = data.get("password");
+        boolean deleted = memberService.deleteSelfAccount(no, password);
+        if (deleted) {
+            return ResponseEntity.ok(null);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
