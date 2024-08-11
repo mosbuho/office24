@@ -109,6 +109,12 @@
                 }
             }
 
+            .info-row.modified {
+                background-color: var(--secondary-color) !important;
+                color: var(--background-color);
+                border: 2px solid var(--secondary-color);
+            }
+
             .info-row:has(u):hover {
                 background-color: var(--shaded-color);
             }
@@ -580,4 +586,11 @@
             }
         }
     }
+
+
+    .update-password .popup-form input {
+        margin-top: 5px;
+    }
+
+
 }

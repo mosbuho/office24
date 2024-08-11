@@ -39,4 +39,14 @@
         #{no} </update>
 
     <delete id="deleteMember"> DELETE FROM member WHERE no = #{no} </delete>
+
+    <select id="getMemberById" resultType="com.kh.backend.member.Member"> SELECT * FROM member WHERE
+        no = #{no} </select>
+
+    <update id="updateMemberProfile" parameterType="com.kh.backend.member.Member"> UPDATE member SET
+        UPDATE member SET name = #{name}, phone = #{phone}, email = #{email}, birth = #{birth} WHERE
+        no = #{no} </update>
+
+    <update id="updatePassword"> UPDATE member SET pw = #{newPassword} WHERE no = #{no} </update>
+
 </mapper>
