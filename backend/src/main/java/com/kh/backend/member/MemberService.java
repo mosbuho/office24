@@ -447,14 +447,16 @@ public class MemberService {
         }
         return false;
     }
-@Transactional
-public boolean deleteSelfAccount(int no, String password) {
-    Member member = memberMapper.getMemberById(no);
-    if (member != null && passwordEncoder.matches(password, member.getPw())) {
-        memberMapper.deleteMember(no);
-        return true;
-    }
-    return false;
-}
 
+    @Transactional
+    public boolean deleteSelfAccount(int no, String password) {
+        Member member = memberMapper.getMemberById(no);
+        System.out.println(password);
+        System.out.println(member.getPw());
+        if (member != null && passwordEncoder.matches(password, member.getPw())) {
+            memberMapper.deleteMember(no);
+            return true;
+        }
+        return false;
+    }
 }

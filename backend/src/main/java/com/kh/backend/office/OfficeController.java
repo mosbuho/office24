@@ -22,7 +22,7 @@ public class OfficeController {
         return officeService.serveImage(filename);
     }
 
-@GetMapping("/api/office")
+@GetMapping("/office")
 public List<Map<String, Object>> getOfficeList(
         @RequestParam(defaultValue = "1") int page,
         @RequestParam(defaultValue = "24") int size,

@@ -1,11 +1,33 @@
 /* global kakao */
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import ReactDOMServer from "react-dom/server";
+import ReactDOM from "react-dom/client";
 import { FaStar } from "react-icons/fa";
 import { MdLocationOn } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import "../../styles/components/member/KakaoMap.css";
+
+const CustomOverlayContent = ({ item, onClick }) => {
+  return (
+    <div className="custom-overlay" onClick={onClick}>
+      <div className="custom-marker">
+        <MdLocationOn />
+      </div>
+      <div className="info-window">
+        <h3>{item.TITLE}</h3>
+        <div className="info-window-content">
+          <div className="price">
+            {item.PRICEPERDAY.toLocaleString()}원/1일
+          </div>
+          <div className="item-rating">
+            <FaStar />
+            <div className="rate">{item.RATING}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function KakaoMap(props) {
   const { mapData } = props;
@@ -40,7 +62,7 @@ export default function KakaoMap(props) {
         },
         (error) => {
           console.error("Error getting geolocation:", error);
-          setUserLocation({ latitude: 37.5665, longitude: 126.9780 }); // 기본 위치 (서울시청)
+          setUserLocation({ latitude: 37.5665, longitude: 126.9780 });
         },
         { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
       );
@@ -66,6 +88,7 @@ export default function KakaoMap(props) {
   }, []);
 
   const initializeMap = useCallback((lat, lng) => {
+    console.log(lat, lng);
     kakao.maps.load(() => {
       const mapOptions = {
         center: new kakao.maps.LatLng(lat, lng),
@@ -77,7 +100,7 @@ export default function KakaoMap(props) {
 
       new kakao.maps.Marker({
         position: new kakao.maps.LatLng(lat, lng),
-        map: map,
+        map: map
       });
 
       setKakaoMap(map);
@@ -100,35 +123,20 @@ export default function KakaoMap(props) {
     const newMarkers = mapData.map((item) => {
       const position = new kakao.maps.LatLng(item.LATITUDE, item.LONGITUDE);
 
+      const content = document.createElement('div');
+      const root = ReactDOM.createRoot(content);
+
+      root.render(
+        <CustomOverlayContent
+          item={item}
+          onClick={() => navigate(`/office/${item.NO}`)}
+        />
+      );
+
       const customOverlay = new kakao.maps.CustomOverlay({
         position,
-        content: ReactDOMServer.renderToString(
-          <div className="custom-overlay">
-            <div
-              className="custom-marker"
-              onClick={() => navigate(`/office/${item.NO}`)}
-            >
-              <MdLocationOn />
-            </div>
-            <div className="info-window">
-              <h3>{item.TITLE}</h3>
-              <div className="info-window-content">
-                <div className="price">
-                  {item.PRICEPERDAY.toLocaleString()}원/1일
-                </div>
-                <div className="item-rating">
-                  <FaStar />
-                  <div className="rate">{item.RATING}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ),
+        content,
         zIndex: 3,
-      });
-
-      kakao.maps.event.addListener(customOverlay, 'click', () => {
-        navigate(`/office/${item.NO}`);
       });
 
       customOverlay.setMap(kakaoMap);
