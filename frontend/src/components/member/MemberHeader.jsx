@@ -5,6 +5,7 @@ import { IoSearch } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import "../../styles/components/member/MemberHeader.css";
 import Calendar from "./Calendar";
+import { isAuthenticated } from "../../utils/auth";
 
 // render: 지역 옵션 목록 //
 const LOCATION_OPTIONS = [
@@ -97,9 +98,17 @@ const MemberHeader = () => {
   const dropdownRef = useRef(null);
   const optionsRef = useRef(null);
   const navigate = useNavigate();
+  const [authenticated, setAuthenticated] = useState(false);
 
   // event handler: 이벤트 분류 //
   useEffect(() => {
+    const checkAuthentication = async () => {
+      const authStatus = await isAuthenticated();
+      setAuthenticated(authStatus);
+    };
+
+    checkAuthentication();
+
     document.addEventListener("click", handleClickOutside);
     window.addEventListener("scroll", handleScroll);
     return () => {
@@ -393,12 +402,26 @@ const MemberHeader = () => {
           <FaCircleUser style={{ color: "gray" }} />
           {showDropdown && (
             <div className="profile-dropdown">
-              <div className="dropdown-option" onClick={handleLogin}>
-                로그인
-              </div>
-              <div className="dropdown-option" onClick={handleRegister}>
-                회원가입
-              </div>
+              {authenticated ? (
+                <>
+                  <div className="dropdown-option" onClick={() => navigate("/myinfo")}>
+                    내 정보
+                  </div>
+                  <div className="dropdown-option" onClick={() => {
+                  }}>
+                    로그아웃
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="dropdown-option" onClick={handleLogin}>
+                    로그인
+                  </div>
+                  <div className="dropdown-option" onClick={handleRegister}>
+                    회원가입
+                  </div>
+                </>
+              )}
               <div className="dropdown-divider"></div>
               <div className="dropdown-option">Q&A</div>
             </div>
