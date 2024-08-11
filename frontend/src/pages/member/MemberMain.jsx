@@ -48,15 +48,13 @@ function MemberMain() {
     }
   };
 
-  // Fetch data when currentPage changes
   useEffect(() => {
     fetchData();
   }, [currentPage]);
 
-  // Reset page and fetch data when searchParams change
   useEffect(() => {
     setCurrentPage(1);
-    fetchData(1); // Fetch data for the first page with new search parameters
+    fetchData(1);
   }, [location.state?.searchParams]);
 
   useEffect(() => {
