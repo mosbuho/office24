@@ -1,5 +1,4 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { useLocation } from "react-router-dom";
 import KakaoMap from "../../components/member/KakaoMap";
@@ -7,55 +6,63 @@ import MemberFooter from "../../components/member/MemberFooter";
 import MemberHeader from "../../components/member/MemberHeader";
 import OfficeItem from "../../components/member/OfficeItem";
 import "../../styles/pages/member/MemberMain.css";
+import { getNo } from "../../utils/auth";
+import axios from "../../utils/axiosConfig";
 
 function MemberMain() {
+  const [mapData, setMapData] = useState([]);
+  const [userLikes, setUserLikes] = useState(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
   const [isMapExpanded, setIsMapExpanded] = useState(false);
   const [isMapFullExpanded, setIsMapFullExpanded] = useState(false);
   const [isButtonVisible, setIsButtonVisible] = useState(false);
-  const [mapData, setMapData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(24);
   const location = useLocation();
   const [pageLength, setPageLength] = useState(0);
 
-  const searchParams = location.state?.searchParams || {};
+  const searchParams = useMemo(
+    () => location.state?.searchParams || {},
+    [location.state]
+  );
 
-  const fetchData = async (page = currentPage) => {
+  const fetchUserLikes = useCallback(async () => {
+    const userNo = getNo();
+    if (!userNo) return;
     try {
-      const response = await axios.get("http://localhost:8080/office", {
-        params: {
-          page,
-          size: itemsPerPage,
-          location: searchParams.location || "",
-          startDate: searchParams.startDate || "",
-          endDate: searchParams.endDate || "",
-          attendance: searchParams.attendance || 1,
-        },
-      });
-      const data = response.data;
-      setPageLength(data.length);
-      if (Array.isArray(data)) {
-        if (page === 1) {
-          setMapData(data);
-        } else {
-          setMapData((prevData) => [...prevData, ...data]);
-        }
-      } else {
-        console.error("Expected an array but got:", data);
-      }
+      const response = await axios.get(`/member/${userNo}/liked-offices`);
+      setUserLikes(new Set(response.data));
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error(error);
     }
-  };
+  }, []);
+
+  const fetchData = useCallback(
+    async (page = currentPage) => {
+      try {
+        const response = await axios.get("/office", {
+          params: {
+            page,
+            size: 24,
+            location: searchParams.location || "",
+            startDate: searchParams.startDate || "",
+            endDate: searchParams.endDate || "",
+            attendance: searchParams.attendance || 1,
+          },
+        });
+        const newData = response.data;
+        setMapData((prevData) =>
+          page === 1 ? newData : [...prevData, ...newData]
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [currentPage, searchParams]
+  );
 
   useEffect(() => {
-    fetchData();
-  }, [currentPage]);
-
-  useEffect(() => {
-    setCurrentPage(1);
+    fetchUserLikes();
     fetchData(1);
-  }, [location.state?.searchParams]);
+  }, [fetchUserLikes, fetchData]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,6 +78,11 @@ function MemberMain() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleLoadMore = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+    fetchData(currentPage + 1);
+  };
+
   const toggleMap = () => {
     setIsMapExpanded(!isMapExpanded);
   };
@@ -78,12 +90,6 @@ function MemberMain() {
   const toggleMapFullExpanded = () => {
     setIsMapFullExpanded(!isMapFullExpanded);
   };
-
-  const handleLoadMore = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
-  };
-
-  console.log(itemsPerPage);
 
   return (
     <>
@@ -96,19 +102,14 @@ function MemberMain() {
                 className={`office-item-list ${isMapExpanded ? " expanded" : ""
                   }`}
               >
-                {mapData.map((item, index) => (
+                {mapData.map((item) => (
                   <OfficeItem
-                    key={index}
-                    NO={item.NO}
-                    TITLE={item.TITLE}
-                    RATING={item.RATING}
-                    LOCATION={item.LOCATION}
-                    PRICEPERDAY={item.PRICEPERDAY.toLocaleString()}
-                    OFFICEIMGURL={item.OFFICEIMGURL}
+                    key={item.NO}
+                    {...item}
+                    initialLikeStatus={userLikes.has(item.NO)}
                   />
                 ))}
               </div>
-
               <div className="item-list-button-container">
                 {pageLength === itemsPerPage && (
                   <button
@@ -127,7 +128,6 @@ function MemberMain() {
               </div>
             </div>
           )}
-
           {isMapExpanded && (
             <div
               className={`map-container ${isMapFullExpanded ? "full-expanded" : ""
@@ -136,7 +136,7 @@ function MemberMain() {
             >
               <button
                 className="map-button full-extend"
-                onClick={() => toggleMapFullExpanded()}
+                onClick={toggleMapFullExpanded}
               >
                 {isMapFullExpanded ? "접기 >" : "< 확장"}
               </button>
