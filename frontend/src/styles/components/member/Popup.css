@@ -1,0 +1,216 @@
+    .popup-overlay {
+        .popup-header {
+            padding-right: 40px;
+        }
+
+        .rating {
+            .star {
+                color: var(--shaded-color);
+            }
+
+            .star.active {
+                color: var(--shaded-dark-color);
+            }
+        }
+
+        .verification {
+            .yes {
+                background-color: var(--primary-color) !important;
+                color: var(--background-color) !important;
+            }
+
+            .no {
+                background-color: var(--discard-color) !important;
+            }
+        }
+
+        .attendance-container {
+            width: fit-content;
+            ;
+            margin: auto;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+
+            input {
+                background-color: transparent;
+                border: 1px solid var(--shaded-dark-color);
+                border-radius: 5px;
+            }
+        }
+
+        textarea {
+            width: 100%;
+        }
+    }
+
+
+
+    .update-password input {
+        width: 100%;
+        margin-top: 5px;
+    }
+
+
+/* 팝업 */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+
+    .popup {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        min-width: 500px;
+
+        h2:first-child {
+            display: inline;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 30px;
+            cursor: pointer;
+            color: var(--discard-color);
+        }
+
+        .popup-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+
+            button {
+                padding: 10px 20px;
+                margin-left: 10px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+
+                &:first-child {
+                    background-color: transparent;
+                    color: var(--shaded-dark-color);
+                }
+
+                &:last-child {
+                    background-color: black;
+                    color: white;
+                }
+            }
+
+            button:hover {
+                opacity: 0.7;
+            }
+        }
+    }
+
+    .calendar-popup {
+        .show-date-value {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid var(--shaded-color);
+            width: fit-content;
+            margin: auto;
+            margin-top: 0;
+            margin-bottom: 0;
+            border-radius: 30px;
+
+            .wrap-right {
+                padding: 10px 10px 10px 20px;
+                border-radius: 30px;
+
+            }
+
+            .wrap-left {
+                padding: 10px 20px 10px 10px;
+                border-radius: 30px;
+            }
+        }
+
+    }
+
+    .attendance-input-wrapper {
+        margin: auto;
+        display: flex;
+        align-items: center;
+        width: fit-content;
+        margin-top: 20px;
+
+        .custom-number-input::-webkit-inner-spin-button,
+        .custom-number-input::-webkit-outer-spin-button {
+
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .custom-number-input {
+            -moz-appearance: textfield;
+            text-align: center;
+            font-size: 18px;
+            width: 50px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input {
+            border: transparent !important;
+        }
+
+        button {
+            background-color: var(--background-color);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            font-size: 20px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border-radius: 50%;
+            margin: 0 5px;
+        }
+
+        button:hover {
+            background-color: #e0e0e0;
+        }
+    }
+
+    .phone-number-input-wrapper {
+        min-width: 30vw;
+    }
+
+    .popup-form,
+    .phone-number-input-wrapper,
+    .name-input-wrapper {
+        margin-top: 20px;
+
+        input {
+            width: calc(100% - 20px);
+            border: transparent;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid var(--shaded-color);
+        }
+    }
+
+}

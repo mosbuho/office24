@@ -20,9 +20,16 @@
                 height: fit-content;
             }
 
-            button {
-                background-color: var(--background-color);
+            a {
+                text-decoration: none;
+                background: none;
+                color: inherit;
+                padding: 0;
+                margin: 0;
                 border: none;
+                display: inline-block;
+                display: block;
+                color: var(--secondary-color);
                 padding: 10px;
                 font-size: 16px;
                 cursor: pointer;
@@ -32,7 +39,7 @@
                 font-weight: 900;
             }
 
-            button:hover {
+            a:hover {
                 color: var(--primary-color);
                 font-size: larger;
                 transition: all 0.3s ease-in-out;
@@ -453,52 +460,6 @@
 } */
     }
 
-    .popup-overlay {
-        .popup-header {
-            padding-right: 40px;
-        }
-
-        .rating {
-            .star {
-                color: var(--shaded-color);
-            }
-
-            .star.active {
-                color: var(--shaded-dark-color);
-            }
-        }
-
-        .verification {
-            .yes {
-                background-color: var(--primary-color) !important;
-                color: var(--background-color) !important;
-            }
-
-            .no {
-                background-color: var(--discard-color) !important;
-            }
-        }
-
-        .attendance-container {
-            width: fit-content;
-            ;
-            margin: auto;
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-
-            input {
-                background-color: transparent;
-                border: 1px solid var(--shaded-dark-color);
-                border-radius: 5px;
-            }
-        }
-
-        textarea {
-            width: 100%;
-        }
-    }
-
     .review-list {
         display: flex;
         flex-wrap: wrap;
@@ -587,11 +548,5 @@
             }
         }
     }
-
-
-    .update-password .popup-form input {
-        margin-top: 5px;
-    }
-
 
 }
