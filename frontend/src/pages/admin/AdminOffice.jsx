@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { EditorState, convertFromRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import axios from '../../utils/axiosConfig';
 import Sidebar from '../../components/admin/AdminSidebar';
 import Header from "../../components/admin/AdminHeader";
@@ -17,67 +20,69 @@ const AdminOffice = () => {
         capacity: '',
         mainImageUrl: '',
         additionalImageUrls: ['', ''],
-        mainImage: null,
-        additionalImages: [null, null]
     });
+
+    const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchOfficeDetails = async () => {
-            const { data } = await axios.get(`/admin/office/${no}`, {
-                withCredentials: true,
-            });
+            try {
+                const { data } = await axios.get(`/admin/office/${no}`, { withCredentials: true });
 
-            setOffice({
-                title: data.title || '',
-                price: data.price || '',
-                address: data.address || '',
-                zipcode: data.zipCode || '',
-                sido: data.sido || '',
-                content: data.content || '',
-                capacity: data.capacity || '',
-                mainImageUrl: data.titleImg ? `http://localhost:8080/img/${data.titleImg}` : '',
-                additionalImageUrls: data.additionalImageUrls.map(url => url ? `http://localhost:8080/img/${url}` : ''),
-                mainImage: null,
-                additionalImages: [null, null]
-            });
+                if (data.content) {
+                    const contentState = convertFromRaw(JSON.parse(data.content));
+                    setEditorState(EditorState.createWithContent(contentState));
+                }
+
+                setOffice({
+                    title: data.title || '',
+                    price: data.price || '',
+                    address: data.address || '',
+                    zipcode: data.zipCode || '',
+                    sido: data.sido || '',
+                    content: data.content || '',
+                    capacity: data.capacity || '',
+                    mainImageUrl: data.titleImg ? `http://localhost:8080/img/${data.titleImg}` : '',
+                    additionalImageUrls: data.additionalImageUrls.map(url => url ? `http://localhost:8080/img/${url}` : ''),
+                });
+            } catch (err) {
+                alert("오피스 정보를 불러오는 중 오류가 발생했습니다.");
+            }
         };
 
         fetchOfficeDetails();
     }, [no]);
 
-    const navigate = useNavigate();
-
-    const handleAccept = () => {
+    const handleAccept = async () => {
         try {
-            axios.put(`/admin/office/${no}/accept`);
+            await axios.put(`/admin/office/${no}/accept`);
             alert("승인 되었습니다.");
             navigate('/admin/office');
         } catch {
             alert("처리 중 오류가 발생했습니다. 다시 시도해주세요.");
         }
-    }
+    };
 
-    const handleRefuse = () => {
+    const handleRefuse = async () => {
         try {
-            axios.put(`/admin/office/${no}/refuse`);
+            await axios.put(`/admin/office/${no}/refuse`);
             alert("반려 되었습니다.");
             navigate('/admin/office');
         } catch {
             alert("처리 중 오류가 발생했습니다. 다시 시도해주세요.");
         }
-    }
+    };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         try {
-            axios.delete(`/admin/office/${no}`);
+            await axios.delete(`/admin/office/${no}`);
             alert("삭제 되었습니다.");
             navigate('/admin/office');
         } catch {
             alert("처리 중 오류가 발생했습니다. 다시 시도해주세요.");
         }
-    }
-
-
+    };
 
     return (
         <div className="admin-main">
@@ -88,15 +93,15 @@ const AdminOffice = () => {
                     <div className='image-preview-section'>
                         <div className='main-image-preview'>
                             <img
-                                src={office.mainImage ? URL.createObjectURL(office.mainImage) : office.mainImageUrl}
+                                src={office.mainImageUrl}
                                 alt="Main Preview"
                             />
                         </div>
                         <div className='other-images-preview'>
-                            {office.additionalImages.map((image, index) => (
+                            {office.additionalImageUrls.map((url, index) => (
                                 <div key={index}>
                                     <img
-                                        src={image ? URL.createObjectURL(image) : office.additionalImageUrls[index]}
+                                        src={url}
                                         alt={`Preview ${index + 1}`}
                                     />
                                 </div>
@@ -140,19 +145,19 @@ const AdminOffice = () => {
                             </div>
                             <div className='form-group'>
                                 <label htmlFor="content">설명</label>
-                                <textarea
-                                    id="content"
-                                    rows="4"
-                                    value={office.content}
-                                    readOnly
-                                ></textarea>
+                                <div className='editor-wrapper'>
+                                    <Editor
+                                        editorState={editorState}
+                                        readOnly={true}
+                                        toolbarHidden={true}
+                                    />
+                                </div>
                             </div>
                             <div className='form-group'>
                                 <label htmlFor="capacity">수용인원</label>
                                 <input
                                     type="number"
                                     id="capacity"
-                                    placeholder='people'
                                     value={office.capacity}
                                     readOnly
                                 />
