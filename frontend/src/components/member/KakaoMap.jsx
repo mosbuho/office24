@@ -17,11 +17,11 @@ const CustomOverlayContent = ({ item, onClick }) => {
         <h3>{item.TITLE}</h3>
         <div className="info-window-content">
           <div className="price">
-            {item.PRICEPERDAY.toLocaleString()}원/1일
+            {item.PRICEPERDAY.toLocaleString()}원/일
           </div>
           <div className="item-rating">
             <FaStar />
-            <div className="rate">{item.RATING}</div>
+            <div className="rate">{item.RATING.toFixed(1)}</div>
           </div>
         </div>
       </div>
@@ -88,7 +88,6 @@ export default function KakaoMap(props) {
   }, []);
 
   const initializeMap = useCallback((lat, lng) => {
-    console.log(lat, lng);
     kakao.maps.load(() => {
       const mapOptions = {
         center: new kakao.maps.LatLng(lat, lng),
@@ -116,7 +115,11 @@ export default function KakaoMap(props) {
   }, [scriptLoaded, userLocation, kakaoMap, initializeMap]);
 
   useEffect(() => {
-    if (!kakaoMap || !mapData.length) return;
+    if (!kakaoMap || !mapData.length) {
+      markers.forEach((marker) => marker.setMap(null));
+      setMarkers([]);
+      return;
+    }
 
     markers.forEach((marker) => marker.setMap(null));
 

@@ -8,6 +8,7 @@ import OfficeItem from "../../components/member/OfficeItem";
 import "../../styles/pages/member/MemberMain.css";
 import { getNo } from "../../utils/auth";
 import axios from "../../utils/axiosConfig";
+import { FaArrowCircleLeft, FaArrowCircleRight } from "react-icons/fa";
 
 function MemberMain() {
   const [mapData, setMapData] = useState([]);
@@ -71,7 +72,7 @@ function MemberMain() {
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
       const distanceFromBottom = documentHeight - (scrollTop + windowHeight);
 
-      setIsButtonVisible(distanceFromBottom <= 1000 && mapData.length >= 24);
+      setIsButtonVisible(distanceFromBottom <= 500 && mapData.length === currentPage * 24);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -99,29 +100,30 @@ function MemberMain() {
           {!isMapFullExpanded && (
             <div style={{ margin: "auto" }}>
               <div
-                className={`office-item-list ${
-                  isMapExpanded ? "expanded" : ""
-                }`}
+                className={`office-item-list ${isMapExpanded ? "expanded" : ""
+                  }`}
               >
-                {mapData.map((item) => (
-                  <OfficeItem
-                    key={item.NO}
-                    {...item}
-                    initialLikeStatus={userLikes.has(item.NO)}
-                  />
-                ))}
+                {mapData.length === 0 ? (
+                  <div className="office-not-found">검색 결과가 없습니다.</div>
+                ) : (
+                  mapData.map((item) => (
+                    <OfficeItem
+                      key={item.NO}
+                      {...item}
+                      initialLikeStatus={userLikes.has(item.NO)}
+                    />
+                  ))
+                )}
               </div>
               <div className="item-list-button-container">
-                {mapData.length >= 24 && (
-                  <button
-                    className={`more-button ${
-                      isButtonVisible ? "visible" : ""
+                <button
+                  className={`more-button ${isButtonVisible ? "visible" : ""
                     }`}
-                    onClick={handleLoadMore}
-                  >
-                    더보기
-                  </button>
-                )}
+                  onClick={handleLoadMore}
+                >
+                  더보기
+                </button>
+
                 <button className="expand-map-button" onClick={toggleMap}>
                   <FaMapLocationDot />
                 </button>
@@ -130,15 +132,18 @@ function MemberMain() {
           )}
           {isMapExpanded && (
             <div
-              className={`map-container ${
-                isMapFullExpanded ? "full-expanded" : ""
-              }`}
+              className={`map-container ${isMapFullExpanded ? "full-expanded" : ""
+                }`}
             >
               <button
                 className="map-button full-extend"
                 onClick={toggleMapFullExpanded}
               >
-                {isMapFullExpanded ? "접기 >" : "< 확장"}
+                {isMapFullExpanded ? (
+                  <><FaArrowCircleRight />접기</>
+                ) : (
+                  <><FaArrowCircleLeft />확장</>
+                )}
               </button>
               <KakaoMap
                 key={isMapFullExpanded ? "full" : "normal"}

@@ -41,7 +41,7 @@ const ReviewGraph = ({ averageRating = 0, noOfReview, ratingsDistribution }) => 
   return (
     <div className="review-statics-section">
       <h3>
-        <FaStar /> {averageRating.toFixed(1)} · 후기 {noOfReview}개
+        <FaStar /> {averageRating.toFixed(1)} <span>후기 {noOfReview}개</span>
       </h3>
       <div className="rating-bars">
         {Object.keys(ratingsDistribution).map((rating) => (
@@ -73,7 +73,7 @@ const ReviewList = ({ reviews }) => {
   };
 
   if (!Array.isArray(reviews) || reviews.length === 0) {
-    return <div className="no-reviews">리뷰가 없습니다.</div>;
+    return <></>;
   }
 
   return (
@@ -160,7 +160,7 @@ const MemberOffice = () => {
   }, [officeNo]);
 
   if (!officeData) {
-    return <div>Loading...</div>;
+    return <></>;
   }
 
   const {
@@ -179,7 +179,7 @@ const MemberOffice = () => {
     return acc;
   }, {});
 
-  
+
 
   //render LeftCol
   const LeftColumn = ({ office, averageRating, noOfReview, managerName }) => {
@@ -189,14 +189,13 @@ const MemberOffice = () => {
           <h2>{office.address}</h2>
         </div>
         <div className="information">
-          최대 수용인원 {office.capacity}명
+          최대 {office.capacity.toLocaleString('ko-KR')}명
         </div>
         <div className="rating">
           <div className="score">
             <FaStar />
-            <div className="rate">{averageRating}</div>
+            <div className="rate">{averageRating.toFixed(1)}</div>
           </div>
-          <span>·</span>
           <u>
             후기<b>({noOfReview})</b>
           </u>
@@ -259,8 +258,8 @@ const MemberOffice = () => {
 
     const isDateRangeAvailable = (startDate, endDate) => {
       const datesInRange = getDatesInRange(startDate, endDate);
-      return !datesInRange.some(date => 
-        notallowedDates.some(notAllowedDate => 
+      return !datesInRange.some(date =>
+        notallowedDates.some(notAllowedDate =>
           isSameDay(notAllowedDate, date)
         )
       );
@@ -269,15 +268,15 @@ const MemberOffice = () => {
     const getDatesInRange = (startDate, endDate) => {
       let dates = [];
       let currentDate = new Date(startDate);
-  
+
       while (currentDate <= endDate) {
         dates.push(new Date(currentDate));
         currentDate.setDate(currentDate.getDate() + 1);
       }
-  
+
       return dates;
     };
-  
+
 
     useEffect(() => {
       const handleClickOutside = (event) => {
@@ -379,7 +378,7 @@ const MemberOffice = () => {
           <div className="background-for-input-wrapper">
             <div className="price">
               <h4>
-                <b>₩{office.price.toLocaleString()}</b> /1석&1일
+                <b>₩{office.price.toLocaleString()}</b>/일
               </h4>
             </div>
             <h3>사용 기간과 인원 입력하고 가격을 확인하세요</h3>
@@ -399,7 +398,7 @@ const MemberOffice = () => {
                   }
                 }}
               >
-                <div className="attendance-input-wrapper">
+                <div className="attendance-input-wrapper-1">
                   <label
                     htmlFor="reservation-attendance-input"
                     className="search-label"
@@ -467,11 +466,11 @@ const MemberOffice = () => {
               </div>
             </div>
             <div className="reservation-information">
-              #예약이 확정되기 전에는 요금이 청구되지 않습니다.
+              예약이 확정되기 전에는 요금이 청구되지 않습니다.
             </div>
             <hr />
             <div className="total-price-line">
-              <div>총합계</div>
+              <div>합계</div>
               <div>₩{calculateTotalPrice().toLocaleString()}</div>
             </div>
           </div>

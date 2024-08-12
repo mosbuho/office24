@@ -17,6 +17,7 @@
         height: auto;
         box-sizing: border-box;
         position: relative;
+        cursor: pointer;
 
         .office-item-image-box {
             position: relative;
@@ -57,7 +58,7 @@
 
         .office-item-top-left h1 {
             color: var(--shaded-dark-color);
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             margin: 0;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -117,14 +118,13 @@
 
             svg {
                 color: var(--background-color);
-                width: 15px;
-                height: 15px;
+                width: 13px;
+                height: 13px;
                 margin-right: 3px;
             }
 
             .rate {
-                font-size: 15px;
-                font-weight: 600;
+                font-size: 13px;
                 margin-right: 3px;
             }
         }
