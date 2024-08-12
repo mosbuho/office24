@@ -18,4 +18,14 @@ public interface ReviewMapper {
     List<Map<String, Object>> getReviewsByOfficeNo(@Param("officeNo") int officeNo);
 
     int getReviewCountByOfficeNo(int officeNo);
+
+    List<Map<String, Object>> getReviewsByMemberNoWithPagination(
+        @Param("no") int no, 
+        @Param("startRow") int startRow, 
+        @Param("endRow") int endRow
+    );
+
+    int updateReview(@Param("no") int no, @Param("content") String content, @Param("rating") double rating);
+
+    int deleteReviews(List<Integer> ids);
 }

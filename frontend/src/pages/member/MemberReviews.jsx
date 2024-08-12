@@ -1,49 +1,73 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ReviewItem } from "../../components/member/ReviewItem";
+import axios from "../../utils/axiosConfig";
+import { getNo } from "../../utils/auth";
 
 function MemberReviews() {
-  const [reviews, setReviews] = useState([
-    {
-      no: 1,
-      title: "강남역 사무실",
-      content:
-        "깨끗하고 조용한 환경에서 업무에 집중할 수 있었습니다. 위치도 좋고 시설도 훌륭해요.",
-      rating: 5,
-      date: "2024-03-15",
-    },
-    {
-      no: 2,
-      title: "홍대입구 코워킹스페이스",
-      content:
-        "창의적인 분위기와 다양한 사람들과의 교류가 가능해서 좋았습니다. 다만 가끔 소음이 있어 아쉬웠어요.",
-      rating: 4,
-      date: "2024-02-20",
-    },
-    {
-      no: 3,
-      title: "판교 테크노밸리 오피스",
-      content:
-        "최신 시설과 넓은 공간이 인상적이었습니다. IT 기업들이 많아 네트워킹에도 좋았어요.",
-      rating: 5,
-      date: "2024-01-10",
-    },
-    {
-      no: 4,
-      title: "역삼동 비즈니스 센터",
-      content:
-        "위치가 매우 좋고 회의실 이용이 편리했습니다. 다만 주차 공간이 부족한 점이 아쉬웠어요.",
-      rating: 4,
-      date: "2023-12-05",
-    },
-    {
-      no: 5,
-      title: "성수동 창업 공간",
-      content:
-        "젊고 활기찬 분위기에서 일할 수 있어 좋았습니다. 주변 카페와 식당도 많아 편리해요.",
-      rating: 4,
-      date: "2023-11-22",
-    },
-  ]);
+  const no = getNo();
+  const [reviews, setReviews] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [selectedReviews, setSelectedReviews] = useState([]);
+
+  const fetchReviews = async (currentPage) => {
+    try {
+      const response = await axios.get(`/member/${no}/review`, {
+        params: {
+          page: currentPage,
+          size: 6
+        }
+      });
+      const reviewData = response.data.map(review => ({
+        no: review.REVIEWNO,
+        title: review.OFFICETITLE,
+        content: review.CONTENT,
+        rating: review.RATING,
+        officeNo: review.OFFICENO
+      }));
+      
+      setReviews(prevReviews => [...prevReviews, ...reviewData]);
+
+      if (reviewData.length < 6) {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchReviews(page);
+  }, [page]);
+
+  const handleLoadMore = () => {
+    setPage(prevPage => prevPage + 1); 
+  };
+
+  const handleReviewSelect = (reviewNo) => {
+    setSelectedReviews((prevSelected) =>
+      prevSelected.includes(reviewNo)
+        ? prevSelected.filter((no) => no !== reviewNo)
+        : [...prevSelected, reviewNo]
+    );
+  };
+
+  const handleDeleteSelected = async () => {
+    const confirmed = window.confirm("선택한 리뷰를 삭제하시겠습니까?");
+    if (!confirmed) return;
+
+    try {
+      await axios.delete(`/member/review`, { data: { ids: selectedReviews } });
+
+      setReviews((prevReviews) =>
+        prevReviews.filter((review) => !selectedReviews.includes(review.no))
+      );
+      setSelectedReviews([]);
+      alert("해당 리뷰가 성공적으로 삭제되었습니다.");
+    } catch (error) {
+      console.error("Error deleting reviews:", error);
+    }
+  };
 
   return (
     <div className="reviews-tab">
@@ -51,10 +75,51 @@ function MemberReviews() {
       <div className="review-list">
         {reviews.map((review) => (
           <div className="btn-review-out" key={review.no}>
-            <ReviewItem {...review} />
+            <ReviewItem {...review}
+            onSelect={handleReviewSelect}
+            isSelected={selectedReviews.includes(review.no)}
+            />
           </div>
         ))}
       </div>
+      {selectedReviews.length > 0 && (
+        <button onClick={handleDeleteSelected}
+        style={{
+          display: 'inline-block',
+          marginTop: '20px',
+          marginRight: '10px',
+          padding: '10px 20px',
+          backgroundColor: '#f9f9f9',
+          color: '#333',
+          border: '1px solid #ddd',
+          borderRadius: '8px',
+          cursor: 'pointer',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          fontSize: '14px',
+          fontWeight: 'bold',
+          textAlign: 'center'
+        }}>
+          선택된 리뷰 삭제
+        </button>
+      )}
+      {hasMore && (
+        <button onClick={handleLoadMore}
+        style={{
+          display: 'inline-block',
+          marginTop: '20px',
+          padding: '10px 20px',
+          backgroundColor: '#f9f9f9',
+          color: '#333',
+          border: '1px solid #ddd',
+          borderRadius: '8px',
+          cursor: 'pointer',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          fontSize: '14px',
+          fontWeight: 'bold',
+          textAlign: 'center'
+        }}>
+          더보기</button>
+      )}
     </div>
   );
 }
