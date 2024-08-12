@@ -7,7 +7,7 @@ import MemberFooter from "../../components/member/MemberFooter.jsx";
 import "../../styles/pages/member/MemberPayment.css";
 import axios from "../../utils/axiosConfig";
 import { getNo } from "../../utils/auth.js";
-
+import MemberHeader from "../../components/member/MemberHeader.jsx";
 
 const MemberPayment = () => {
   const no = getNo();
@@ -141,12 +141,12 @@ const MemberPayment = () => {
     };
 
     const handleSave = () => {
-      const nameRegex = /^[가-힣]{1,12}$/;
+      const nameRegex = /^[가-힣]{1,6}$/;
       if (nameRegex.test(localName)) {
         onSave(localName);
         onClose();
       } else {
-        alert("이름은 12자 이하의 한글로 입력해주세요.");
+        alert("이름은 6자 이하의 한글로 입력해주세요.");
       }
     };
 
@@ -174,7 +174,7 @@ const MemberPayment = () => {
               className="search-input"
               value={localName}
               onChange={handleNameChange}
-              placeholder="12자 이하의 한글이름"
+              placeholder="6자 이하의 한글이름"
               ref={nameInputRef}
             />
           </div>
@@ -262,7 +262,7 @@ const MemberPayment = () => {
   const [address, setAddress] = useState("");
   const [postcode, setPostcode] = useState("");
 
-  const isNameValid = /^[가-힣]{1,12}$/.test(name);
+  const isNameValid = /^[가-힣]{1,6}$/.test(name);
   const isPhoneNumberValid = /^\d{11}$/.test(phoneNumber);
   const isEmailValid = email.includes("@");
   const isAddressValid = address.length > 0;
@@ -271,7 +271,7 @@ const MemberPayment = () => {
 
   const handlePayment = async () => {
     if (!isNameValid) {
-      alert("이름을 12자 이하의 한글로 입력해주세요.");
+      alert("이름을 6자 이하의 한글로 입력해주세요.");
       return;
     }
     if (!isPhoneNumberValid) {
@@ -341,14 +341,7 @@ const MemberPayment = () => {
 
   return (
     <div>
-      <div
-        className="member-sub-page-logo"
-        onClick={() => navigate("/")}
-        style={{ cursor: "pointer" }}
-      >
-        OFFICE24
-      </div>
-
+      <MemberHeader />
       <div className="member-payment-page">
         <div className="sub-header">
           <IoChevronBack onClick={() => navigate(-1)} />
@@ -410,7 +403,7 @@ const MemberPayment = () => {
                       </p>
                     )}
                     {!isNameValid && (
-                      <p className="error">이름은 12글자 이하의 한글로 입력해주세요.</p>
+                      <p className="error">이름은 6글자 이하의 한글로 입력해주세요.</p>
                     )}
                     <u>수정</u>
                   </div>

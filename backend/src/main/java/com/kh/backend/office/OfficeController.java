@@ -43,7 +43,6 @@ public class OfficeController {
     // 오피스 상세 페이지
     @GetMapping("/office/{officeNo}")
     public ResponseEntity<Map<String, Object>> getOfficeDetails(@PathVariable int officeNo) {
-        System.out.println(officeNo);
         Map<String, Object> officeDetails = officeService.getOfficeDetails(officeNo);
         return officeDetails != null ? ResponseEntity.ok(officeDetails) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }

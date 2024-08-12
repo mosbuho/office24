@@ -52,6 +52,7 @@
     .payment-content-wrapper {
         display: flex;
         justify-content: space-between;
+        margin-top: 160px;
 
         .payment-details {
             width: 65%;
@@ -150,26 +151,26 @@
                         width: 50%;
                         border: 2px solid transparent;
                         margin-bottom: 10px;
-                
+
                         &:first-child {
                             width: 100%;
                             border-bottom: 2px solid var(--shaded-color);
                         }
-                
+
                         &:last-child {
                             border-left: 2px solid var(--shaded-color);
                         }
-                
+
                         &:invalid {
                             border-color: var(--discard-color);
                             border-radius: 10px;
                         }
-                
+
                         &:valid {
                             border-color: transparent;
                         }
                     }
-                
+
                     input:hover {
                         border-radius: 10px;
                     }
@@ -360,4 +361,3 @@
 
 
 }
-
