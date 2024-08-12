@@ -13,7 +13,7 @@ const AdminHeader = () => {
 
     return (
         <div className="admin-header">
-            <div className="logo">OFFICE24</div>
+            <div className="logo" onClick={() => { navigate("/admin") }}>OFFICE24</div>
             <div className="logout" onClick={handleLogout}>
                 <LuLogOut />
                 <span>로그아웃</span>
