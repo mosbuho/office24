@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -54,7 +53,7 @@ public class ReviewService {
             int deletedCount = reviewMapper.deleteReviews(ids);
             return deletedCount > 0;
         } else {
-            return false; // 유효한 ID가 없을 때
+            return false;
         }
     }
 }

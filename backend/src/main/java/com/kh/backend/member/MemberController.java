@@ -197,9 +197,9 @@ public class MemberController {
     public ResponseEntity<Void> deleteReviews(@RequestBody Map<String, List<Integer>> request) {
         boolean isDeleted = reviewService.deleteReviewsByIds(request.get("ids"));
         if (isDeleted) {
-            return ResponseEntity.ok().build(); // 성공 시 200 OK 반환
+            return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.badRequest().build(); // 실패 시 400 Bad Request 반환
+            return ResponseEntity.badRequest().build();
         }
     }
 }
