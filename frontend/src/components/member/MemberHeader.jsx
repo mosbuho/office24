@@ -4,8 +4,8 @@ import { IoIosMenu } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import "../../styles/components/member/MemberHeader.css";
-import Calendar from "./Calendar";
 import { getNo, isAuthenticated, removeTokens } from "../../utils/auth";
+import Calendar from "./Calendar";
 
 // render: 지역 옵션 목록 //
 const LOCATION_OPTIONS = [
@@ -375,8 +375,9 @@ const MemberHeader = () => {
               <div className="attendance-counter">
                 <span>인원</span>
                 <button
-                  className={`attendance-button ${attendance === 1 ? "disabled" : ""
-                    }`}
+                  className={`attendance-button ${
+                    attendance === 1 ? "disabled" : ""
+                  }`}
                   onClick={() => handleAttendanceChange(-1)}
                   disabled={attendance === 1}
                 >
@@ -411,7 +412,10 @@ const MemberHeader = () => {
             <div className="profile-dropdown">
               {authenticated ? (
                 <>
-                  <div className="dropdown-option" onClick={() => navigate(`/member/${no}/mypage`)}>
+                  <div
+                    className="dropdown-option"
+                    onClick={() => navigate(`/member/${no}/profile`)}
+                  >
                     내 정보
                   </div>
                   <div className="dropdown-option" onClick={handleLogout}>

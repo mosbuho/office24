@@ -1,9 +1,10 @@
-import { Route, BrowserRouter, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import NotFoundPage from './components/common/NotFound';
 import PrivateRoute from './components/common/PrivateRoute';
 import PublicRoute from './components/common/PublicRoute';
-import NotFoundPage from './components/common/NotFound';
 
 
+import MemberMyPage from "./components/member/MemberMyPage";
 import MemberDelete from "./pages/member/MemberDelete";
 import MemberFindId from "./pages/member/MemberFindId";
 import MemberFindIdResult from "./pages/member/MemberFindIResult";
@@ -13,18 +14,17 @@ import MemberOffice from "./pages/member/MemberOffice";
 import MemberPayment from "./pages/member/MemberPayment";
 import MemberRegister from "./pages/member/MemberRegister";
 import MemberResetPw from "./pages/member/MemberResetPw";
-import MemberMyPage from "./pages/member/MemberMyPage";
 import MemberUpdate from "./pages/member/MemberUpdate";
 
+import ManagerBooking from './pages/manager/ManagerBooking';
 import ManagerCreate from './pages/manager/ManagerCreate';
+import ManagerFindId from './pages/manager/ManagerFindId';
+import ManagerInfo from './pages/manager/ManagerInfo';
 import ManagerLogin from './pages/manager/ManagerLogin';
 import ManagerMain from './pages/manager/ManagerMain';
 import ManagerOfficeCreate from './pages/manager/ManagerOfficeCreate';
-import ManagerOfficeUpdate from './pages/manager/ManagerOfficeUpdate';
-import ManagerBooking from './pages/manager/ManagerBooking';
 import ManagerOfficeList from './pages/manager/ManagerOfficeList';
-import ManagerInfo from './pages/manager/ManagerInfo';
-import ManagerFindId from './pages/manager/ManagerFindId';
+import ManagerOfficeUpdate from './pages/manager/ManagerOfficeUpdate';
 import ManagerResetPw from './pages/manager/ManagerResetPw';
 
 import AdminBookingList from "./pages/admin/AdminBookingList";
@@ -40,6 +40,10 @@ import AdminNoticeList from "./pages/admin/AdminNoticeList";
 import AdminOffice from "./pages/admin/AdminOffice";
 import AdminOfficeList from "./pages/admin/AdminOfficeList";
 import AdminReviewList from "./pages/admin/AdminReviewList";
+import MemberFavorites from './pages/member/MemberFavorites';
+import MemberMyInfo from './pages/member/MemberMyInfo';
+import MemberReservations from './pages/member/MemberReservations';
+import MemberReviews from './pages/member/MemberReviews';
 
 function App() {
   return (
@@ -65,7 +69,12 @@ function App() {
         <Route path="/member/update" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberUpdate /></PrivateRoute>}/>
         <Route path="/member/delete" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberDelete /></PrivateRoute>}/>
         <Route path="/payment" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberPayment /></PrivateRoute>}/>
-        <Route path="/member/:no/mypage" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberMyPage /></PrivateRoute>}/>
+        <Route path="/member/:no/" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberMyPage /></PrivateRoute>}>
+          <Route path="profile" element={<MemberMyInfo />} />
+          <Route path="wish" element={<MemberFavorites />} />
+          <Route path="booking" element={<MemberReservations />} />
+          <Route path="review" element={<MemberReviews />} />
+        </Route>
 
         {/* 매니저 라우트 */}
         <Route path="/manager/" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerMain /></PrivateRoute>} />
