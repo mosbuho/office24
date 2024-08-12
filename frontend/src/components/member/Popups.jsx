@@ -408,14 +408,30 @@ export const NewReviewPopup = ({ newInitialValue, onClose }) => {
   );
 };
 
-export const EditReviewPopup = ({ initialValue, onClose }) => {
+export const EditReviewPopup = ({ initialValue, onClose, onUpdate }) => {
   const [review, setReview] = useState(initialValue.content);
   const [rating, setRating] = useState(initialValue.rating);
   const [error, setError] = useState("");
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (review.trim() !== "") {
-      onClose();
+      try {
+        const response = await axios.put(`member/review/${initialValue.no}`, {
+          content: review,
+          rating: rating,
+        });
+
+        if (response.status === 200) {
+          onUpdate(response.data);
+          alert("리뷰가 성공적으로 수정되었습니다.");
+          onClose();
+        } else {
+          setError("리뷰 수정에 실패했습니다.");
+        }
+      } catch (err) {
+        console.error("리뷰 수정 중 오류 발생:", err);
+        setError("리뷰 수정 중 오류가 발생했습니다.");
+      }
     } else {
       setError("리뷰를 입력해주세요.");
     }

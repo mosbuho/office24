@@ -3,10 +3,12 @@ package com.kh.backend.member;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.backend.booking.BookingService;
+import com.kh.backend.review.ReviewService;
 
 @RestController
 @RequestMapping("/member")
@@ -24,10 +27,12 @@ public class MemberController {
 
     private final MemberService memberService;
     private final BookingService bookingService;
+    private final ReviewService reviewService;
 
-    public MemberController(MemberService memberService, BookingService bookingService) {
+    public MemberController(MemberService memberService, BookingService bookingService, ReviewService reviewService) {
         this.memberService = memberService;
         this.bookingService = bookingService;
+        this.reviewService = reviewService;
     }
 
     @GetMapping("/check-id")
@@ -161,6 +166,40 @@ public class MemberController {
             return ResponseEntity.ok(likedOffices);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/{no}/review")
+    public List<Map<String, Object>> getReviewsByMemberNo(
+            @PathVariable("no") int no,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "6") int size) {
+
+        return reviewService.getReviewsByMemberNo(no, page, size);
+    }
+
+    @PutMapping("/review/{no}")
+    public ResponseEntity<Map<String, Object>> updateReview(
+            @PathVariable int no,
+            @RequestBody Map<String, Object> reviewData) {
+        String content = (String) reviewData.get("content");
+        double rating = ((Number) reviewData.get("rating")).doubleValue();
+
+        try {
+            Map<String, Object> updatedReview = reviewService.updateReview(no, content, rating);
+            return ResponseEntity.ok(updatedReview);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/review")
+    public ResponseEntity<Void> deleteReviews(@RequestBody Map<String, List<Integer>> request) {
+        boolean isDeleted = reviewService.deleteReviewsByIds(request.get("ids"));
+        if (isDeleted) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
         }
     }
 }

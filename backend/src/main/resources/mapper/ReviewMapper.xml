@@ -37,4 +37,43 @@
         WHERE 
             office_no = #{officeNo}
     </select>
+
+    <select id="getReviewsByMemberNoWithPagination" resultType="java.util.Map">
+        SELECT *
+    FROM (
+        SELECT r.*, ROWNUM rnum
+        FROM (
+            SELECT 
+                r.no AS reviewno, 
+                o.title AS officetitle, 
+                r.content, 
+                r.rating, 
+                r.office_no AS officeno
+            FROM 
+                review r
+            JOIN 
+                office o ON r.office_no = o.no
+            WHERE 
+                r.member_no = #{no}
+            ORDER BY 
+                r.no
+        ) r
+        WHERE ROWNUM &lt;= #{endRow}
+    )
+    WHERE rnum &gt; #{startRow}
+    </select>
+
+    <update id="updateReview">
+        UPDATE review
+        SET content = #{content},
+            rating = #{rating}
+        WHERE no = #{no}
+    </update>
+
+    <delete id="deleteReviews">
+        DELETE FROM review WHERE no IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>
