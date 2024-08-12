@@ -3,6 +3,7 @@ package com.kh.backend.review;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,4 +30,21 @@ public class ReviewService {
         reviewMapper.deleteReview(no);
     }
 
+    public List<Map<String, Object>> getReviewsByMemberNo(int no, int page, int size) {
+        int startRow = (page - 1) * size;
+        int endRow = page * size;
+        return reviewMapper.getReviewsByMemberNoWithPagination(no, startRow, endRow);
+    }
+
+    public Map<String, Object> updateReview(int no, String content, double rating) {
+        int affectedRows = reviewMapper.updateReview(no, content, rating);
+        if (affectedRows == 0) {
+            throw new NoSuchElementException("Review not found with id: " + no);
+        }
+
+        return Map.of(
+                "no", no,
+                "content", content,
+                "rating", rating);
+    }
 }
