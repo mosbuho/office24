@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { EditReviewPopup } from "./Popups";
 
-export function ReviewItem({ customTitle, ...review }) {
+export function ReviewItem({ customTitle, onDelete, onSelect, isSelected, ...review }) {
   const [isReviewPopupOpen, setIsReviewPopupOpen] = useState(false);
   const [currentReview, setCurrentReview] = useState(review);
 
@@ -20,8 +20,17 @@ export function ReviewItem({ customTitle, ...review }) {
     setIsReviewPopupOpen(false);
   };
 
+  const handleCheckboxChange = () => {
+    onSelect(currentReview.no);
+  };
+
   return (
     <div className="review-item">
+      <input 
+          type="checkbox" 
+          checked={isSelected}
+          onChange={handleCheckboxChange} 
+        />
       <div className="review-header">
         <div className="text-container">
           <h4>{customTitle ? customTitle : currentReview.title}</h4>

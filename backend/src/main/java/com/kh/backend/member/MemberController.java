@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -189,6 +190,16 @@ public class MemberController {
             return ResponseEntity.ok(updatedReview);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/review")
+    public ResponseEntity<Void> deleteReviews(@RequestBody Map<String, List<Integer>> request) {
+        boolean isDeleted = reviewService.deleteReviewsByIds(request.get("ids"));
+        if (isDeleted) {
+            return ResponseEntity.ok().build(); // 성공 시 200 OK 반환
+        } else {
+            return ResponseEntity.badRequest().build(); // 실패 시 400 Bad Request 반환
         }
     }
 }

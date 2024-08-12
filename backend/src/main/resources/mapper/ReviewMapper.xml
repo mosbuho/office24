@@ -69,4 +69,11 @@
             rating = #{rating}
         WHERE no = #{no}
     </update>
+
+    <delete id="deleteReviews">
+        DELETE FROM review WHERE no IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>
