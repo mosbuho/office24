@@ -181,7 +181,7 @@ public class ManagerController {
     }
 
     @PostMapping("/update/{no}")
-    @PreAuthorize("#no == authentication.details.no")
+    @PreAuthorize("#no == authentication.details")
     public ResponseEntity<String> updateManagerInfo(@PathVariable int no,
             @RequestBody Map<String, Object> updatedData) {
         try {

@@ -88,7 +88,7 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약에 실패했습니다. 다시 시도해주세요.");
         }
     }
-      
+
     @GetMapping("/{no}")
     @PreAuthorize("#no == authentication.details")
     public Member getMember(@PathVariable int no) {
@@ -134,7 +134,7 @@ public class MemberController {
         }
     }
 
-        @PutMapping("/{officeNo}/like")
+    @PutMapping("/{officeNo}/like")
     public ResponseEntity<?> toggleLike(@PathVariable int officeNo, @RequestBody Map<String, Integer> request) {
         int userNo = request.get("userNo");
         boolean isLiked = memberService.toggleLike(userNo, officeNo);
@@ -146,21 +146,21 @@ public class MemberController {
 
     @GetMapping("/{userNo}/favorites")
     public ResponseEntity<List<Map<String, Object>>> getFavorites(@PathVariable int userNo) {
-    try {
-        List<Map<String, Object>> favorites = memberService.getFavoriteOffices(userNo);
-        return ResponseEntity.ok(favorites);
-    } catch (Exception e) {
-        return ResponseEntity.badRequest().body(null);
+        try {
+            List<Map<String, Object>> favorites = memberService.getFavoriteOffices(userNo);
+            return ResponseEntity.ok(favorites);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
-}
 
     @GetMapping("/{userNo}/liked-offices")
     public ResponseEntity<?> getLikedOffices(@PathVariable int userNo) {
-    try {
-        List<Integer> likedOffices = memberService.getLikedOfficeNumbers(userNo);
-        return ResponseEntity.ok(likedOffices);
-    } catch (Exception e) {
-        return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        try {
+            List<Integer> likedOffices = memberService.getLikedOfficeNumbers(userNo);
+            return ResponseEntity.ok(likedOffices);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
     }
-}
 }

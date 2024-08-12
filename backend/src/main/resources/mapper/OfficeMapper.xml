@@ -141,14 +141,17 @@
     <update id="refuseOffice">UPDATE office SET availability = 2 WHERE no = #{no}</update>
 
 
-    <select id="selectOfficeList" resultType="map"> SELECT o.no, o.title, o.address as location,
-        o.price as pricePerDay, o.title_img as officeImgURL, o.longitude, o.latitude, o.capacity,
-        (o.capacity - NVL(b.booked_count, 0)) as available_capacity FROM office o LEFT JOIN ( SELECT
-        office_no, COUNT(*) as booked_count FROM booking WHERE start_date &lt;= TO_DATE(#{endDate},
-        'YYYY-MM-DD') AND end_date &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD') GROUP BY office_no ) b
-        ON o.no = b.office_no WHERE o.availability = 1 AND (#{location} IS NULL OR o.address LIKE
-        '%' || #{location} || '%' OR o.title LIKE '%' || #{location} || '%') AND (o.capacity -
-        NVL(b.booked_count, 0)) &gt;= #{attendance} ORDER BY o.no DESC OFFSET #{startRow} ROWS FETCH
-        NEXT (#{endRow} - #{startRow}) ROWS ONLY </select>
+    <select id="selectOfficeList" resultType="map"> SELECT o.no, o.title, NVL(rating_summary.rating,
+        0) as rating, o.address as location, o.price as pricePerDay, o.title_img as officeImgURL,
+        o.longitude, o.latitude, o.capacity, (o.capacity - NVL(b.booked_count, 0)) as
+        available_capacity FROM office o LEFT JOIN ( SELECT r.office_no, AVG(r.rating) as rating
+        FROM review r GROUP BY r.office_no ) rating_summary ON o.no = rating_summary.office_no LEFT
+        JOIN ( SELECT office_no, COUNT(*) as booked_count FROM booking WHERE start_date &gt;=
+        TO_DATE(#{endDate}, 'YYYY-MM-DD') AND end_date >= TO_DATE(#{startDate}, 'YYYY-MM-DD') GROUP
+        BY office_no ) b ON o.no = b.office_no WHERE o.availability = 1 AND (#{location} IS NULL OR
+        o.address LIKE '%' || #{location} || '%' OR o.title LIKE '%' || #{location} || '%') AND
+        (o.capacity - NVL(b.booked_count, 0)) >= #{attendance} ORDER BY o.no DESC OFFSET #{startRow}
+        ROWS FETCH NEXT (#{endRow} - #{startRow}) ROWS ONLY </select>
+
 
 </mapper>

@@ -1,5 +1,6 @@
 .custom-overlay {
     pointer-events: auto;
+
     .custom-marker {
         position: relative;
         transform: translate(-50%, -100%);
@@ -23,12 +24,13 @@
         padding: 10px;
         z-index: 10;
         min-width: 200px;
+        cursor: pointer;
     }
 
     h3 {
-        color: var(--primary-color);
+        color: var(--shaded-dark-color);
         font-weight: 900;
-        font-size: 20px;
+        font-size: 1rem;
         margin: 0;
         margin-bottom: 5px;
     }
@@ -41,7 +43,7 @@
     }
 
     .price {
-        font-size: 16px;
+        font-size: 13px;
         font-weight: 700;
         color: var(--shaded-dark-color);
     }
@@ -49,7 +51,7 @@
     .item-rating {
         background-color: var(--shaded-dark-color);
         color: var(--background-color);
-        height: 25px;
+        height: 20px;
         padding: 0 5px 0 5px;
         border-radius: 25px;
         text-align: center;
@@ -60,14 +62,13 @@
 
         svg {
             color: var(--background-color);
-            width: 15px;
-            height: 15px;
+            width: 12px;
+            height: 12px;
             margin-right: 3px;
         }
 
         .rate {
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 12px;
             margin-right: 3px;
         }
     }

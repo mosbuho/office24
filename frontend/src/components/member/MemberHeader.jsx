@@ -168,6 +168,7 @@ const MemberHeader = () => {
       setExpanded(true);
     }
   };
+
   const handleLogin = () => {
     navigate("/login");
   };
@@ -203,7 +204,7 @@ const MemberHeader = () => {
       endDate: endDate ? formatDate(endDate) : "",
       attendance,
     };
-
+    dispatch({ type: "HIDE_ALL" });
     navigate("/", { state: { searchParams } });
   };
 
@@ -251,7 +252,7 @@ const MemberHeader = () => {
             className={`search-bar ${expanded ? "expanded" : ""}`}
             onClick={expandSearch}
           >
-            {!expanded && <div className="search-placeholder">검색하세요</div>}
+            {!expanded && <div className="search-placeholder">어떤 것을 찾고 계신가요?</div>}
             {expanded && (
               <div className="search-inputs">
                 <div className="search-input-wrapper input-wrapper">
@@ -375,9 +376,8 @@ const MemberHeader = () => {
               <div className="attendance-counter">
                 <span>인원</span>
                 <button
-                  className={`attendance-button ${
-                    attendance === 1 ? "disabled" : ""
-                  }`}
+                  className={`attendance-button ${attendance === 1 ? "disabled" : ""
+                    }`}
                   onClick={() => handleAttendanceChange(-1)}
                   disabled={attendance === 1}
                 >
@@ -433,7 +433,7 @@ const MemberHeader = () => {
                 </>
               )}
               <div className="dropdown-divider"></div>
-              <div className="dropdown-option">Q&A</div>
+              <div className="dropdown-option">공지사항</div>
             </div>
           )}
         </div>

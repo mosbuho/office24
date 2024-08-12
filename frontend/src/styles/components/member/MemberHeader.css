@@ -66,9 +66,9 @@
 
     .search-placeholder {
         flex-grow: 1;
-        font-size: 16px;
         color: var(--shaded-dark-color);
         transition: all 0.3s ease;
+        font-size: 0.8rem;
     }
 
     .search-inputs {
@@ -249,20 +249,21 @@
 
     .fixed-logo-wrapper {
         position: fixed;
-        top: 10px;
-        left: 15px;
+        top: 22px;
+        left: 25px;
         z-index: 1001;
-        font-size: 50px;
-        color: var(--primary-color);
         cursor: pointer;
+        font-weight: bold;
+        font-size: 28px;
+        color: #6363d2;
     }
 
     .fixed-menu-wrapper {
         position: fixed;
-        top: 14px;
+        top: 16px;
         right: 50px;
-        width: 86px;
-        height: 48px;
+        width: 80px;
+        height: 45px;
         z-index: 1001;
         border-radius: 30px;
         border: solid 1px var(--shaded-color);
@@ -286,8 +287,8 @@
     }
 
     .profile-img-wrapper {
-        width: 36px;
-        height: 36px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
         position: relative;
         overflow: hidden;

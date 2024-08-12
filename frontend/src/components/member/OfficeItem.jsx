@@ -93,7 +93,7 @@ const OfficeItem = ({
           </div>
           <div className="item-rating">
             <FaStar />
-            <div className="rate">{RATING.toFixed(2)}</div>{" "}
+            <div className="rate">{RATING.toFixed(1)}</div>{" "}
           </div>
         </div>
         <div className="office-item-middle">
@@ -102,7 +102,7 @@ const OfficeItem = ({
         <div className="office-item-bottom">
           <div className="office-item-price">
             <p>
-              <b>{PRICEPERDAY}원/일</b>
+              <b>{PRICEPERDAY.toLocaleString('ko-KR')}원/일</b>
             </p>
           </div>
         </div>

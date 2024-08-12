@@ -29,14 +29,14 @@
                 border: none;
                 display: inline-block;
                 display: block;
-                color: var(--secondary-color);
                 padding: 10px;
                 font-size: 16px;
                 cursor: pointer;
                 width: 100%;
                 text-align: center;
                 transition: all 0.3s ease-in-out;
-                font-weight: 900;
+                font-weight: 700;
+                margin: 10px 0;
             }
 
             a:hover {
@@ -237,7 +237,6 @@
 
                                 .rate {
                                     font-size: 15px;
-                                    font-weight: 600;
                                     margin-right: 3px;
                                 }
                             }

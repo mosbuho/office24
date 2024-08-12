@@ -118,8 +118,8 @@ BEGIN
     FOR i IN 1..100 LOOP
         INSERT INTO review (member_no, office_no, rating, content)
         VALUES (
-            1,  
-            1, 
+            100,  
+            100, 
             TRUNC(DBMS_RANDOM.VALUE(0, 6)),  
             'Review content for office ' || i
         );
