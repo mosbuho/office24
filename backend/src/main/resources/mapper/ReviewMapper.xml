@@ -70,13 +70,6 @@
         WHERE no = #{no}
     </update>
 
-    <delete id="deleteReviews">
-        DELETE FROM review WHERE no IN
-        <foreach item="id" collection="list" open="(" separator="," close=")">
-            #{id}
-        </foreach>
-    </delete>
-
    <insert id="insertReview" parameterType="java.util.Map">
         <selectKey keyProperty="no" resultType="int" order="BEFORE"> SELECT review_seq.NEXTVAL FROM
     DUAL </selectKey> INSERT INTO review (no, member_no, office_no, content, rating, reg_date)
