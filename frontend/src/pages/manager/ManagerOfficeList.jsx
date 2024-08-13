@@ -97,7 +97,7 @@ const ManagerOfficeList = () => {
         return;
       }
 
-      await axios.patch(`/manager/office/${officeNo}`, { availability: 0 }, { withCredentials: true });
+      await axios.put(`/manager/office/${officeNo}`, { availability: 0 }, { withCredentials: true });
 
       setOffices([]);
       setPageDataCache({});
