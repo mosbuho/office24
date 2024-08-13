@@ -79,8 +79,8 @@ public class BookingService {
         bookingMapper.insertBooking(bookingData);
     }
 
-    public List<Map<String, Object>> getMemberReservations(int no) {
-        return bookingMapper.getMemberReservations(no);
+    public List<Map<String, Object>> getMemberBookings(int no) {
+        return bookingMapper.getMemberBookings(no);
     }
     
     public boolean updateBooking(Map<String, Object> bookingData) {

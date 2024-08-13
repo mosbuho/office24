@@ -30,5 +30,4 @@ public interface ReviewMapper {
     int deleteReviews(List<Integer> ids);
 
     void insertReview(Map<String, Object> review);
-
 }

@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../styles/components/member/ReservationItem.css";
+import "../../styles/components/member/BookingItem.css";
 import { getNo } from "../../utils/auth";
 import axios from "../../utils/axiosConfig";
 import { VerifyPopup } from "./Popups";
@@ -8,7 +8,7 @@ import { ReviewItem } from "./ReviewItem";
 
 
 
-const ReservationItem = ({
+const BookingItem = ({
   item,
   activeTab,
   onEdit,
@@ -31,7 +31,7 @@ const ReservationItem = ({
     setIsReviewPopupOpen(false);
   };
 
-  const handleCancelReservationClick = () => {
+  const handleCancelBookingClick = () => {
     setIsVerifyPopupOpen(true);
   };
 
@@ -45,7 +45,7 @@ const ReservationItem = ({
        });
        onCancel(item);
      } catch (error) {
-       console.error("Error cancelling reservation:", error);
+       console.error("Error cancelling booking:", error);
        alert("예약 취소에 실패했습니다.");
      }
    }
@@ -64,7 +64,7 @@ const ReservationItem = ({
     : null;
 
   return (
-    <div className="reservation-item">
+    <div className="booking-item">
       <div
         onClick={handleClick}
         className="office-info"
@@ -80,7 +80,7 @@ const ReservationItem = ({
           <p>가격: {item.OFFICE_PRICE}원/일</p>
         </div>
 
-        <div className="reservation-dates">
+        <div className="booking-dates">
           <p>
             {new Date(item.START_DATE).toLocaleDateString()} ~{" "}
             {new Date(item.END_DATE).toLocaleDateString()}
@@ -89,7 +89,7 @@ const ReservationItem = ({
       </div>
       {activeTab === "upcoming" && (
         <div className="action-buttons">
-          <button onClick={handleCancelReservationClick}>예약 취소</button>
+          <button onClick={handleCancelBookingClick}>예약 취소</button>
         </div>
       )}
 
@@ -130,4 +130,4 @@ const ReservationItem = ({
   );
 };
 
-export default ReservationItem;
+export default BookingItem;
