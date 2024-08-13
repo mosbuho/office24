@@ -1,0 +1,111 @@
+.reservation-item {
+    cursor: pointer;
+    position: relative;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    .office-info {
+        height: 200px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .overlay {
+        position: absolute;
+        bottom: -33px;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 10px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .overlay h3 {
+        margin: 0;
+        font-size: 1.2em;
+    }
+
+    .overlay p {
+        margin: 5px 0;
+    }
+
+    .reservation-dates {
+        font-size: 20px;
+        position: absolute;
+        right: 10px;
+        bottom: 0px;
+        color: var(--background-color);
+    }
+
+    .reservation-details,
+    .review-section {
+        padding: 15px;
+        z-index: 10;
+    }
+
+    .action-buttons {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    button {
+            background-color: var(--discard-color);
+            border: 0;
+            border-radius: 10px;
+            padding: 10px;
+            color: var(--background-color);
+            font-weight: 700;
+            opacity: 0.7;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+        }
+    
+        button:hover {
+            opacity: 1;
+            transition: all 0.3s ease-in-out;
+        }
+    }
+.review-section {
+    position: relative;
+    input[type="checkbox"]{
+        display: none;
+    }
+}
+
+.review-content,
+.no-review {
+
+    button {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        height: 100%;
+        width: 100px;
+        padding: 8px 16px;
+        border: none;
+        background-color: var(--primary-color);
+        color: white;
+        cursor: pointer;
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+    }
+
+    background-color: var(#f8f9fa);
+    border-radius: 0 0 4px 4px;
+}
+
+&:hover {
+    .overlay {
+        bottom: 0;
+    }
+
+}
+}
+

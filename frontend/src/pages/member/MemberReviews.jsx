@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ReviewItem } from "../../components/member/ReviewItem";
-import axios from "../../utils/axiosConfig";
 import { getNo } from "../../utils/auth";
+import axios from "../../utils/axiosConfig";
 
 function MemberReviews() {
   const no = getNo();

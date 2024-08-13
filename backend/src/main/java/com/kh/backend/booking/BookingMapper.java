@@ -1,10 +1,10 @@
 package com.kh.backend.booking;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
 import java.util.Map;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface BookingMapper {
@@ -31,5 +31,8 @@ public interface BookingMapper {
     List<Booking> getBookingsByOfficeNo(int officeNo);
 
     void insertBooking(Map<String, Object> bookingData) throws Exception;
+     
+    List<Map<String, Object>> getMemberReservations(int no);
 
+    boolean updateBooking(Map<String, Object> params);
 }

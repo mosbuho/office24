@@ -1,30 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.backend.booking.BookingMapper">
-    <select id="selectBookingsByManager" resultType="map">
-        SELECT *
-        FROM (
-            SELECT
-                b.no AS booking_no,
-                b.reg_date AS booking_date,
-                b.name AS booking_name,
-                m.phone AS booking_phone,
-                b.start_date,
-                b.end_date,
-                ROW_NUMBER() OVER (ORDER BY b.no DESC) AS rn
-            FROM
-                booking b
-            JOIN
-                office o ON b.office_no = o.no
-            JOIN
-                manager mgr ON o.manager_no = mgr.no
-            JOIN
-                member m ON b.member_no = m.no
-            WHERE
-                mgr.no = #{no}
-        )
-        WHERE rn BETWEEN #{offset} + 1 AND #{offset} + #{limit}
-    </select>
+    <select id="selectBookingsByManager" resultType="map"> SELECT * FROM ( SELECT b.no AS
+        booking_no, b.reg_date AS booking_date, b.name AS booking_name, m.phone AS booking_phone,
+        b.start_date, b.end_date, ROW_NUMBER() OVER (ORDER BY b.no DESC) AS rn FROM booking b JOIN
+        office o ON b.office_no = o.no JOIN manager mgr ON o.manager_no = mgr.no JOIN member m ON
+        b.member_no = m.no WHERE mgr.no = #{no} ) WHERE rn BETWEEN #{offset} + 1 AND #{offset} +
+        #{limit} </select>
 
     <select id="countBookingsByManager" resultType="int"> SELECT COUNT(*) FROM booking b JOIN office
         o ON b.office_no = o.no JOIN manager m ON o.manager_no = m.no WHERE m.no = #{no} </select>
@@ -66,14 +48,21 @@
             test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if>
     </select>
 
-    <select id="getBookingsByOfficeNo" resultType="com.kh.backend.booking.Booking">
-        SELECT start_date, end_date
-        FROM booking
-        WHERE office_no = #{officeNo}
-    </select>
+    <select id="getBookingsByOfficeNo" resultType="com.kh.backend.booking.Booking"> SELECT
+        start_date, end_date FROM booking WHERE office_no = #{officeNo} </select>
 
-    <insert id="insertBooking">
-        INSERT INTO booking (office_no, member_no, name, phone, price, payment, start_date, end_date)
-        VALUES (#{office_no}, #{member_no}, #{name}, #{phone}, #{price}, #{payment}, #{start_date}, #{end_date})
-    </insert>
-</mapper>
+    <insert id="insertBooking"> INSERT INTO booking (office_no, member_no, name, phone, price,
+        payment, start_date, end_date) VALUES (#{office_no}, #{member_no}, #{name}, #{phone},
+        #{price}, #{payment}, #{start_date}, #{end_date}) </insert>
+
+
+    <select id="getMemberReservations" resultType="map"> SELECT b.no, b.office_no, b.member_no,
+        b.name, b.phone, b.price as booking_price, b.payment, b.start_date, b.end_date, b.reg_date,
+        o.title as office_title, o.title_img as office_img_url, o.price as office_price, o.address,
+        o.zip_code, o.sido, o.latitude, o.longitude, o.content, o.capacity FROM booking b JOIN
+        office o ON b.office_no = o.no WHERE b.member_no = #{no} ORDER BY b.reg_date DESC </select>
+
+    <update id="updateBooking" parameterType="map"> UPDATE booking SET start_date =
+    TO_DATE(#{start_date}, 'YYYY-MM-DD'), end_date = TO_DATE(#{end_date}, 'YYYY-MM-DD') WHERE no =
+    #{no} </update>
+    </mapper>

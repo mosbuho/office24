@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { FaStar } from "react-icons/fa6";
 import { IoCloseCircle } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import Calendar from "../../components/member/Calendar";
 import "../../styles/components/member/Popup.css";
 import { getNo, removeTokens } from "../../utils/auth";
 import axios from "../../utils/axiosConfig";
@@ -175,55 +174,6 @@ export const UpdatePassword = ({ onClose }) => {
   );
 };
 
-export const EditPopup = ({ reservation, onClose, onSave }) => {
-  const [startDate, setStartDate] = useState(new Date(reservation.startDate));
-  const [endDate, setEndDate] = useState(new Date(reservation.endDate));
-  const [attendance, setAttendance] = useState(reservation.attendance || 1);
-
-  const handleSave = () => {
-    onSave({
-      ...reservation,
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
-      attendance,
-    });
-  };
-
-  //function getDiffDays
-  const getDiffDays = (start, end) => {
-    const diffTime = Math.max(end - start, 0);
-    return Math.max(Math.ceil(diffTime / (1000 * 60 * 60 * 24)), 1);
-  };
-
-  return (
-    <PopupOverlay onClose={onClose}>
-      <PopupHeader
-        title={`${getDiffDays(startDate, endDate || startDate)}일`}
-        onClose={onClose}
-      />
-      <div className="popup-content">
-        <Calendar
-          settingStartDate={setStartDate}
-          settingEndDate={setEndDate}
-          startDate={startDate}
-          endDate={endDate}
-        />
-        <div className="attendance-container">
-          <label htmlFor="attendance">인원:</label>
-          <input
-            type="number"
-            id="attendance"
-            placeholder="인원을 입력하세요"
-            value={attendance}
-            onChange={(e) => setAttendance(parseInt(e.target.value))}
-            min="1"
-          />
-        </div>
-        <PopupButtons onCancel={onClose} onSave={handleSave} />
-      </div>
-    </PopupOverlay>
-  );
-};
 
 export const PhonePopup = ({ initialValue, onSave, onClose }) => {
   const [phone, setPhone] = useState(initialValue);
@@ -366,23 +316,42 @@ export const BirthPopup = ({ initialValue, onSave, onClose }) => {
   );
 };
 
-export const NewReviewPopup = ({ newInitialValue, onClose }) => {
+export const NewReviewPopup = ({ newInitialValue, onClose, onUpdate }) => {
   const [review, setReview] = useState("");
   const [rating, setRating] = useState(0);
   const [error, setError] = useState("");
 
-  const handleSave = () => {
-    if (review.trim() !== "") {
-      onClose();
+  const handleSave = async () => {
+    if (review.trim() !== "" && rating > 0) {
+      try {
+        const memberNo = getNo();
+        const response = await axios.post(`/member/review`, {
+          memberNo: memberNo,
+          officeNo: newInitialValue.OFFICE_NO,
+          content: review,
+          rating: rating,
+        });
+
+        if (response.status === 201) {
+          onUpdate(response.data);
+          alert("리뷰가 성공적으로 작성되었습니다.");
+          onClose();
+        } else {
+          setError("리뷰 작성에 실패했습니다.");
+        }
+      } catch (err) {
+        console.error("리뷰 작성 중 오류 발생:", err);
+        setError("리뷰 작성 중 오류가 발생했습니다.");
+      }
     } else {
-      setError("리뷰를 입력해주세요.");
+      setError("리뷰 내용과 별점을 모두 입력해주세요.");
     }
   };
 
   return (
     <PopupOverlay onClose={onClose}>
       <PopupHeader
-        title={`${newInitialValue.title} 새 리뷰 작성`}
+        title={`${newInitialValue.OFFICE_TITLE} 새 리뷰 작성`}
         onClose={onClose}
       />
       <div className="popup-content">
