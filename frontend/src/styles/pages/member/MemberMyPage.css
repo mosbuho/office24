@@ -9,7 +9,7 @@
         margin: auto;
 
         .tab-container {
-            margin-top: 170px;
+            margin-top: 185px;
             background-color: var(--background-color);
             width: 30%;
             border-right: 1px solid var(--shaded-color);
@@ -466,7 +466,7 @@
 
         .btn-review-out {
             position: relative;
-            width: 30%;
+            width: 100%;
             padding: 20px;
             border: 1px solid var(--shaded-dark-color);
             border-radius: 10px;
@@ -496,8 +496,12 @@
     }
 
     .review-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
         .text-container {
-            width: 80%;
+            width: 100%;
 
             h5,
             h4 {
@@ -512,16 +516,13 @@
                 font-size: 12px;
                 margin: 0;
                 margin-top: 5px;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
                 max-height: 2.4em;
                 line-height: 1.2em;
             }
         }
 
         .edit-button {
+            font-size: 14px;
             top: 0px;
             right: 0px;
             position: absolute;
@@ -531,13 +532,31 @@
             padding: 5px 10px;
             cursor: pointer;
             width: 10%;
-            height: calc(100% - 10px);
+            height: 41.5%;
             text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
+        }
 
+        .del-button {
+            font-size: 14px;
+            background: rgb(219, 68, 85);
+            bottom: 0px;
+            right: 0px;
+            position: absolute;
+            color: var(--background-color);
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            width: 10%;
+            height: 41.5%;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
         }
 
         /* &:hover {
@@ -546,7 +565,7 @@
                 transition: all 0.3s ease;
             }
         } */
-        
+
     }
 
 }

@@ -448,6 +448,7 @@ export const NewReviewPopup = ({ newInitialValue, onClose, onUpdate }) => {
 };
 
 export const EditReviewPopup = ({ initialValue, onClose, onUpdate }) => {
+  const userNo = getNo();
   const [review, setReview] = useState(initialValue.content);
   const [rating, setRating] = useState(initialValue.rating);
   const [error, setError] = useState("");
@@ -455,7 +456,7 @@ export const EditReviewPopup = ({ initialValue, onClose, onUpdate }) => {
   const handleSave = async () => {
     if (review.trim() !== "") {
       try {
-        const response = await axios.put(`member/${initialValue.no}/review`, {
+        const response = await axios.put(`member/${userNo}/review/${initialValue.no}`, {
           content: review,
           rating: rating,
         });

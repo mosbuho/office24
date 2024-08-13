@@ -61,7 +61,6 @@ public class ReviewService {
     public void insertReview(Map<String, Object> review) {
     reviewMapper.insertReview(review);
 }
-
 }
 
 

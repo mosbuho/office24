@@ -178,8 +178,10 @@ public class MemberController {
         return reviewService.getReviewsByMemberNo(no, page, size);
     }
 
-    @PutMapping("/{no}/review")
+    @PutMapping("/{userNo}/review/{no}")
+    @PreAuthorize("#userNo == authentication.details")
     public ResponseEntity<Map<String, Object>> updateReview(
+            @PathVariable("userNo") int userNo,
             @PathVariable int no,
             @RequestBody Map<String, Object> reviewData) {
         String content = (String) reviewData.get("content");
@@ -193,23 +195,24 @@ public class MemberController {
         }
     }
 
-    @DeleteMapping("/review")
-    public ResponseEntity<Void> deleteReviews(@RequestBody Map<String, List<Integer>> request) {
-        boolean isDeleted = reviewService.deleteReviewsByIds(request.get("ids"));
-        if (isDeleted) {
+    @DeleteMapping("/{userNo}/review/{no}")
+    @PreAuthorize("#userNo == authentication.details")
+    public ResponseEntity<Void> deleteReviews(
+            @PathVariable("userNo") int userNo,
+            @PathVariable("no") int no) {
+        try {
+            reviewService.deleteReview(no);
             return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
     
     @PostMapping("/{no}/review")
     public ResponseEntity<Void> insertReview(@RequestBody Map<String, Object> review) {
         reviewService.insertReview(review);
         return ResponseEntity.ok().build();
     }
-
 
     @GetMapping("/{no}/bookings")
     public ResponseEntity<List<Map<String, Object>>> getMemberBookings(@PathVariable int no) {
@@ -220,7 +223,6 @@ public class MemberController {
         return ResponseEntity.ok(bookings);
     }
 
-    
     @DeleteMapping("/{no}/booking")
     public ResponseEntity<Void> deleteBooking(@PathVariable int no, @RequestParam int bookingNo) {
         bookingService.deleteBooking(bookingNo);
