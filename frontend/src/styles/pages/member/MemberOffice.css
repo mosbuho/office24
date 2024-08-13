@@ -433,6 +433,7 @@
                 width: calc(100vw - 30px);
                 max-width: 1170px;
                 transition: all 0.3s;
+                height: 435px;
 
                 .extended-input-container {
                     width: 65%;

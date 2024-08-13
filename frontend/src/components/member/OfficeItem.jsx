@@ -82,7 +82,7 @@ const OfficeItem = ({
             }}
           ></div>
           <div className="office-item-like-on-image" onClick={handleLike}>
-            {isLiked ? <PiHeartFill color="red" /> : <PiHeartThin />}
+            {isLiked ? <PiHeartFill color="#ff3a33" /> : <PiHeartThin />}
           </div>
         </div>
       </div>
