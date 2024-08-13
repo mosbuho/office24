@@ -1,0 +1,178 @@
+.managerRefund-container {
+    margin-left: 20%;
+    margin-top: 70px;
+    margin-bottom: 10px;
+    padding: 8px;
+    background-color: #F5f5f5;
+    min-height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.managerRefund-container {
+    .headernav {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        border-bottom: 1px solid #E5E5E5;
+        margin-bottom: 10px;
+    }
+
+    .headernav ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        gap: 15px;
+        margin: 0;
+    }
+
+    .headernav li {
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        border-bottom: 2px solid #2c3e50;
+    }
+
+    .refundList {
+        background-color: #FFF;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        min-height: 100vh;
+        margin: 20px 10px 0;
+    }
+
+    .refundList table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #FFF;
+        border-radius: 10px;
+    }
+
+    .refundList th,
+    .refundList td {
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+        font-size: 13px;
+    }
+
+    .refundList th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+        font-size: 15px;
+    }
+
+    .refundList th:nth-child(1),
+    .refundList td:nth-child(1) {
+        width: 8%;
+    }
+
+    .refundList th:nth-child(2),
+    .refundList td:nth-child(2) {
+        width: 18%;
+    }
+
+    .refundList th:nth-child(3),
+    .refundList td:nth-child(3) {
+        width: 8%;
+    }
+
+    .refundList th:nth-child(4),
+    .refundList td:nth-child(4) {
+        width: 12%;
+    }
+
+    .refundList th:nth-child(5),
+    .refundList td:nth-child(5) {
+        width: 12%;
+    }
+
+    .refundList th:nth-child(6),
+    .refundList td:nth-child(6) {
+        width: 12%;
+    }
+
+    .refundList th:nth-child(7),
+    .refundList td:nth-child(7) {
+        width: 10%;
+    }
+
+    .refundList th:nth-child(8),
+    .refundList td:nth-child(8) {
+        width: 10%;
+    }
+
+    .refundList th:nth-child(9),
+    .refundList td:nth-child(9) {
+        width: 10%;
+    }
+
+    .refundList tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .refundList tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .refundList button {
+        padding: 5px 7px;
+        margin: 0 3px;
+        border: none;
+        border-radius: 5px;
+        font-size: 13px;
+        cursor: pointer;
+        background-color: #2c3e50;
+        color: #FFF;
+        transition: background-color 0.3s;
+    }
+
+    .refundList button:hover {
+        background-color: #355BB3;
+    }
+
+    .refundList td:nth-child(3),
+    .refundList th:nth-child(3) {
+        width: 270px;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+        margin: 5px 0 0 0;
+        list-style: none;
+        gap: 5px;
+    }
+
+    .pagination li {
+        display: inline;
+    }
+
+    .pagination li a {
+        padding: 3px 9px;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s, color 0.3s;
+        font-size: 11px;
+        cursor: pointer;
+    }
+
+    .pagination li a:hover {
+        background-color: #f4f4f4;
+    }
+
+    .pagination li.active a {
+        background-color: #f4f4f4;
+        font-weight: bold;
+    }
+
+    .break-me {
+        cursor: default;
+        color: #999;
+    }
+}

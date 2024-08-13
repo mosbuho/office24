@@ -24,4 +24,16 @@ public class RefundService {
         response.put("totalCount", totalCount);
         return response;
     }
+    
+    public Map<String, Object> getRefundsByManagerNo(int no, int page, int size) {
+        int offset = (page - 1) * size;
+        List<Map<String, Object>> refunds = refundMapper.getRefundsByManagerNo(no, offset, size);
+        int total = refundMapper.getRefundsCountByManagerNo(no);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("refunds", refunds);
+        response.put("totalPages", (int) Math.ceil((double) total / size));
+
+        return response;
+    }
 }

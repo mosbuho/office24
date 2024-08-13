@@ -11,4 +11,35 @@
             test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if>
     </select>
 
+    <select id="getRefundsByManagerNo" resultType="map">
+        SELECT 
+            r.no AS refundNo,
+            o.title AS officeTitle,
+            r.name AS memberName,
+            r.phone AS memberPhone,
+            r.price AS price,
+            r.refund_amount AS refundAmount,
+            r.payment AS payment,
+            r.booking_date AS bookingDate,
+            r.reg_date AS refundDate
+        FROM 
+            refund r
+            JOIN office o ON r.office_no = o.no
+        WHERE 
+            o.manager_no = #{no}
+        ORDER BY 
+            r.reg_date DESC
+        OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
+    </select>
+
+    <select id="getRefundsCountByManagerNo" resultType="int">
+        SELECT 
+            COUNT(*) 
+        FROM 
+            refund r
+            JOIN office o ON r.office_no = o.no
+        WHERE 
+            o.manager_no = #{no}
+    </select>
+
 </mapper>
