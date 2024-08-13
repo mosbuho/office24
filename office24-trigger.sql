@@ -128,7 +128,22 @@ END;
 CREATE OR REPLACE TRIGGER trg_booking_delete
 AFTER DELETE ON booking
 FOR EACH ROW
+DECLARE
+    v_refund_amount NUMBER;
+    v_days_diff     NUMBER;
 BEGIN
+    v_days_diff := :OLD.start_date - TRUNC(SYSDATE);
+
+    IF v_days_diff >= 5 THEN
+        v_refund_amount := :OLD.price;
+    ELSIF v_days_diff >= 3 THEN
+        v_refund_amount := :OLD.price * 0.7;
+    ELSIF v_days_diff >= 1 THEN
+        v_refund_amount := :OLD.price * 0.5;
+    ELSE
+        v_refund_amount := :OLD.price * 0.0;
+    END IF;
+
     MERGE INTO booking_statistics bk
     USING (SELECT TRUNC(:OLD.reg_date) AS report_date FROM dual) d
     ON (bk.report_date = d.report_date)
@@ -137,14 +152,15 @@ BEGIN
     WHEN NOT MATCHED THEN
         INSERT (report_date, booking_delete)
         VALUES (d.report_date, 1);
+
     MERGE INTO sales_statistics ss
     USING (SELECT TRUNC(:OLD.reg_date) AS report_date FROM dual) d
     ON (ss.report_date = d.report_date)
     WHEN MATCHED THEN
-        UPDATE SET ss.sales_delete = ss.sales_delete + :OLD.price
+        UPDATE SET ss.sales_delete = ss.sales_delete + v_refund_amount
     WHEN NOT MATCHED THEN
         INSERT (report_date, sales_delete)
-        VALUES (d.report_date, :OLD.price);
+        VALUES (d.report_date, v_refund_amount);
 END;
 /
 
@@ -179,6 +195,39 @@ BEGIN
     WHEN NOT MATCHED THEN
         INSERT (report_date, review_delete)
         VALUES (d.report_date, 1);
+END;
+/
+
+-----------------------------------------------------------------------------
+
+CREATE OR REPLACE TRIGGER trg_booking_before_delete
+BEFORE DELETE ON booking
+FOR EACH ROW
+DECLARE
+    v_refund_amount NUMBER;
+    v_days_diff     NUMBER;
+BEGIN
+    v_days_diff := :OLD.start_date - TRUNC(SYSDATE);
+
+    IF v_days_diff >= 5 THEN
+        v_refund_amount := :OLD.price;
+    ELSIF v_days_diff >= 3 THEN
+        v_refund_amount := :OLD.price * 0.7;
+    ELSIF v_days_diff >= 1 THEN
+        v_refund_amount := :OLD.price * 0.5;
+    ELSE
+        v_refund_amount := :OLD.price * 0.0;
+    END IF;
+
+    INSERT INTO refund (
+        no, office_no, member_no, name, phone, 
+        price, refund_amount, payment, start_date, 
+        end_date, booking_date, reg_date
+    ) VALUES (
+        refund_seq.NEXTVAL, :OLD.office_no, :OLD.member_no, :OLD.name, :OLD.phone, 
+        :OLD.price, v_refund_amount, :OLD.payment, :OLD.start_date, 
+        :OLD.end_date, :OLD.reg_date, SYSDATE
+    );
 END;
 /
 
