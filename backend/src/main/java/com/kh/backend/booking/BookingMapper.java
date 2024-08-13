@@ -35,4 +35,9 @@ public interface BookingMapper {
     List<Map<String, Object>> getMemberBookings(int no);
 
     boolean updateBooking(Map<String, Object> params);
+
+    List<Map<String, Object>> getMemberBookings(@Param("no") int no, @Param("tab") String tab,
+                    @Param("page") int page, @Param("limit") int limit);
+    
+        int countMemberBookings(@Param("no") int no, @Param("tab") String tab);
 }

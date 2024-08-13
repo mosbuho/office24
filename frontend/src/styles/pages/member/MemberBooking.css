@@ -1,0 +1,38 @@
+.load-more-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    .load-more-button {
+        position: relative;
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .load-more-text {
+        margin: auto;
+        width: 50px;
+        position: relative;
+        z-index: 2;
+        background-color: #fff;
+        padding: 0 10px;
+        transition: width 0.3s ease;
+    }
+
+    .load-more-line {
+        width: 100%;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        height: 1px;
+        background-color: #000;
+        transition: all 0.3s ease;
+    }
+
+    .load-more-button:hover .load-more-text {
+        width: 100px;
+        transition: width 0.3s ease;
+    }
+}

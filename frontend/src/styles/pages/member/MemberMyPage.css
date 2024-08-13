@@ -348,18 +348,17 @@
                 margin-bottom: 20px;
 
                 button {
-                    font-size: 10px;
+                    font-size: 13px;
                     background-color: transparent;
                     border: none;
-                    color: var(--secondary-color);
+                    color: var(--shaded-dark-color);
                     transition: all 0.3s ease;
                     margin: 10px;
                 }
 
                 .active {
-                    color: var(--primary-color);
+                    color: var(--text-color);
                     font-size: 20px;
-                    order: -1;
                     transform: scale(1.05);
                     transition: all 0.3s ease;
                 }
@@ -499,9 +498,8 @@
         display: flex;
         align-items: center;
         gap: 10px;
-
+        width: 80%;
         .text-container {
-            width: 100%;
 
             h5,
             h4 {
@@ -512,12 +510,12 @@
             }
 
             p {
-                width: 80%;
                 font-size: 12px;
                 margin: 0;
                 margin-top: 5px;
                 max-height: 2.4em;
                 line-height: 1.2em;
+                padding-bottom:10px ;
             }
         }
 
