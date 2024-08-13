@@ -15,6 +15,10 @@ import MemberPayment from "./pages/member/MemberPayment";
 import MemberRegister from "./pages/member/MemberRegister";
 import MemberResetPw from "./pages/member/MemberResetPw";
 import MemberUpdate from "./pages/member/MemberUpdate";
+import MemberBookings from './pages/member/MemberBookings';
+import MemberFavorites from './pages/member/MemberFavorites';
+import MemberMyInfo from './pages/member/MemberMyInfo';
+import MemberReviews from './pages/member/MemberReviews';
 
 import ManagerBooking from './pages/manager/ManagerBooking';
 import ManagerCreate from './pages/manager/ManagerCreate';
@@ -40,10 +44,7 @@ import AdminNoticeList from "./pages/admin/AdminNoticeList";
 import AdminOffice from "./pages/admin/AdminOffice";
 import AdminOfficeList from "./pages/admin/AdminOfficeList";
 import AdminReviewList from "./pages/admin/AdminReviewList";
-import MemberBookings from './pages/member/MemberBookings';
-import MemberFavorites from './pages/member/MemberFavorites';
-import MemberMyInfo from './pages/member/MemberMyInfo';
-import MemberReviews from './pages/member/MemberReviews';
+import AdminRefundList from './pages/admin/AdminRefundList';
 
 function App() {
   return (
@@ -64,11 +65,11 @@ function App() {
         <Route path="/manager/login" element={<PublicRoute><ManagerLogin /></PublicRoute>} />
         <Route path="/manager/find-id" element={<PublicRoute><ManagerFindId /></PublicRoute>} />
         <Route path="/manager/reset-pw" element={<PublicRoute><ManagerResetPw /></PublicRoute>} />
-                                      
+
         {/* 멤버 라우트 */}
-        <Route path="/member/update" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberUpdate /></PrivateRoute>}/>
-        <Route path="/member/delete" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberDelete /></PrivateRoute>}/>
-        <Route path="/payment" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberPayment /></PrivateRoute>}/>
+        <Route path="/member/update" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberUpdate /></PrivateRoute>} />
+        <Route path="/member/delete" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberDelete /></PrivateRoute>} />
+        <Route path="/payment" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberPayment /></PrivateRoute>} />
         <Route path="/member/:no/" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberMyPage /></PrivateRoute>}>
           <Route path="profile" element={<MemberMyInfo />} />
           <Route path="wish" element={<MemberFavorites />} />
@@ -94,6 +95,7 @@ function App() {
         <Route path="/admin/office/:no" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminOffice /></PrivateRoute>} />
         <Route path="/admin/review" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminReviewList /></PrivateRoute>} />
         <Route path="/admin/booking" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminBookingList /></PrivateRoute>} />
+        <Route path="/admin/refund" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminRefundList /></PrivateRoute>} />
         <Route path="/admin/notice" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminNoticeList /></PrivateRoute>} />
         <Route path="/admin/notice/:no" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminNotice /></PrivateRoute>} />
         <Route path="/admin/notice/create" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminNoticeCreate /></PrivateRoute>} />

@@ -23,6 +23,7 @@ import com.kh.backend.notice.Notice;
 import com.kh.backend.notice.NoticeService;
 import com.kh.backend.office.Office;
 import com.kh.backend.office.OfficeService;
+import com.kh.backend.refund.RefundService;
 import com.kh.backend.review.ReviewService;
 
 @RestController
@@ -35,18 +36,21 @@ public class AdminController {
     private final ReviewService reviewService;
     private final BookingService bookingService;
     private final NoticeService noticeService;
+    private final RefundService refundService;
 
     public AdminController(MemberService memberService,
             ManagerService managerService,
             OfficeService officeService,
             ReviewService reviewService,
             BookingService bookingService,
+            RefundService refundService,
             NoticeService noticeService) {
         this.memberService = memberService;
         this.managerService = managerService;
         this.officeService = officeService;
         this.reviewService = reviewService;
         this.bookingService = bookingService;
+        this.refundService = refundService;
         this.noticeService = noticeService;
     }
 
@@ -211,6 +215,15 @@ public class AdminController {
             @RequestParam(required = false) String f,
             @RequestParam(required = false) String q) {
         return bookingService.getBookingsWithPagination(page, size, f, q);
+    }
+
+    @GetMapping("/refund")
+    public Map<String, Object> getAllRefunds(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "30") int size,
+            @RequestParam(required = false) String f,
+            @RequestParam(required = false) String q) {
+        return refundService.getRefundsWithPagination(page, size, f, q);
     }
 
     @GetMapping("/main-notice")

@@ -49,19 +49,8 @@ public class ReviewService {
                 "rating", rating);
     }
 
-    public boolean deleteReviewsByIds(List<Integer> ids) {
-        if (ids != null && !ids.isEmpty()) {
-            int deletedCount = reviewMapper.deleteReviews(ids);
-            return deletedCount > 0;
-        } else {
-            return false;
-        }
-    }
     @Transactional
     public void insertReview(Map<String, Object> review) {
-    reviewMapper.insertReview(review);
+        reviewMapper.insertReview(review);
+    }
 }
-}
-
-
-
