@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import { EditorState, convertFromRaw } from 'draft-js';
+import React, { useEffect, useState } from "react";
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { FaStar } from "react-icons/fa6";
 import { IoCloseCircle } from "react-icons/io5";
+import ReactPaginate from 'react-paginate';
 import { useNavigate } from "react-router-dom";
 import "../../styles/components/member/Popup.css";
 import { getNo, removeTokens } from "../../utils/auth";
 import axios from "../../utils/axiosConfig";
-import ReactPaginate from 'react-paginate';
-import { EditorState, convertFromRaw } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 import {
   validateBirth,
@@ -394,15 +394,15 @@ export const NewReviewPopup = ({ newInitialValue, onClose, onUpdate }) => {
   const handleSave = async () => {
     if (review.trim() !== "" && rating > 0) {
       try {
-        const memberNo = getNo();
-        const response = await axios.post(`/member/review`, {
-          memberNo: memberNo,
+        const no = getNo();
+        const response = await axios.post(`/member/${no}/review`, {
+          memberNo: no,
           officeNo: newInitialValue.OFFICE_NO,
           content: review,
           rating: rating,
         });
 
-        if (response.status === 201) {
+        if (response.status === 200) {
           onUpdate(response.data);
           alert("리뷰가 성공적으로 작성되었습니다.");
           onClose();

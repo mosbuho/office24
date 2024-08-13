@@ -207,75 +207,20 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-    @PostMapping("/review")
-    public ResponseEntity<?> createReview(@RequestBody Map<String, Object> reviewData) {
-        try {
-            int memberNo;
-            try {
-                memberNo = Integer.parseInt(reviewData.get("memberNo").toString());
-            } catch (NumberFormatException e) {
-                return ResponseEntity.badRequest().body("Invalid memberNo format");
-            }
-            if (!(reviewData.get("officeNo") instanceof Integer)) {
-                return ResponseEntity.badRequest().body("Invalid officeNo format");
-            }
-            int officeNo = (int) reviewData.get("officeNo");
-
-            String content = (String) reviewData.get("content");
-
-            if (!(reviewData.get("rating") instanceof Number)) {
-                return ResponseEntity.badRequest().body("Invalid rating format");
-            }
-            double rating = ((Number) reviewData.get("rating")).doubleValue();
-
-            if (content == null || content.trim().isEmpty()) {
-                return ResponseEntity.badRequest().body("Content cannot be empty");
-            }
-            if (rating < 1 || rating > 5) {
-                return ResponseEntity.badRequest().body("Rating must be between 1 and 5");
-            }
-            Map<String, Object> createdReview = reviewService.createReview(memberNo, officeNo, content, rating);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdReview);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("리뷰 작성 중 오류가 발생했습니다: " + e.getMessage());
-        }
+    
+    @PostMapping("/{no}/review")
+    public ResponseEntity<Void> insertReview(@RequestBody Map<String, Object> review) {
+        reviewService.insertReview(review);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{no}/reservations")
-    public ResponseEntity<List<Map<String, Object>>> getMemberReservations(@PathVariable int no) {
-        List<Map<String, Object>> reservations = bookingService.getMemberReservations(no);
-        if (reservations.isEmpty()) {
+    @GetMapping("/{no}/bookings")
+    public ResponseEntity<List<Map<String, Object>>> getMemberBookings(@PathVariable int no) {
+        List<Map<String, Object>> bookings = bookingService.getMemberBookings(no);
+        if (bookings.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(reservations);
-    }
-
-    @PutMapping("/{no}/reservations")
-    public ResponseEntity<?> updateReservation(@PathVariable("no") int no,
-            @RequestBody Map<String, Object> updateData) {
-        System.out.println("Received update request for office ID: " + no);
-        System.out.println("Received data: " + updateData);
-
-        try {
-            boolean updated = bookingService.updateBooking(updateData);
-
-            if (updated) {
-                System.out.println("Reservation updated successfully");
-                return ResponseEntity.ok().body("예약이 성공적으로 수정되었습니다.");
-            } else {
-                System.out.println("Failed to update reservation");
-                return ResponseEntity.badRequest().body("예약 수정에 실패했습니다.");
-            }
-        } catch (Exception e) {
-            System.out.println("Error updating reservation: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("예약 수정 중 오류가 발생했습니다: " + e.getMessage());
-        }
+        return ResponseEntity.ok(bookings);
     }
 
     @DeleteMapping("/{no}/booking")
@@ -283,4 +228,5 @@ public class MemberController {
         bookingService.deleteBooking(bookingNo);
         return ResponseEntity.ok().build();
     }
+
 }

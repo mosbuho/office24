@@ -70,10 +70,14 @@
         WHERE no = #{no}
     </update>
 
-   <insert id="insertReview" parameterType="java.util.Map">
-        <selectKey keyProperty="no" resultType="int" order="BEFORE"> SELECT review_seq.NEXTVAL FROM
-    DUAL </selectKey> INSERT INTO review (no, member_no, office_no, content, rating, reg_date)
-    VALUES (#{no,jdbcType=INTEGER}, #{memberNo,jdbcType=INTEGER}, #{officeNo,jdbcType=INTEGER},
-    #{content,jdbcType=VARCHAR}, #{rating,jdbcType=DOUBLE}, SYSTIMESTAMP) </insert>
+    <delete id="deleteReviews">
+        DELETE FROM review WHERE no IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="insertReview" parameterType="map"> INSERT INTO review (member_no, office_no,
+    content, rating) VALUES (#{memberNo}, #{officeNo}, #{content}, #{rating}) </insert>
 
 </mapper>

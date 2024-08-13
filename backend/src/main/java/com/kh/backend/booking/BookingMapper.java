@@ -32,7 +32,7 @@ public interface BookingMapper {
 
     void insertBooking(Map<String, Object> bookingData) throws Exception;
      
-    List<Map<String, Object>> getMemberReservations(int no);
+    List<Map<String, Object>> getMemberBookings(int no);
 
     boolean updateBooking(Map<String, Object> params);
 }

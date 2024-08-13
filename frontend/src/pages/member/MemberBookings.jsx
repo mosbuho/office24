@@ -1,34 +1,34 @@
 import { useEffect, useState } from "react";
+import BookingItem from "../../components/member/BookingItem";
 import {
   NewReviewPopup,
   VerifyPopup
 } from "../../components/member/Popups";
-import ReservationItem from "../../components/member/ReservationItem";
 import { getNo } from "../../utils/auth";
 import axios from "../../utils/axiosConfig";
 
-function MemberReservations() {
+function MemberBookings() {
   const [activeTab, setActiveTab] = useState("upcoming");
   const [isReviewPopupOpen, setIsReviewPopupOpen] = useState(false);
-  const [selectedReservation, setSelectedReservation] = useState(null);
+  const [selectedBooking, setSelectedBooking] = useState(null);
   const [isVerifyPopupOpen, setIsVerifyPopupOpen] = useState(false);
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
-  const [reservations, setReservations] = useState([]);
+  const [bookings, setBookings] = useState([]);
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    fetchReservations();
+    fetchBookings();
     fetchReviews();
   }, []);
 
   const no = getNo();
   
-  const fetchReservations = async () => {
+  const fetchBookings = async () => {
     try {
-      const response = await axios.get(`/member/${no}/reservations`);
-      setReservations(response.data);
+      const response = await axios.get(`/member/${no}/bookings`);
+      setBookings(response.data);
     } catch (error) {
-      console.error("Error fetching reservations:", error);
+      console.error("Error fetching bookings:", error);
     }
   };
 
@@ -60,20 +60,20 @@ function MemberReservations() {
   );
 
   const currentDateTime = new Date();
-  const filterReservations = (condition) => reservations.filter(condition);
+  const filterBookings = (condition) => bookings.filter(condition);
 
-  const upcomingReservations = filterReservations(
-    (reservation) => new Date(reservation.START_DATE) > currentDateTime
+  const upcomingBookings = filterBookings(
+    (booking) => new Date(booking.START_DATE) > currentDateTime
   );
 
-  const inUseReservations = filterReservations(
-    (reservation) =>
-      currentDateTime >= new Date(reservation.START_DATE) &&
-      currentDateTime <= new Date(reservation.END_DATE)
+  const inUseBookings = filterBookings(
+    (booking) =>
+      currentDateTime >= new Date(booking.START_DATE) &&
+      currentDateTime <= new Date(booking.END_DATE)
   );
 
-  const pastReservations = filterReservations(
-    (reservation) => new Date(reservation.END_DATE) < currentDateTime
+  const pastBookings = filterBookings(
+    (booking) => new Date(booking.END_DATE) < currentDateTime
   );
 
   const handleReviewUpdate = async (updatedReview) => {
@@ -87,31 +87,31 @@ function MemberReservations() {
   };
 
   const handleEditPopup = (item) => {
-    const formattedReservation = {
+    const formattedBooking = {
       ...item,
       startDate: item.START_DATE,
       endDate: item.END_DATE,
       attendance: item.ATTENDANCE || 1,
     };
-    setSelectedReservation(formattedReservation);
+    setSelectedBooking(formattedBooking);
     setIsEditPopupOpen(true);
   };
 
 
   const handleVerifyPopup = (item) => {
-    setSelectedReservation(item);
+    setSelectedBooking(item);
     setIsVerifyPopupOpen(true);
   };
 
-  const renderReservationItem = (item) => (
-    <ReservationItem
+  const renderBookingItem = (item) => (
+    <BookingItem
       key={item.NO}
       item={item}
       activeTab={activeTab}
       onEdit={handleEditPopup}
       onCancel={handleVerifyPopup}
       onReview={() => {
-        setSelectedReservation(item);
+        setSelectedBooking(item);
         setIsReviewPopupOpen(true);
       }}
       review={reviews.find((review) => review.OFFICENO === item.OFFICE_NO)}
@@ -121,16 +121,16 @@ function MemberReservations() {
     <>
       <TabNavigation />
       {activeTab === "upcoming" &&
-        upcomingReservations.map(renderReservationItem)}
-      {activeTab === "inUse" && inUseReservations.map(renderReservationItem)}
-      {activeTab === "past" && pastReservations.map(renderReservationItem)}
+        upcomingBookings.map(renderBookingItem)}
+      {activeTab === "inUse" && inUseBookings.map(renderBookingItem)}
+      {activeTab === "past" && pastBookings.map(renderBookingItem)}
 
       {isVerifyPopupOpen && (
         <VerifyPopup
           onConfirm={(result) => {
             setIsVerifyPopupOpen(false);
             if (result === "yes") {
-              fetchReservations();
+              fetchBookings();
             }
           }}
           onCancel={() => setIsVerifyPopupOpen(false)}
@@ -138,12 +138,12 @@ function MemberReservations() {
         />
       )}
 
-      {isReviewPopupOpen && selectedReservation && (
+      {isReviewPopupOpen && selectedBooking && (
         <NewReviewPopup
-          newInitialValue={selectedReservation}
+          newInitialValue={selectedBooking}
           onClose={() => {
             setIsReviewPopupOpen(false);
-            setSelectedReservation(null);
+            setSelectedBooking(null);
           }}
           onUpdate={handleReviewUpdate}
           type={activeTab === "past" ? "new" : undefined}
@@ -153,4 +153,4 @@ function MemberReservations() {
   );
 }
 
-export default MemberReservations;
+export default MemberBookings;

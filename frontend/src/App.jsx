@@ -40,9 +40,9 @@ import AdminNoticeList from "./pages/admin/AdminNoticeList";
 import AdminOffice from "./pages/admin/AdminOffice";
 import AdminOfficeList from "./pages/admin/AdminOfficeList";
 import AdminReviewList from "./pages/admin/AdminReviewList";
+import MemberBookings from './pages/member/MemberBookings';
 import MemberFavorites from './pages/member/MemberFavorites';
 import MemberMyInfo from './pages/member/MemberMyInfo';
-import MemberReservations from './pages/member/MemberReservations';
 import MemberReviews from './pages/member/MemberReviews';
 
 function App() {
@@ -72,7 +72,7 @@ function App() {
         <Route path="/member/:no/" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberMyPage /></PrivateRoute>}>
           <Route path="profile" element={<MemberMyInfo />} />
           <Route path="wish" element={<MemberFavorites />} />
-          <Route path="booking" element={<MemberReservations />} />
+          <Route path="booking" element={<MemberBookings />} />
           <Route path="review" element={<MemberReviews />} />
         </Route>
 

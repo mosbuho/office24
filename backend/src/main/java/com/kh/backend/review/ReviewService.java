@@ -1,6 +1,5 @@
 package com.kh.backend.review;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +7,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ReviewService {
@@ -49,27 +49,19 @@ public class ReviewService {
                 "rating", rating);
     }
 
-    public Map<String, Object> createReview(int memberNo, int officeNo, String content, double rating) {
-    Map<String, Object> params = new HashMap<>();
-    params.put("memberNo", memberNo);
-    params.put("officeNo", officeNo);
-    params.put("content", content);
-    params.put("rating", rating);
-
-    reviewMapper.insertReview(params);
-
-    int newReviewNo = (int) params.get("no");
-
-    Map<String, Object> createdReview = new HashMap<>();
-    createdReview.put("no", newReviewNo);
-    createdReview.put("memberNo", memberNo);
-    createdReview.put("officeNo", officeNo);
-    createdReview.put("content", content);
-    createdReview.put("rating", rating);
-    createdReview.put("regDate", new Date());
-    return createdReview;
+    public boolean deleteReviewsByIds(List<Integer> ids) {
+        if (ids != null && !ids.isEmpty()) {
+            int deletedCount = reviewMapper.deleteReviews(ids);
+            return deletedCount > 0;
+        } else {
+            return false;
+        }
+    }
+    @Transactional
+    public void insertReview(Map<String, Object> review) {
+    reviewMapper.insertReview(review);
+}
 }
 
-}
 
 
