@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   BirthPopup,
   EmailPopup,
@@ -12,7 +11,6 @@ import { getNo } from "../../utils/auth";
 import axios from "../../utils/axiosConfig";
 
 function MemberMyInfo() {
-  const navigate = useNavigate();
   const [activePopup, setActivePopup] = useState(null);
   const [modifiedFields, setModifiedFields] = useState({});
   const [memberData, setMemberData] = useState({
@@ -47,7 +45,6 @@ function MemberMyInfo() {
     fetchMemberData();
   }, []);
 
-  //function updateLocalMemberData(field, value) {
   const updateLocalMemberData = (field, value) => {
     setMemberData((prevData) => ({
       ...prevData,
@@ -58,23 +55,20 @@ function MemberMyInfo() {
       [field]: true,
     }));
   };
-  //function edit handler
+
   const handleEdit = (field) => {
     setActivePopup(field);
   };
 
-  //function save handler
   const handleSave = (field, value) => {
     updateLocalMemberData(field, value);
     setActivePopup(null);
   };
 
-  //function close handler
   const handleClose = () => {
     setActivePopup(null);
   };
 
-  //function put updatemember
   const submitMemberDataToServer = async () => {
     const no = getNo();
     console.log("Data being sent to server:", memberData);
@@ -96,12 +90,13 @@ function MemberMyInfo() {
         <label>아이디</label>
         <span>{memberData.id}</span>
       </div>
-      <div className="info-row bt" onClick={() => handleEdit("updatePassword")}>
+      <div className="info-row bt" onClick={() => handleEdit("updatePassword")} style={{ cursor: "pointer" }}>
         <label>비밀번호 변경</label>
       </div>
       <div
         className={`info-row ${modifiedFields.name ? "modified" : ""}`}
         onClick={() => handleEdit("name")}
+        style={{ cursor: "pointer" }}
       >
         <label>이름</label>
         <span>{memberData.name}</span>
@@ -110,6 +105,7 @@ function MemberMyInfo() {
       <div
         className={`info-row ${modifiedFields.phone ? "modified" : ""}`}
         onClick={() => handleEdit("phone")}
+        style={{ cursor: "pointer" }}
       >
         <label>전화번호</label>
         <span>{memberData.phone}</span>
@@ -118,6 +114,7 @@ function MemberMyInfo() {
       <div
         className={`info-row ${modifiedFields.email ? "modified" : ""}`}
         onClick={() => handleEdit("email")}
+        style={{ cursor: "pointer" }}
       >
         <label>이메일</label>
         <span>{memberData.email}</span>
@@ -126,6 +123,7 @@ function MemberMyInfo() {
       <div
         className={`info-row ${modifiedFields.birth ? "modified" : ""}`}
         onClick={() => handleEdit("birth")}
+        style={{ cursor: "pointer" }}
       >
         <label>생년월일</label>
         <span>{memberData.birth}</span>

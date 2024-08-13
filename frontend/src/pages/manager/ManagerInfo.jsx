@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from '../../utils/axiosConfig';
 import ManagerHeader from "../../components/manager/ManagerHeader";
 import ManagerSidebar from "../../components/manager/ManagerSidebar";
