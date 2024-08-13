@@ -30,6 +30,7 @@ import ManagerOfficeCreate from './pages/manager/ManagerOfficeCreate';
 import ManagerOfficeList from './pages/manager/ManagerOfficeList';
 import ManagerOfficeUpdate from './pages/manager/ManagerOfficeUpdate';
 import ManagerResetPw from './pages/manager/ManagerResetPw';
+import ManagerRefund from './pages/manager/ManagerRefund';
 
 import AdminBookingList from "./pages/admin/AdminBookingList";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -84,6 +85,7 @@ function App() {
         <Route path="/manager/office/:officeNo/update" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeUpdate /></PrivateRoute>} />
         <Route path="/manager/booking" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerBooking /></PrivateRoute>} />
         <Route path="/manager/info" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerInfo /></PrivateRoute>} />
+        <Route path="/manager/refund" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerRefund/></PrivateRoute>} />
 
         {/* 어드민 라우트 */}
         <Route path="/admin" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMain /></PrivateRoute>} />

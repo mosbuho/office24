@@ -21,6 +21,7 @@ const ManagerSidebar = () => {
             <div className='sidebar_button' onClick={() => handleNav(`/manager/office`)}>오피스 관리</div>
             <div className='sidebar_button' onClick={() => handleNav(`/manager/booking`)}>예약 관리</div>
             <div className='sidebar_button' onClick={() => handleNav(`/manager/info`)}>정보 관리</div>
+            <div className='sidebar_button' onClick={() => handleNav(`/manager/refund`)}>환불 내역</div>
           </div>
         </div>
       </div>

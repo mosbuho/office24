@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.backend.booking.BookingService;
 import com.kh.backend.office.OfficeService;
+import com.kh.backend.refund.Refund;
+import com.kh.backend.refund.RefundService;
 
 @RestController
 @RequestMapping("/manager")
@@ -26,12 +28,14 @@ public class ManagerController {
     private final ManagerService managerService;
     private final OfficeService officeService;
     private final BookingService bookingService;
+    private final RefundService refundService;
 
     public ManagerController(ManagerService managerService, OfficeService officeService,
-            BookingService bookingService) {
+            BookingService bookingService, RefundService refundService) {
         this.managerService = managerService;
         this.officeService = officeService;
         this.bookingService = bookingService;
+        this.refundService = refundService;
     }
 
     // 회원 가입 페이지
@@ -191,7 +195,6 @@ public class ManagerController {
         }
     }
 
-    // id 찾기 페이지
     @PostMapping("/find-id")
     public ResponseEntity<String> findManagerIdByPhone(@RequestBody Manager manager) {
         try {
@@ -202,7 +205,6 @@ public class ManagerController {
         }
     }
 
-    // pw 재설정 페이지
     @PostMapping("/reset-pw")
     public ResponseEntity<String> resetPassword(@RequestBody Manager manager) {
         try {
@@ -215,6 +217,21 @@ public class ManagerController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("비밀번호 재설정 중 오류가 발생했습니다.");
         }
+    }
+
+    @GetMapping("/{no}/refund")
+    @PreAuthorize("#no == authentication.details")
+    public ResponseEntity<Map<String, Object>> getRefunds(
+            @PathVariable("no") int no,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size) {
+
+        Map<String, Object> response = refundService.getRefundsByManagerNo(no, page, size);
+
+        if (response.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(response);
     }
 
 }
