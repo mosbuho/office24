@@ -27,8 +27,6 @@ public interface ReviewMapper {
 
     int updateReview(@Param("no") int no, @Param("content") String content, @Param("rating") double rating);
 
-    int deleteReviews(List<Integer> ids);
-
     void insertReview(Map<String, Object> review);
 
 }

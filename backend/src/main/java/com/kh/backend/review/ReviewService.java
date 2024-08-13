@@ -49,15 +49,6 @@ public class ReviewService {
                 "rating", rating);
     }
 
-    public boolean deleteReviewsByIds(List<Integer> ids) {
-        if (ids != null && !ids.isEmpty()) {
-            int deletedCount = reviewMapper.deleteReviews(ids);
-            return deletedCount > 0;
-        } else {
-            return false;
-        }
-    }
-
     public Map<String, Object> createReview(int memberNo, int officeNo, String content, double rating) {
     Map<String, Object> params = new HashMap<>();
     params.put("memberNo", memberNo);

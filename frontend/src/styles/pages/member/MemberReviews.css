@@ -1,0 +1,42 @@
+.reviewsbtn {
+    width: 100%;
+    border: 0;
+    background-color: transparent;
+    position: relative;
+    overflow: hidden;
+    margin: 20px 0 20px 0;
+    cursor: pointer;
+}
+
+.reviewsbtn::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    border-top: 1px solid var(--shaded-dark-color);
+    z-index: 0;
+}
+
+.reviewsbtn div {
+    position: relative;
+    margin: auto;
+    background-color: var(--background-color);
+    padding: 0 10px;
+    z-index: 1;
+    font-size: 20px;
+    width: 80px;
+    opacity: 1;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.reviewsbtn::hover {
+    opacity: 0.5;
+
+    div {
+        font-size: 20px;
+        width: 150px;
+        transition: all 0.3s ease;
+    }
+}
