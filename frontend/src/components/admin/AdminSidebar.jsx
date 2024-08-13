@@ -11,6 +11,7 @@ const AdminSidebar = () => {
         office: '오피스',
         review: '리뷰',
         booking: '예약',
+        refund: '취소',
         notice: '공지사항'
     };
 

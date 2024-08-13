@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.backend.refund.RefundMapper">
+    <select id="getAllRefunds" resultType="map"> SELECT * FROM ( SELECT m.*, ROWNUM rnum FROM (
+        SELECT no, office_no, member_no, name, phone, payment, price, refund_amount, start_date, end_date,
+        booking_date, reg_date FROM refund <if
+            test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if> ORDER BY no ) m
+        WHERE ROWNUM &lt;= #{end} ) WHERE rnum >= #{start} </select>
+
+    <select id="getTotalRefundCount" resultType="int"> SELECT COUNT(*) FROM refund <if
+            test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if>
+    </select>
+
+</mapper>
