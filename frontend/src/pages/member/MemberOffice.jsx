@@ -1,7 +1,7 @@
 import { default as React, useEffect, useRef, useState } from "react";
 import { CiShare2 } from "react-icons/ci";
 import { FaStar } from "react-icons/fa";
-import { PiHeartThin } from "react-icons/pi";
+import { PiHeartThin, PiHeartFill } from "react-icons/pi";
 import { useNavigate, useParams } from "react-router-dom";
 import Calendar from "../../components/member/Calendar";
 import KakaoMapSingleLocation from "../../components/member/KakaoMapSingleLocation";
@@ -12,8 +12,8 @@ import axios from '../../utils/axiosConfig';
 import { EditorState, convertFromRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { getNo } from "../../utils/auth";
 
-// function 호스트 평균 평점 계산 함수 //
 const calculateAverageRating = (reviews) => {
   if (!Array.isArray(reviews) || reviews.length === 0) return 0;
 
@@ -22,7 +22,6 @@ const calculateAverageRating = (reviews) => {
   return isNaN(average) ? 0 : Number(average.toFixed(1));
 };
 
-//component그래프 바 렌더링//
 const RatingBarGraph = ({ rating, count, total }) => {
   const percentage = (count / total) * 100;
 
@@ -36,7 +35,6 @@ const RatingBarGraph = ({ rating, count, total }) => {
   );
 };
 
-//component그래프 렌더링//
 const ReviewGraph = ({ averageRating = 0, noOfReview, ratingsDistribution }) => {
   return (
     <div className="review-statics-section">
@@ -57,19 +55,23 @@ const ReviewGraph = ({ averageRating = 0, noOfReview, ratingsDistribution }) => 
   );
 };
 
-//component 리뷰목록 렌더링 //
 const ReviewList = ({ reviews }) => {
   const [visibleReviews, setVisibleReviews] = useState(6);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const toggleReviews = () => {
-    if (isExpanded) {
-      setVisibleReviews(6);
-      setIsExpanded(false);
-    } else {
+  const loadMoreReviews = () => {
+    const newVisibleCount = visibleReviews + 6;
+    if (newVisibleCount >= reviews.length) {
       setVisibleReviews(reviews.length);
       setIsExpanded(true);
+    } else {
+      setVisibleReviews(newVisibleCount);
     }
+  };
+
+  const collapseReviews = () => {
+    setVisibleReviews(6);
+    setIsExpanded(false);
   };
 
   if (!Array.isArray(reviews) || reviews.length === 0) {
@@ -81,16 +83,21 @@ const ReviewList = ({ reviews }) => {
       {reviews.slice(0, visibleReviews).map((review, index) => (
         <ReviewItem key={index} review={review} />
       ))}
-      {reviews.length > 6 && (
-        <button onClick={toggleReviews} className="show-more-button">
-          <div>{isExpanded ? "접기" : "더보기"}</div>
+      {visibleReviews < reviews.length ? (
+        <button onClick={loadMoreReviews} className="show-more-button">
+          <div>더보기</div>
         </button>
+      ) : (
+        reviews.length > 6 && (
+          <button onClick={collapseReviews} className="show-more-button">
+            <div>접기</div>
+          </button>
+        )
       )}
     </div>
   );
 };
 
-//component 리뷰 아이템 렌더링 //
 const ReviewItem = ({ review }) => {
   return (
     <div className="review-item">
@@ -117,7 +124,6 @@ const ReviewItem = ({ review }) => {
   );
 };
 
-//component 지도 렌더링 //
 const LocationSection = ({ resultItemData }) => {
   const centerMarker = {
     latitude: resultItemData.latitude,
@@ -138,14 +144,31 @@ const LocationSection = ({ resultItemData }) => {
 
 const MemberOffice = () => {
   const { officeNo } = useParams();
+  const navigate = useNavigate();
   const [officeData, setOfficeData] = useState(null);
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+  const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
     const fetchOfficeData = async () => {
       try {
         const response = await axios.get(`/office/${officeNo}`);
         setOfficeData(response.data);
+
+        const userNo = getNo();
+        if (userNo) {
+          try {
+            const likeResponse = await axios.get(`/member/${userNo}/liked-offices`);
+            const likedOffices = new Set(likeResponse.data);
+            const numericOfficeNo = Number(officeNo);
+            const isOfficeLiked = likedOffices.has(numericOfficeNo);
+            setIsLiked(isOfficeLiked);
+          } catch (likeError) {
+            console.error("Error fetching liked offices:", likeError);
+          }
+        } else {
+          setIsLiked(false);
+        }
 
         if (response.data.office.content) {
           const contentState = convertFromRaw(JSON.parse(response.data.office.content));
@@ -158,6 +181,39 @@ const MemberOffice = () => {
 
     fetchOfficeData();
   }, [officeNo]);
+
+  const handleLikeToggle = async () => {
+    const userNo = getNo();
+    if (!userNo) {
+      const wantLogin = window.confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?");
+      if (wantLogin) {
+        navigate("/login");
+      }
+      return;
+    }
+
+    try {
+      const response = await axios.put(`/member/${officeNo}/like`, {
+        userNo: userNo,
+      });
+      if (response.data.success) {
+        const newLikeStatus = response.data.isLiked;
+        setIsLiked(newLikeStatus);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 403) {
+        const wantLogin = window.confirm(
+          "인증이 만료되었습니다. 다시 로그인하시겠습니까?"
+        );
+        if (wantLogin) {
+          localStorage.removeItem("accessToken");
+          navigate("/login");
+        }
+      } else {
+        console.error("좋아요 기능 에러:", error);
+      }
+    }
+  };
 
   if (!officeData) {
     return <></>;
@@ -179,9 +235,6 @@ const MemberOffice = () => {
     return acc;
   }, {});
 
-
-
-  //render LeftCol
   const LeftColumn = ({ office, averageRating, noOfReview, managerName }) => {
     return (
       <div className="left-column">
@@ -223,7 +276,6 @@ const MemberOffice = () => {
     );
   };
 
-  //Component RightColumn
   const RightColumn = ({ office }) => {
     const today = new Date();
     const [startDate, setStartDate] = useState(today);
@@ -419,7 +471,6 @@ const MemberOffice = () => {
                       }}
                       onBlur={() => {
                         setAttendance((prev) => prev || 1);
-                        //setExtendAttendInput(false);
                       }}
                       min="1"
                       max="100"
@@ -431,7 +482,6 @@ const MemberOffice = () => {
                 <button
                   onMouseDown={(e) => {
                     e.preventDefault();
-                    //setAttendance((prev) => Math.min(100, (prev || 0) + 1));
                   }}
                 >
                   +
@@ -439,7 +489,6 @@ const MemberOffice = () => {
                 <button
                   onMouseDown={(e) => {
                     e.preventDefault();
-                    //setAttendance((prev) => Math.max(1, (prev || 1) - 1));
                   }}
                 >
                   -
@@ -489,13 +538,9 @@ const MemberOffice = () => {
               <h1>{office.title}</h1>
             </div>
             <div className="item-utils">
-              <div className="share">
-                <CiShare2 />
-                <u>공유</u>
-              </div>
-              <div className="save">
-                <PiHeartThin />
-                <u>저장</u>
+              <div className="save" onClick={handleLikeToggle} style={{ cursor: "pointer" }}>
+                {isLiked ? <PiHeartFill color="red" size={24} /> : <PiHeartThin size={24} />}
+                <u>좋아요</u>
               </div>
             </div>
           </div>

@@ -137,6 +137,7 @@
             position: relative;
             overflow: hidden;
             margin: 20px 0 20px 0;
+            cursor: pointer;
         }
 
         .show-more-button::before {
@@ -277,7 +278,7 @@
     .main-content {
         display: flex;
         gap: 20px;
-        padding: 20px;
+        padding-top: 20px;
 
         .left-column {
             flex: 2;
@@ -392,6 +393,7 @@
             max-height: calc(100vh - 40px);
             max-width: 35%;
             z-index: 5;
+            width: 0;
 
             .background-for-input-wrapper {
                 position: relative;
