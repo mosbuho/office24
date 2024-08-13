@@ -431,7 +431,6 @@ public class MemberService {
             if (member.getEmail() != null && !member.getEmail().isEmpty()) {
                 existingMember.setEmail(member.getEmail());
             }
-            // Update other fields similarly
             memberMapper.updateMember(existingMember);
         } else {
             throw new RuntimeException("Member not found");
@@ -477,4 +476,5 @@ public class MemberService {
     public List<Integer> getLikedOfficeNumbers(int userNo) {
         return memberMapper.getLikedOfficeNumbers(userNo);
     }
+    
 }

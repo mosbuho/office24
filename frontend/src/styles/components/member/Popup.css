@@ -15,10 +15,9 @@
 
         .verification {
             .yes {
-                background-color: var(--primary-color) !important;
+                background-color: var(--text-color) !important;
                 color: var(--background-color) !important;
             }
-
             .no {
                 background-color: var(--discard-color) !important;
             }

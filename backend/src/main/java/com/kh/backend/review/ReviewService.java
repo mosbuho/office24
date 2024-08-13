@@ -1,5 +1,6 @@
 package com.kh.backend.review;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,4 +57,28 @@ public class ReviewService {
             return false;
         }
     }
+
+    public Map<String, Object> createReview(int memberNo, int officeNo, String content, double rating) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("memberNo", memberNo);
+    params.put("officeNo", officeNo);
+    params.put("content", content);
+    params.put("rating", rating);
+
+    reviewMapper.insertReview(params);
+
+    int newReviewNo = (int) params.get("no");
+
+    Map<String, Object> createdReview = new HashMap<>();
+    createdReview.put("no", newReviewNo);
+    createdReview.put("memberNo", memberNo);
+    createdReview.put("officeNo", officeNo);
+    createdReview.put("content", content);
+    createdReview.put("rating", rating);
+    createdReview.put("regDate", new Date());
+    return createdReview;
 }
+
+}
+
+

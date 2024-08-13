@@ -78,4 +78,12 @@ public class BookingService {
     public void createBooking(Map<String, Object> bookingData) throws Exception {
         bookingMapper.insertBooking(bookingData);
     }
+
+    public List<Map<String, Object>> getMemberReservations(int no) {
+        return bookingMapper.getMemberReservations(no);
+    }
+    
+    public boolean updateBooking(Map<String, Object> bookingData) {
+        return bookingMapper.updateBooking(bookingData);
+    }
 }
