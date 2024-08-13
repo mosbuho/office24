@@ -45,11 +45,11 @@
         }
 
         .office-item-content {
-            min-height: 80px;
+            min-height: 70px;
         }
 
         .office-item-top {
-            margin: 5px;
+            margin: 5px 5px 0 5px;
             display: flex;
             width: 100%;
             height: fit-content;
@@ -72,8 +72,7 @@
         p {
             margin: 0;
             font-size: 0.75rem;
-            color: var(--shaded-color);
-            font-weight: 700;
+            color: var(--shaded-dark-color);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -161,8 +160,8 @@
         }
 
         svg {
-            width: 100%;
-            height: 100%;
+            width: 90%;
+            height: 90%;
         }
 
         &:hover {

@@ -539,7 +539,7 @@ const MemberOffice = () => {
             </div>
             <div className="item-utils">
               <div className="save" onClick={handleLikeToggle} style={{ cursor: "pointer" }}>
-                {isLiked ? <PiHeartFill color="red" size={24} /> : <PiHeartThin size={24} />}
+                {isLiked ? <PiHeartFill color="#ff3a33" size={24} /> : <PiHeartThin size={24} />}
                 <u>좋아요</u>
               </div>
             </div>

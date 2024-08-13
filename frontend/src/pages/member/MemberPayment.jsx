@@ -22,7 +22,7 @@ const MemberPayment = () => {
   const [attendance, setAttendance] = useState(location.state?.attendance || 1);
   const [officeData, setOfficeData] = useState(location.state?.officeData || null);
   const [notallowedDates] = useState(location.state?.notallowedDates || []);
-  const [paymentMethod, setPaymentMethod] = useState("new-credit-card");
+  const [paymentMethod, setPaymentMethod] = useState("credit-card");
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -305,7 +305,6 @@ const MemberPayment = () => {
       buyer_tel: phoneNumber,
       buyer_addr: address,
       buyer_postcode: postcode,
-      m_redirect_url: 'http://localhost:3000/payments/complete',
     };
 
     IMP.request_pay(paymentData, async (response) => {
@@ -325,7 +324,7 @@ const MemberPayment = () => {
           const result = await axios.post('/member/booking', bookingData);
           if (result.status === 200) {
             alert("예약이 성공적으로 완료되었습니다!");
-            navigate('/');
+            navigate(`/member/${no}/booking`);
           } else {
             alert("예약에 실패했습니다. 다시 시도해주세요.");
           }
@@ -378,8 +377,8 @@ const MemberPayment = () => {
                   className="payment-dropdown"
                   onChange={(e) => setPaymentMethod(e.target.value)}
                 >
-                  <option value="credit-card">신용카드</option>
-                  <option value="kakao-pay">카카오페이</option>
+                  <option value="credit-card">KG이니시스 통합결제</option>
+                  <option value="kakao-pay">카카오페이 간편결제</option>
                 </select>
               </div>
             </div>
