@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/components/member/MemberHeader.css";
 import { getNo, isAuthenticated, removeTokens } from "../../utils/auth";
 import Calendar from "./Calendar";
+import NoticePopup from "./Popups";
 
 // render: 지역 옵션 목록 //
 const LOCATION_OPTIONS = [
@@ -100,6 +101,8 @@ const MemberHeader = () => {
   const navigate = useNavigate();
   const [authenticated, setAuthenticated] = useState(false);
   const no = getNo();
+
+  const [showNoticePopup, setShowNoticePopup] = useState(false);
 
   // event handler: 이벤트 분류 //
   useEffect(() => {
@@ -238,6 +241,14 @@ const MemberHeader = () => {
     removeTokens();
     setAuthenticated(false);
     navigate('/');
+  };
+
+  const openNoticePopup = () => {
+    setShowNoticePopup(true);
+  };
+
+  const closeNoticePopup = () => {
+    setShowNoticePopup(false);
   };
 
   // render: 헤더 컴포넌트 //
@@ -433,11 +444,12 @@ const MemberHeader = () => {
                 </>
               )}
               <div className="dropdown-divider"></div>
-              <div className="dropdown-option">공지사항</div>
+              <div className="dropdown-option" onClick={openNoticePopup}>공지사항</div>
             </div>
           )}
         </div>
       </div>
+      {showNoticePopup && <NoticePopup onClose={closeNoticePopup} />}
     </div>
   );
 };

@@ -52,176 +52,275 @@
     }
 
 
-/* 팝업 */
-.popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+    /* 팝업 */
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
 
 
-    .popup {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        position: relative;
-        min-width: 500px;
+        .popup {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            min-width: 500px;
 
-        h2:first-child {
-            display: inline;
+            h2:first-child {
+                display: inline;
+            }
+
+            .popup-close {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: none;
+                border: none;
+                font-size: 30px;
+                cursor: pointer;
+                color: var(--discard-color);
+            }
+
+            .popup-buttons {
+                display: flex;
+                justify-content: flex-end;
+                margin-top: 20px;
+
+                button {
+                    padding: 10px 20px;
+                    margin-left: 10px;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    transition: background-color 0.3s;
+
+                    &:first-child {
+                        background-color: transparent;
+                        color: var(--shaded-dark-color);
+                    }
+
+                    &:last-child {
+                        background-color: black;
+                        color: white;
+                    }
+                }
+
+                button:hover {
+                    opacity: 0.7;
+                }
+            }
         }
 
-        .popup-close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            font-size: 30px;
-            cursor: pointer;
-            color: var(--discard-color);
+        .calendar-popup {
+            .show-date-value {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                border: 1px solid var(--shaded-color);
+                width: fit-content;
+                margin: auto;
+                margin-top: 0;
+                margin-bottom: 0;
+                border-radius: 30px;
+
+                .wrap-right {
+                    padding: 10px 10px 10px 20px;
+                    border-radius: 30px;
+
+                }
+
+                .wrap-left {
+                    padding: 10px 20px 10px 10px;
+                    border-radius: 30px;
+                }
+            }
+
         }
 
-        .popup-buttons {
+        .attendance-input-wrapper {
+            margin: auto;
             display: flex;
-            justify-content: flex-end;
+            align-items: center;
+            width: fit-content;
             margin-top: 20px;
 
+            .custom-number-input::-webkit-inner-spin-button,
+            .custom-number-input::-webkit-outer-spin-button {
+
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            .custom-number-input {
+                -moz-appearance: textfield;
+                text-align: center;
+                font-size: 18px;
+                width: 50px;
+                padding: 5px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            input {
+                border: transparent !important;
+            }
+
             button {
-                padding: 10px 20px;
-                margin-left: 10px;
-                border: none;
-                border-radius: 4px;
+                background-color: var(--background-color);
+                border: 1px solid var(--primary-color);
+                color: var(--primary-color);
+                font-size: 20px;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
                 cursor: pointer;
-                transition: background-color 0.3s;
-
-                &:first-child {
-                    background-color: transparent;
-                    color: var(--shaded-dark-color);
-                }
-
-                &:last-child {
-                    background-color: black;
-                    color: white;
-                }
+                border-radius: 50%;
+                margin: 0 5px;
             }
 
             button:hover {
-                opacity: 0.7;
-            }
-        }
-    }
-
-    .calendar-popup {
-        .show-date-value {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid var(--shaded-color);
-            width: fit-content;
-            margin: auto;
-            margin-top: 0;
-            margin-bottom: 0;
-            border-radius: 30px;
-
-            .wrap-right {
-                padding: 10px 10px 10px 20px;
-                border-radius: 30px;
-
-            }
-
-            .wrap-left {
-                padding: 10px 20px 10px 10px;
-                border-radius: 30px;
+                background-color: #e0e0e0;
             }
         }
 
+        .phone-number-input-wrapper {
+            min-width: 30vw;
+        }
+
+        .popup-form,
+        .phone-number-input-wrapper,
+        .name-input-wrapper {
+            margin-top: 20px;
+
+            input {
+                width: calc(100% - 20px);
+                border: transparent;
+                padding: 10px;
+                border-radius: 10px;
+                border: 1px solid var(--shaded-color);
+            }
+        }
+
+        .popup-verifycode {
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            margin: 8px 0;
+            border-radius: 8px;
+            background: #474747;
+            color: white;
+        }
     }
 
-    .attendance-input-wrapper {
-        margin: auto;
+
+    .notice-popup-content ul {
+        padding: 0;
+        margin: 10px 0;
+    }
+
+    .notice-popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
         display: flex;
         align-items: center;
-        width: fit-content;
-        margin-top: 20px;
-
-        .custom-number-input::-webkit-inner-spin-button,
-        .custom-number-input::-webkit-outer-spin-button {
-
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        .custom-number-input {
-            -moz-appearance: textfield;
-            text-align: center;
-            font-size: 18px;
-            width: 50px;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        input {
-            border: transparent !important;
-        }
-
-        button {
-            background-color: var(--background-color);
-            border: 1px solid var(--primary-color);
-            color: var(--primary-color);
-            font-size: 20px;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            border-radius: 50%;
-            margin: 0 5px;
-        }
-
-        button:hover {
-            background-color: #e0e0e0;
-        }
+        justify-content: center;
     }
 
-    .phone-number-input-wrapper {
-        min-width: 30vw;
-    }
-
-    .popup-form,
-    .phone-number-input-wrapper,
-    .name-input-wrapper {
-        margin-top: 20px;
-
-        input {
-            width: calc(100% - 20px);
-            border: transparent;
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid var(--shaded-color);
-        }
-    }
-
-    .popup-verifycode {
-        padding: 8px 16px;
-        font-size: 13px;
-        border-radius: 4px;
-        border: none;
-        cursor: pointer;
-        margin: 8px 0;
+    .notice-popup-container {
+        background: white;
         border-radius: 8px;
-        border: 'none',
+        width: 80%;
+        max-width: 800px;
+        max-height: 80%;
+        overflow-y: auto;
+        position: relative;
     }
-}
 
+    .notice-popup-header {
+        padding: 10px 20px;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .notice-popup-close-button {
+        border: none;
+        background: transparent;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .notice-popup-content {
+        padding: 10px;
+    }
+
+    .notice-item {
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+        overflow: hidden;
+    }
+
+    .notice-item h4 {
+        margin: 0;
+        padding: 10px;
+        background: #f5f5f5;
+        transition: background 0.3s ease;
+    }
+
+    .notice-item h4:hover {
+        background: #e0e0e0;
+    }
+
+    .notice-details {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+        padding: 0 10px;
+    }
+
+    .notice-details.open {
+        max-height: 500px;
+        transition: max-height 0.3s ease-in;
+    }
+
+    .notice-pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .notice-pagination-button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .notice-pagination-button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }

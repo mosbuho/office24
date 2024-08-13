@@ -213,6 +213,13 @@ public class AdminController {
         return bookingService.getBookingsWithPagination(page, size, f, q);
     }
 
+    @GetMapping("/main-notice")
+    public List<Notice> getNotice(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        return noticeService.getNotice(page, size);
+    }
+
     @GetMapping("/notice")
     public Map<String, Object> getAllNotices(
             @RequestParam(defaultValue = "1") int page,

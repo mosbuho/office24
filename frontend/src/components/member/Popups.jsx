@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaStar } from "react-icons/fa6";
 import { IoCloseCircle } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,10 @@ import Calendar from "../../components/member/Calendar";
 import "../../styles/components/member/Popup.css";
 import { getNo, removeTokens } from "../../utils/auth";
 import axios from "../../utils/axiosConfig";
+import ReactPaginate from 'react-paginate';
+import { EditorState, convertFromRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 import {
   validateBirth,
@@ -531,3 +535,109 @@ export const EditReviewPopup = ({ initialValue, onClose, onUpdate }) => {
     </PopupOverlay>
   );
 };
+
+const NoticePopup = ({ onClose }) => {
+  const [notices, setNotices] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [pageCount, setPageCount] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [openIndex, setOpenIndex] = useState(null);
+  const [pageDataCache, setPageDataCache] = useState({});
+
+  const noticesPerPage = 10;
+
+  useEffect(() => {
+    fetchNotices(1);
+  }, []);
+
+  const fetchNotices = async (page) => {
+    if (pageDataCache[page]) {
+      setNotices(pageDataCache[page]);
+      return;
+    }
+
+    const response = await axios.get('/notice', {
+      params: {
+        page, size: noticesPerPage
+      }
+    });
+
+    const { notices: fetchedNotices, totalCount } = response.data;
+
+    setPageDataCache(prevCache => ({
+      ...prevCache,
+      [page]: fetchedNotices
+    }));
+
+    setNotices(fetchedNotices);
+    setTotalCount(totalCount);
+    setPageCount(Math.ceil(totalCount / noticesPerPage));
+  };
+
+  const handlePageClick = (selectedItem) => {
+    const newPage = selectedItem.selected + 1;
+    setCurrentPage(selectedItem.selected);
+    fetchNotices(newPage);
+  };
+
+  const handleClick = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  const getEditorStateFromRaw = (rawContent) => {
+    const contentState = convertFromRaw(JSON.parse(rawContent));
+    return EditorState.createWithContent(contentState);
+  };
+
+  return (
+    <div className="notice-popup-overlay">
+      <div className="notice-popup-container">
+        <div className="notice-popup-header">
+          <h2>공지사항</h2>
+          <button className="notice-popup-close-button" onClick={onClose}>
+            &times;
+          </button>
+        </div>
+        <div className="notice-popup-content">
+          {notices.length > 0 ? (
+            <>
+              <ul>
+                {notices.map((notice, index) => (
+                  <li key={index} className="notice-item">
+                    <h4 onClick={() => handleClick(index)}>{notice.TITLE}</h4>
+                    <div className={`notice-details ${openIndex === index ? 'open' : ''}`}>
+                      <Editor
+                        editorState={getEditorStateFromRaw(notice.CONTENT)}
+                        readOnly={true}
+                        toolbarHidden={true}
+                      />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <ReactPaginate
+                previousLabel={"이전"}
+                nextLabel={"다음"}
+                breakLabel={"..."}
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={handlePageClick}
+                containerClassName={"admin-pagination"}
+                activeClassName={"active"}
+                disabledClassName={"disabled"}
+                previousClassName={"previous"}
+                nextClassName={"next"}
+                forcePage={currentPage}
+              />
+            </>
+          ) : (
+            <p>공지사항이 없습니다.</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default NoticePopup;
