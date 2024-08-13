@@ -76,8 +76,8 @@ BEGIN
     FOR i IN 1..100 LOOP
         INSERT INTO notice (title, content)
         VALUES (
-            'Notice Title ' || LPAD(i, 3, '0'),
-            'This is the content of notice number ' || i
+            '공지사항 제목 ' || LPAD(i, 3, '0'),
+            '{"blocks":[{"key":"8hdv4","text":"테스트","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"3m8iv","text":"공지사항","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"4bmf0","text":"테스트","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"4g10i","text":"공지사항","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}'
         );
     END LOOP;
 END;

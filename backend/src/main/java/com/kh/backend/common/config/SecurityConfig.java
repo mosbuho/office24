@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/img/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/office/**").permitAll()
+                        .requestMatchers("/notice/**").permitAll()
                         .requestMatchers("/member/register", "/manager/create").permitAll()
                         .requestMatchers("/member/check-id", "/member/reset-pw", "member/id-exist").permitAll()
                         .requestMatchers("/manager/id-check", "/manager/find-id", "/manager/reset-pw").permitAll()
