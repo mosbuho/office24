@@ -228,6 +228,10 @@ export const EditPopup = ({ reservation, onClose, onSave }) => {
 export const PhonePopup = ({ initialValue, onSave, onClose }) => {
   const [phone, setPhone] = useState(initialValue);
   const [error, setError] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isCodeSent, setIsCodeSent] = useState(false);
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
 
   const formatPhone = (value) => {
     const cleaned = value.replace(/\D/g, "");
@@ -242,6 +246,7 @@ export const PhonePopup = ({ initialValue, onSave, onClose }) => {
       )}`;
     }
   };
+
   const handleChange = (e) => {
     const formattedPhone = formatPhone(e.target.value);
     setPhone(formattedPhone);
@@ -252,10 +257,59 @@ export const PhonePopup = ({ initialValue, onSave, onClose }) => {
   const handleSave = () => {
     const { isValid, message } = validatePhone(phone);
     if (isValid) {
-      onSave("phone", phone.replace(/-/g, ""));
-      onClose();
+      if (isPhoneVerified) {
+        onSave("phone", phone.replace(/-/g, ""));
+        onClose();
+      } else {
+        alert("전화번호 인증이 필요합니다.");
+      }
     } else {
-      setError(message);
+      setError(isValid ? "전화번호 인증이 필요합니다." : message);
+    }
+  };
+
+  const handleSendVerificationCode = async () => {
+    try {
+      const response = await axios.post('http://localhost:8080/message/send-one', {
+        to: phone.replace(/-/g, ""),
+      }, { withCredentials: true });
+
+      if (response.status === 200) {
+        setIsCodeSent(true);
+        setIsVerifying(true);
+        alert('인증 코드가 전송되었습니다.');
+      } else {
+        alert('인증 코드 전송에 실패했습니다.');
+      }
+    } catch (error) {
+      alert('인증 코드 전송 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleVerificationCodeChange = (e) => {
+    setVerificationCode(e.target.value);
+  };
+
+  const handleVerifyCode = async () => {
+    try {
+      const response = await axios.post('http://localhost:8080/message/verify-code', {
+        text: verificationCode,
+      }, { withCredentials: true });
+
+      if (response.status === 200) {
+        const isValid = response.data;
+        setIsPhoneVerified(isValid);
+        if (isValid) {
+          alert('인증 코드가 확인되었습니다.');
+          setIsVerifying(false);
+        } else {
+          alert('인증 코드가 유효하지 않습니다.');
+        }
+      } else {
+        alert('인증 코드 확인에 실패했습니다.');
+      }
+    } catch (error) {
+      alert('인증 코드 확인 중 오류가 발생했습니다.');
     }
   };
 
@@ -269,6 +323,18 @@ export const PhonePopup = ({ initialValue, onSave, onClose }) => {
           onChange={handleChange}
           placeholder="010-1234-5678"
         />
+        <button className="popup-verifycode" onClick={handleSendVerificationCode}>번호인증</button>
+        {isVerifying && (
+          <>
+            <input
+              type="text"
+              value={verificationCode}
+              onChange={handleVerificationCodeChange}
+              placeholder="인증코드 입력"
+            />
+            <button onClick={handleVerifyCode} className="popup-verifycode">인증코드확인</button>
+          </>
+        )}
         {error && <p className="error">{error}</p>}
         <PopupButtons onCancel={onClose} onSave={handleSave} />
       </div>
