@@ -56,10 +56,26 @@
         #{price}, #{payment}, #{start_date}, #{end_date}) </insert>
 
 
-    <select id="getMemberBookings" resultType="map"> SELECT b.no, b.office_no, b.member_no,
-        b.name, b.phone, b.price as booking_price, b.payment, b.start_date, b.end_date, b.reg_date,
-        o.title as office_title, o.title_img as office_img_url, o.price as office_price, o.address,
-        o.zip_code, o.sido, o.latitude, o.longitude, o.content, o.capacity FROM booking b JOIN
-        office o ON b.office_no = o.no WHERE b.member_no = #{no} ORDER BY b.reg_date DESC </select>
+    <select id="getMemberBookings" resultType="map"> SELECT * FROM ( SELECT b.no, b.office_no,
+        b.member_no, b.name, b.phone, b.price as booking_price, b.payment, b.start_date, b.end_date,
+        b.reg_date, o.title as office_title, o.title_img as office_img_url, o.price as office_price,
+        o.address, o.zip_code, o.sido, o.latitude, o.longitude, o.content, o.capacity, r.no as
+        review_no, r.content as review_content, r.rating as review_rating, ROW_NUMBER() OVER (ORDER
+        BY b.reg_date DESC) AS rn FROM booking b JOIN office o ON b.office_no = o.no LEFT JOIN
+        review r ON b.office_no = r.office_no AND b.member_no = r.member_no WHERE b.member_no =
+        #{no} <if test="tab == 'upcoming'">AND b.start_date > SYSDATE</if>
+        <if test="tab == 'inUse'">AND
+        b.start_date &lt;= SYSDATE AND b.end_date >= SYSDATE</if>
+        <if test="tab == 'past'">AND
+        b.end_date &lt; SYSDATE</if> ) WHERE rn BETWEEN (#{page} - 1) * #{limit} + 1 AND #{page} *
+        #{limit} </select>
 
-    </mapper>
+    <select id="countMemberBookings" resultType="int"> SELECT COUNT(*) FROM booking b WHERE
+        b.member_no = #{no} <if test="tab == 'upcoming'">AND b.start_date > SYSDATE</if>
+    <if
+            test="tab == 'inUse'">AND b.start_date &lt;= SYSDATE AND b.end_date >= SYSDATE</if>
+    <if
+            test="tab == 'past'">AND b.end_date &lt; SYSDATE</if>
+    </select>
+
+</mapper>

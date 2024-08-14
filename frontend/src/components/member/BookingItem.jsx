@@ -6,8 +6,6 @@ import axios from "../../utils/axiosConfig";
 import { VerifyPopup } from "./Popups";
 import { ReviewItem } from "./ReviewItem";
 
-
-
 const BookingItem = ({
   item,
   activeTab,
@@ -16,15 +14,14 @@ const BookingItem = ({
   onReview,
   review,
 }) => {
-    const navigate = useNavigate();
-    const [isReviewPopupOpen, setIsReviewPopupOpen] = useState(false);
-    const [isVerifyPopupOpen, setIsVerifyPopupOpen] = useState(false);
-    const [currentReview, setCurrentReview] = useState(review);
+  const navigate = useNavigate();
+  const [isReviewPopupOpen, setIsReviewPopupOpen] = useState(false);
+  const [isVerifyPopupOpen, setIsVerifyPopupOpen] = useState(false);
+  const [currentReview, setCurrentReview] = useState(review);
 
-  
-    const handleClick = useCallback(() => {
-      navigate(`/office/${item.OFFICE_NO}`);
-    }, [navigate, item.OFFICE_NO]);
+  const handleClick = useCallback(() => {
+    navigate(`/office/${item.OFFICE_NO}`);
+  }, [navigate, item.OFFICE_NO]);
 
   const handleUpdate = (updatedReview) => {
     setCurrentReview(updatedReview);
@@ -38,19 +35,19 @@ const BookingItem = ({
   const no = getNo();
 
   const handleCancelBooking = async (response) => {
-   if (response === "yes") {
-     try {
-       await axios.delete(`member/${no}/booking`, {
-         params: { bookingNo: item.NO },
-       });
-       onCancel(item);
-     } catch (error) {
-       console.error("Error cancelling booking:", error);
-       alert("예약 취소에 실패했습니다.");
-     }
-   }
-   setIsVerifyPopupOpen(false);
- };
+    if (response === "yes") {
+      try {
+        await axios.delete(`member/${no}/booking`, {
+          params: { bookingNo: item.NO },
+        });
+        onCancel(item);
+      } catch (error) {
+        console.error("Error cancelling booking:", error);
+        alert("예약 취소에 실패했습니다.");
+      }
+    }
+    setIsVerifyPopupOpen(false);
+  };
 
   const imageUrl = `http://localhost:8080/img/${item.OFFICE_IMG_URL.trim()}`;
 

@@ -214,19 +214,38 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{no}/bookings")
-    public ResponseEntity<List<Map<String, Object>>> getMemberBookings(@PathVariable int no) {
-        List<Map<String, Object>> bookings = bookingService.getMemberBookings(no);
-        if (bookings.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(bookings);
-    }
+ @GetMapping("/{no}/bookings")
+public ResponseEntity<Map<String, Object>> getMemberBookings(
+    @PathVariable int no,
+    @RequestParam(defaultValue = "all") String tab,
+    @RequestParam(defaultValue = "1") int page,
+    @RequestParam(defaultValue = "10") int limit) {
+    
+    System.out.println("Received request for member bookings:");
+    System.out.println("Member No: " + no);
+    System.out.println("Tab: " + tab);
+    System.out.println("Page: " + page);
+    System.out.println("Limit: " + limit);
+
+    List<Map<String, Object>> bookings = bookingService.getMemberBookings(no, tab, page, limit);
+    System.out.println("Number of bookings retrieved: " + bookings.size());
+
+    int totalCount = bookingService.countMemberBookings(no, tab);
+    System.out.println("Total count of bookings: " + totalCount);
+
+    Map<String, Object> response = new HashMap<>();
+    response.put("bookings", bookings);
+    response.put("totalCount", totalCount);
+
+    System.out.println("Sending response");
+    return ResponseEntity.ok(response);
+}
+
 
     @DeleteMapping("/{no}/booking")
     public ResponseEntity<Void> deleteBooking(@PathVariable int no, @RequestParam int bookingNo) {
         bookingService.deleteBooking(bookingNo);
         return ResponseEntity.ok().build();
     }
-
 }
+
