@@ -80,6 +80,7 @@ const AdminReviewList = () => {
         { header: '내용', accessor: 'CONTENT' },
         { header: '작성자번호', accessor: 'MEMBER_NO' },
         { header: '오피스번호', accessor: 'OFFICE_NO' },
+        { header: '결제번호', accessor: 'BOOKING_NO' },
         { header: '점수', accessor: 'RATING' },
         { header: '작성일', accessor: 'REG_DATE' },
         { header: '', accessor: 'actions' }

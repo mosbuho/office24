@@ -456,21 +456,19 @@ const MemberPayment = () => {
                   </div>
                 </div>
               </div>
-
               <hr />
-
               <div className="reservation-content">
-                <h3>환불정책</h3>
+                <h3>환불 규정</h3>
                 <div className="inform">
-                  <p>• 예약 7일 전: 전액 환불</p>
-                  <p>• 예약 3일 전: 50% 환불</p>
-                  <p>• 예약 3일 이내: 환불 불가</p>
+                  <p>• 예약 5일 전 : 전액 환불</p>
+                  <p>• 예약 3일 전 : 70% 환불</p>
+                  <p>• 예약 1일 전 : 50% 환불</p>
+                  <p>• 예약 당일 : 환불 불가</p>
                   <p>
-                    • 환불 요청은 고객센터를 통해 접수되며, 7일 이내 처리됩니다.
+                    • 환불은 7일 이내 처리됩니다.
                   </p>
                 </div>
               </div>
-
               <hr />
               <div className="reservation-content last">
                 <h3>기본 규칙</h3>
@@ -506,15 +504,15 @@ const MemberPayment = () => {
               <hr />
               <div className="price-row">
                 <span>가격</span>
-                <span>₩{office?.price.toLocaleString()}</span>
+                <span>₩{office?.price.toLocaleString('ko-KR')}</span>
               </div>
               <div className="price-row">
                 <span>이용 일수({period}일)</span>
-                <span>₩{pricePerDay.toLocaleString()}</span>
+                <span>₩{pricePerDay.toLocaleString('ko-KR')}</span>
               </div>
               <div className="price-row total">
                 <span>총 가격</span>
-                <span className="total-price">₩{totalPrice.toLocaleString()}</span>
+                <span className="total-price">₩{totalPrice.toLocaleString('ko-KR')}</span>
               </div>
             </div>
             <br />

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kh.backend.office.OfficeMapper">
+<mapper namespace="com.kh.backend.mapper.OfficeMapper">
 
     <select id="getTotalRevenue" parameterType="int" resultType="int"> SELECT NVL(SUM(b.price), 0)
         AS total_revenue FROM booking b JOIN office o ON b.office_no = o.no WHERE o.manager_no =
@@ -29,7 +29,7 @@
         COUNT(*) AS count FROM booking b JOIN office o ON b.office_no = o.no JOIN member mem ON
         b.member_no = mem.no WHERE o.manager_no = #{no} GROUP BY mem.gender </select>
 
-    <select id="getOfficeStatusPaged" resultType="com.kh.backend.office.Office"> SELECT * FROM (
+    <select id="getOfficeStatusPaged" resultType="com.kh.backend.model.Office"> SELECT * FROM (
         SELECT A.*, ROWNUM AS rnum FROM ( SELECT no, title, availability FROM office WHERE
         manager_no = #{no} ORDER BY no desc ) A WHERE ROWNUM &lt;= #{offset} + #{limit} ) WHERE rnum
         &gt; #{offset} </select>
@@ -37,7 +37,7 @@
     <select id="getOfficeStatusCount" resultType="int"> SELECT COUNT(*) FROM office WHERE manager_no
         = #{no} </select>
 
-    <select id="getOffices" resultType="com.kh.backend.office.Office"> SELECT * FROM ( SELECT A.*,
+    <select id="getOffices" resultType="com.kh.backend.model.Office"> SELECT * FROM ( SELECT A.*,
         ROWNUM AS rnum FROM ( SELECT no, manager_no, title, address, zip_code AS zipCode, latitude,
         longitude, content, price, capacity, title_img AS titleImg, availability, reg_date FROM
         office WHERE manager_no = #{no} <if test="availability != null"> AND availability =
@@ -63,22 +63,22 @@
     <update id="updateOfficeAvailability"> UPDATE office SET availability = #{availability} WHERE no
         = #{no} </update>
 
-    <insert id="insertOffice" parameterType="com.kh.backend.office.Office">
+    <insert id="insertOffice" parameterType="com.kh.backend.model.Office">
         <selectKey keyProperty="no" order="BEFORE" resultType="int"> SELECT office_seq.nextval FROM
         dual </selectKey> INSERT INTO office (no, manager_no, title, address, zip_code, sido,
         latitude, longitude, content, price, capacity, title_img) VALUES (#{no}, #{manager_no},
         #{title}, #{address}, #{zipCode}, #{sido}, #{latitude}, #{longitude}, #{content}, #{price},
         #{capacity}, #{titleImg}) </insert>
 
-    <insert id="insertOfficeImage" parameterType="com.kh.backend.office.OfficeImage"> INSERT INTO
+    <insert id="insertOfficeImage" parameterType="com.kh.backend.model.OfficeImage"> INSERT INTO
         office_image (office_no, name) VALUES (#{officeNo}, #{name}) </insert>
 
-    <select id="getOfficeByNo" parameterType="int" resultType="com.kh.backend.office.Office"> SELECT
+    <select id="getOfficeByNo" parameterType="int" resultType="com.kh.backend.model.Office"> SELECT
         no, manager_no, title, address, zip_code AS zipCode, sido, latitude, longitude, content,
         price, capacity, title_img AS titleImg, availability, reg_date AS regDate FROM office WHERE
         no = #{officeNo} </select>
 
-    <update id="updateOffice" parameterType="com.kh.backend.office.Office"> UPDATE office SET title
+    <update id="updateOffice" parameterType="com.kh.backend.model.Office"> UPDATE office SET title
         = #{title}, address = #{address}, zip_code = #{zipCode}, sido = #{sido}, latitude =
         #{latitude}, longitude = #{longitude}, content = #{content}, price = #{price}, capacity =
         #{capacity}, title_img = #{titleImg} WHERE no = #{no} AND manager_no = #{manager_no} </update>
@@ -90,7 +90,7 @@
         = #{imageName} </delete>
 
     <select id="getOfficeNotAvailability" parameterType="map"
-        resultType="com.kh.backend.office.Office">
+        resultType="com.kh.backend.model.Office">
         <![CDATA[
         SELECT * 
         FROM (

@@ -3,12 +3,12 @@ package com.kh.backend.common.auth;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.kh.backend.admin.Admin;
-import com.kh.backend.admin.AdminMapper;
-import com.kh.backend.manager.Manager;
-import com.kh.backend.manager.ManagerMapper;
-import com.kh.backend.member.Member;
-import com.kh.backend.member.MemberMapper;
+import com.kh.backend.mapper.AdminMapper;
+import com.kh.backend.mapper.ManagerMapper;
+import com.kh.backend.mapper.MemberMapper;
+import com.kh.backend.model.Admin;
+import com.kh.backend.model.Manager;
+import com.kh.backend.model.Member;
 
 @Service
 public class AuthService {

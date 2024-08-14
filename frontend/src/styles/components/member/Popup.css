@@ -4,12 +4,16 @@
         }
 
         .rating {
+            margin-bottom: 5px;
+
             .star {
                 color: var(--shaded-color);
+                cursor: pointer;
             }
 
             .star.active {
                 color: var(--shaded-dark-color);
+                cursor: pointer;
             }
         }
 
@@ -18,6 +22,7 @@
                 background-color: var(--text-color) !important;
                 color: var(--background-color) !important;
             }
+
             .no {
                 background-color: var(--discard-color) !important;
             }
@@ -39,7 +44,11 @@
         }
 
         textarea {
-            width: 100%;
+            width: 96%;
+            resize: none;
+            border-radius: 5px;
+            padding: 10px;
+            outline: none;
         }
     }
 
@@ -322,4 +331,12 @@
     .notice-pagination-button:disabled {
         background: #ccc;
         cursor: not-allowed;
+    }
+
+    .refund-price {
+        color: #ff4343;
+    }
+
+    .refund-policy {
+        margin-bottom: 40px;
     }

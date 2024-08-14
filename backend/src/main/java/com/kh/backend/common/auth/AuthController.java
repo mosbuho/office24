@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kh.backend.admin.Admin;
 import com.kh.backend.common.jwt.JwtUtil;
-import com.kh.backend.manager.Manager;
-import com.kh.backend.member.Member;
-import com.kh.backend.member.MemberService;
+import com.kh.backend.model.Admin;
+import com.kh.backend.model.Manager;
+import com.kh.backend.model.Member;
+import com.kh.backend.service.MemberService;
 
 import jakarta.servlet.http.HttpServletResponse;
 

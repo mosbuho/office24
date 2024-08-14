@@ -10,6 +10,10 @@ const AdminMember = () => {
     const navigate = useNavigate();
     const { member } = location.state;
 
+    const textToGender = (text) => {
+        return text === '남성' ? 'M' : 'W';
+    };
+
     const [formData, setFormData] = useState({
         NO: member.NO,
         ID: member.ID,
@@ -17,7 +21,7 @@ const AdminMember = () => {
         PHONE: member.PHONE,
         EMAIL: member.EMAIL,
         BIRTH: new Date(member.BIRTH).toISOString().split('T')[0],
-        GENDER: member.GENDER,
+        GENDER: textToGender(member.GENDER),
         REG_DATE: new Date(member.REG_DATE).toISOString().split('T')[0]
     });
 
@@ -29,15 +33,11 @@ const AdminMember = () => {
         }));
     };
 
-    const getGenderText = (gender) => {
-        return gender === 'M' ? '남성' : '여성';
-    };
-
     const handleGenderChange = (e) => {
         const value = e.target.value;
         setFormData((prevData) => ({
             ...prevData,
-            GENDER: value === '남성' ? 'M' : 'W'
+            GENDER: value
         }));
     };
 
@@ -149,11 +149,11 @@ const AdminMember = () => {
                             <label htmlFor="gender">성별</label>
                             <select
                                 id="gender"
-                                value={getGenderText(formData.GENDER)}
+                                value={formData.GENDER}
                                 onChange={handleGenderChange}
                             >
-                                <option value="남성">남성</option>
-                                <option value="여성">여성</option>
+                                <option value="M">남성</option>
+                                <option value="W">여성</option>
                             </select>
                         </div>
                         <div className="form-group">

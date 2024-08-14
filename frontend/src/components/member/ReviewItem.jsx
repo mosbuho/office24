@@ -23,8 +23,7 @@ export function ReviewItem({ customTitle, onDelete, onSelect, isSelected, ...rev
         onDelete(currentReview.no);
       }
       alert("리뷰가 성공적으로 삭제되었습니다.");
-    } catch (error) {
-      console.error("리뷰 삭제 중 오류가 발생했습니다:", error);
+    } catch {
       alert("리뷰를 삭제하는 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
@@ -35,8 +34,11 @@ export function ReviewItem({ customTitle, onDelete, onSelect, isSelected, ...rev
     return filledStars + emptyStars;
   };
 
-  const handleUpdate = (updatedReview) => {
-    setCurrentReview(updatedReview);
+  const handleUpdate = (updatedContent) => {
+    setCurrentReview(prevReview => ({
+      ...prevReview,
+      content: updatedContent
+    }));
     setIsReviewPopupOpen(false);
   };
 
@@ -48,11 +50,13 @@ export function ReviewItem({ customTitle, onDelete, onSelect, isSelected, ...rev
           <h4>{renderStars(currentReview.rating)}</h4>
           <p>{currentReview.content}</p>
         </div>
-        <div className="del-button" onClick={handleDelete}>
-          <p>삭제</p>
-        </div>
-        <div className="edit-button" onClick={handleEdit}>
-          <p>수정</p>
+        <div className="review-button-group">
+          <div className="edit-button" onClick={handleEdit}>
+            <p>수정</p>
+          </div>
+          <div className="del-button" onClick={handleDelete}>
+            <p>삭제</p>
+          </div>
         </div>
       </div>
       {isReviewPopupOpen && (

@@ -9,10 +9,11 @@
         margin: auto;
 
         .tab-container {
-            margin-top: 185px;
+            margin-top: 170px;
             background-color: var(--background-color);
             width: 30%;
             border-right: 1px solid var(--shaded-color);
+            padding-top: 15px;
 
             .tabs {
                 position: sticky;
@@ -354,6 +355,7 @@
                     color: var(--shaded-dark-color);
                     transition: all 0.3s ease;
                     margin: 10px;
+                    cursor: pointer;
                 }
 
                 .active {
@@ -499,6 +501,7 @@
         align-items: center;
         gap: 10px;
         width: 80%;
+
         .text-container {
 
             h5,
@@ -509,52 +512,46 @@
                 white-space: nowrap;
             }
 
+            h4 {
+                margin-bottom: 5px;
+            }
+
             p {
                 font-size: 12px;
                 margin: 0;
                 margin-top: 5px;
-                max-height: 2.4em;
                 line-height: 1.2em;
-                padding-bottom:10px ;
             }
         }
 
-        .edit-button {
+        .review-button-group {
             font-size: 14px;
             top: 0px;
             right: 0px;
             position: absolute;
-            background-color: var(--shaded-dark-color);
-            color: var(--background-color);
-            border: none;
-            padding: 5px 10px;
             cursor: pointer;
             width: 10%;
-            height: 41.5%;
-            text-align: center;
+            height: 100%;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .edit-button,
+        .del-button {
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
+            color: var(--background-color);
+        }
+
+        .edit-button {
+            background-color: var(--shaded-dark-color);
         }
 
         .del-button {
-            font-size: 14px;
             background: rgb(219, 68, 85);
-            bottom: 0px;
-            right: 0px;
-            position: absolute;
-            color: var(--background-color);
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            width: 10%;
-            height: 41.5%;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
         }
 
         /* &:hover {
