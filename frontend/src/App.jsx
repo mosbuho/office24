@@ -16,9 +16,11 @@ import MemberRegister from "./pages/member/MemberRegister";
 import MemberResetPw from "./pages/member/MemberResetPw";
 import MemberUpdate from "./pages/member/MemberUpdate";
 import MemberBookings from './pages/member/MemberBookings';
-import MemberFavorites from './pages/member/MemberFavorites';
-import MemberMyInfo from './pages/member/MemberMyInfo';
+import MemberWish from './pages/member/MemberWish';
+import MemberProfile from './pages/member/MemberProfile';
 import MemberReviews from './pages/member/MemberReviews';
+import MemberRefund from './pages/member/MemberRefund';
+
 
 import ManagerBooking from './pages/manager/ManagerBooking';
 import ManagerCreate from './pages/manager/ManagerCreate';
@@ -72,9 +74,10 @@ function App() {
         <Route path="/member/delete" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberDelete /></PrivateRoute>} />
         <Route path="/payment" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberPayment /></PrivateRoute>} />
         <Route path="/member/:no/" element={<PrivateRoute requiredRole="ROLE_MEMBER"><MemberMyPage /></PrivateRoute>}>
-          <Route path="profile" element={<MemberMyInfo />} />
-          <Route path="wish" element={<MemberFavorites />} />
+          <Route path="profile" element={<MemberProfile />} />
+          <Route path="wish" element={<MemberWish />} />
           <Route path="booking" element={<MemberBookings />} />
+          <Route path="refund" element={<MemberRefund />} />
           <Route path="review" element={<MemberReviews />} />
         </Route>
 
@@ -85,7 +88,7 @@ function App() {
         <Route path="/manager/office/:officeNo/update" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerOfficeUpdate /></PrivateRoute>} />
         <Route path="/manager/booking" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerBooking /></PrivateRoute>} />
         <Route path="/manager/info" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerInfo /></PrivateRoute>} />
-        <Route path="/manager/refund" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerRefund/></PrivateRoute>} />
+        <Route path="/manager/refund" element={<PrivateRoute requiredRole="ROLE_MANAGER"><ManagerRefund /></PrivateRoute>} />
 
         {/* 어드민 라우트 */}
         <Route path="/admin" element={<PrivateRoute requiredRole="ROLE_ADMIN"><AdminMain /></PrivateRoute>} />

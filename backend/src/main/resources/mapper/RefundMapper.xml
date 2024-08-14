@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kh.backend.refund.RefundMapper">
+<mapper namespace="com.kh.backend.mapper.RefundMapper">
     <select id="getAllRefunds" resultType="map"> SELECT * FROM ( SELECT m.*, ROWNUM rnum FROM (
-        SELECT no, office_no, member_no, name, phone, payment, price, refund_amount, start_date, end_date,
-        booking_date, reg_date FROM refund <if
+        SELECT no, office_no, member_no, name, phone, payment, price, refund_amount, start_date,
+        end_date, booking_date, reg_date FROM refund <if
             test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if> ORDER BY no ) m
         WHERE ROWNUM &lt;= #{end} ) WHERE rnum >= #{start} </select>
 
@@ -11,35 +11,15 @@
             test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if>
     </select>
 
-    <select id="getRefundsByManagerNo" resultType="map">
-        SELECT 
-            r.no AS refundNo,
-            o.title AS officeTitle,
-            r.name AS memberName,
-            r.phone AS memberPhone,
-            r.price AS price,
-            r.refund_amount AS refundAmount,
-            r.payment AS payment,
-            r.booking_date AS bookingDate,
-            r.reg_date AS refundDate
-        FROM 
-            refund r
-            JOIN office o ON r.office_no = o.no
-        WHERE 
-            o.manager_no = #{no}
-        ORDER BY 
-            r.reg_date DESC
-        OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
-    </select>
+    <select id="getMemberRefunds" resultType="map"> SELECT * FROM ( SELECT DISTINCT b.no,
+        b.office_no, b.member_no, b.name, b.phone, b.price AS booking_price, b.payment,
+        b.start_date, b.end_date, b.reg_date, o.title AS office_title, o.title_img AS
+        office_img_url, o.address, b.refund_amount AS refund_amount, b.booking_date as booking_date,
+        ROW_NUMBER() OVER (ORDER BY b.reg_date DESC) AS rn FROM refund b JOIN office o ON
+        b.office_no = o.no WHERE b.member_no = #{no} ) WHERE rn BETWEEN (#{page} - 1) * #{limit} + 1
+        AND #{page} * #{limit} </select>
 
-    <select id="getRefundsCountByManagerNo" resultType="int">
-        SELECT 
-            COUNT(*) 
-        FROM 
-            refund r
-            JOIN office o ON r.office_no = o.no
-        WHERE 
-            o.manager_no = #{no}
-    </select>
+    <select id="countMemberRefunds" resultType="int"> SELECT COUNT(*) FROM refund b WHERE
+        b.member_no = #{no} </select>
 
 </mapper>

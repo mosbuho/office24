@@ -6,10 +6,11 @@ import MemberHeader from "./MemberHeader";
 
 function MemberMyPageLayout() {
   const tabs = [
-    { id: "viewInfo", label: "내 정보", path: "profile" },
-    { id: "favorites", label: "찜 목록", path: "wish" },
-    { id: "reservations", label: "결제 내역", path: "booking" },
-    { id: "reviews", label: "내가 쓴 리뷰", path: "review" },
+    { id: "profile", label: "내 정보", path: "profile" },
+    { id: "wish", label: "찜 목록", path: "wish" },
+    { id: "booking", label: "예약 내역", path: "booking" },
+    { id: "refund", label: "취소 내역", path: "refund" },
+    { id: "review", label: "리뷰 내역", path: "review" },
   ];
 
   return (

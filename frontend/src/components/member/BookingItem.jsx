@@ -1,35 +1,31 @@
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/components/member/BookingItem.css";
 import { getNo } from "../../utils/auth";
-import axios from "../../utils/axiosConfig";
-import { VerifyPopup } from "./Popups";
-import { ReviewItem } from "./ReviewItem";
+import { DeleteBookingPopup } from "./Popups";
+import axios from '../../utils/axiosConfig';
 
 const BookingItem = ({
   item,
   activeTab,
-  onEdit,
   onCancel,
   onReview,
-  review,
+  hasWrittenReview,
+  refund = false,
 }) => {
   const navigate = useNavigate();
-  const [isReviewPopupOpen, setIsReviewPopupOpen] = useState(false);
   const [isVerifyPopupOpen, setIsVerifyPopupOpen] = useState(false);
-  const [currentReview, setCurrentReview] = useState(review);
 
   const handleClick = useCallback(() => {
     navigate(`/office/${item.OFFICE_NO}`);
   }, [navigate, item.OFFICE_NO]);
 
-  const handleUpdate = (updatedReview) => {
-    setCurrentReview(updatedReview);
-    setIsReviewPopupOpen(false);
-  };
-
   const handleCancelBookingClick = () => {
     setIsVerifyPopupOpen(true);
+  };
+
+  const handleReviewClick = () => {
+    onReview(item);
   };
 
   const no = getNo();
@@ -40,47 +36,50 @@ const BookingItem = ({
         await axios.delete(`member/${no}/booking`, {
           params: { bookingNo: item.NO },
         });
-        onCancel(item);
+        setIsVerifyPopupOpen(false);
+        onCancel(item.NO);
       } catch (error) {
-        console.error("Error cancelling booking:", error);
         alert("예약 취소에 실패했습니다.");
+        setIsVerifyPopupOpen(false);
       }
+    } else {
+      setIsVerifyPopupOpen(false);
     }
-    setIsVerifyPopupOpen(false);
   };
 
   const imageUrl = `http://localhost:8080/img/${item.OFFICE_IMG_URL.trim()}`;
-
-  const formattedReview = currentReview
-    ? {
-        no: currentReview.REVIEWNO,
-        title: item.OFFICE_TITLE,
-        content: currentReview.CONTENT,
-        rating: currentReview.RATING,
-      }
-    : null;
 
   return (
     <div className="booking-item">
       <div
         onClick={handleClick}
         className="office-info"
-        style={{
-          backgroundImage: `url(${imageUrl})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
+        style={{ backgroundImage: `url(${imageUrl})` }}
       >
         <div className="overlay">
           <h3>{item.OFFICE_TITLE}</h3>
           <p>{item.ADDRESS}</p>
-          <p>가격: {item.OFFICE_PRICE}원/일</p>
+          <p>
+            결제 금액 : {item.BOOKING_PRICE.toLocaleString()}원
+            {refund && (
+              <span className="booking-item-refund-price "> 환불 금액 : {item.REFUND_AMOUNT.toLocaleString()}원</span>
+            )}
+          </p>
+          <p>
+            {refund
+              ? `결제일 : ${new Date(item.BOOKING_DATE).toISOString().split('T')[0]}`
+              : `결제일 : ${new Date(item.REG_DATE).toISOString().split('T')[0]}`
+            }
+          </p>
+          {refund && (
+            <p>결제 취소일 : {new Date(item.REG_DATE).toISOString().split('T')[0]}</p>
+          )}
         </div>
 
         <div className="booking-dates">
           <p>
-            {new Date(item.START_DATE).toLocaleDateString()} ~{" "}
-            {new Date(item.END_DATE).toLocaleDateString()}
+            {new Date(item.START_DATE).toISOString().split('T')[0]}&nbsp;~&nbsp;
+            {new Date(item.END_DATE).toISOString().split('T')[0]}
           </p>
         </div>
       </div>
@@ -89,35 +88,14 @@ const BookingItem = ({
           <button onClick={handleCancelBookingClick}>예약 취소</button>
         </div>
       )}
-
-      {(activeTab === "inUse" || activeTab === "past") && (
-        <div className="review-section">
-          {formattedReview ? (
-            <ReviewItem
-              {...formattedReview}
-              onSelect={() => {}}
-              isSelected={false}
-              onDelete={() => {}}
-            />
-          ) : (
-            <div className="no-review">
-              <h4>작성한 리뷰가 없습니다</h4>
-              <button
-                onClick={() =>
-                  onReview({
-                    title: item.OFFICE_TITLE,
-                    ...item,
-                  })
-                }
-              >
-                작성
-              </button>
-            </div>
-          )}
+      {(activeTab === "inUse" || activeTab === "past") && !hasWrittenReview && (
+        <div className="review-create-buttons">
+          <button onClick={handleReviewClick}>리뷰 작성</button>
         </div>
       )}
       {isVerifyPopupOpen && (
-        <VerifyPopup
+        <DeleteBookingPopup
+          item={{ BOOKING_PRICE: item.BOOKING_PRICE, START_DATE: item.START_DATE }}
           onConfirm={handleCancelBooking}
           onCancel={() => setIsVerifyPopupOpen(false)}
           msg="예약을 취소하시겠습니까?"

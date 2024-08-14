@@ -89,21 +89,6 @@ create table notice (
 
 -----------------------------------------------------------------------------------------
 
-create table review (
-	no        number default review_seq.nextval primary key,            -- 구분 코드
-	member_no number												    -- 작성자
-		references member ( no )
-			on delete cascade,
-	office_no number												    -- 오피스
-		references office ( no )
-			on delete cascade,
-	content   varchar2(500) not null,         						    -- 내용
-	rating    number check ( rating between 0 and 5 ) not null, 	    -- 점수
-	reg_date  date default systimestamp        						    -- 생성일
-);
-
------------------------------------------------------------------------------------------
-
 create table wish (
 	no        number default wish_seq.nextval primary key,              -- 구분 코드
 	member_no number
@@ -135,6 +120,23 @@ create table booking (
 	constraint chk_date check ( start_date <= end_date )                -- 예약 조건
 );
 
+-----------------------------------------------------------------------------------------
+
+create table review (
+	no         number default review_seq.nextval primary key,           -- 구분 코드
+	member_no  number												    -- 작성자
+		references member ( no )
+			on delete cascade,
+	office_no  number												    -- 오피스
+		references office ( no )
+			on delete cascade,
+	booking_no number													-- 예약 번호
+		references booking ( no )
+			on delete cascade,
+	content    varchar2(2000) not null,         						-- 내용
+	rating     number check ( rating between 0 and 5 ) not null, 	    -- 점수
+	reg_date   date default systimestamp        						-- 생성일
+);
 
 -----------------------------------------------------------------------------------------
 

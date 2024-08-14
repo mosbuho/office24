@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kh.backend.review.ReviewMapper">
+<mapper namespace="com.kh.backend.mapper.ReviewMapper">
     <select id="getAllReviews" resultType="map"> SELECT * FROM ( SELECT m.*, ROWNUM rnum FROM (
         SELECT * FROM review <if
             test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if> ORDER BY no ) m
@@ -12,72 +12,30 @@
 
     <delete id="deleteReview">delete from review where no = #{no}</delete>
 
-    <select id="getReviewsByOfficeNo" parameterType="int" resultType="java.util.Map">
-        SELECT 
-            r.no AS no, 
-            m.name AS username, 
-            r.rating AS rating, 
-            r.content AS content, 
-            r.reg_date AS reg_date
-        FROM 
-            review r
-        JOIN 
-            member m 
-        ON 
-            r.member_no = m.no
-        WHERE 
-            r.office_no = #{officeNo}
-    </select>
+    <select id="getReviewsByOfficeNo" parameterType="int" resultType="java.util.Map"> SELECT r.no AS
+        no, m.name AS username, r.rating AS rating, r.content AS content, r.reg_date AS reg_date
+        FROM review r JOIN member m ON r.member_no = m.no WHERE r.office_no = #{officeNo} </select>
 
-    <select id="getReviewCountByOfficeNo" parameterType="int" resultType="int">
-        SELECT 
-            COUNT(*) 
-        FROM 
-            review 
-        WHERE 
-            office_no = #{officeNo}
-    </select>
+    <select id="getReviewCountByOfficeNo" parameterType="int" resultType="int"> SELECT COUNT(*) FROM
+        review WHERE office_no = #{officeNo} </select>
 
-    <select id="getReviewsByMemberNoWithPagination" resultType="java.util.Map">
-        SELECT *
-    FROM (
-        SELECT r.*, ROWNUM rnum
-        FROM (
-            SELECT 
-                r.no AS reviewno, 
-                o.title AS officetitle, 
-                r.content, 
-                r.rating, 
-                r.office_no AS officeno
-            FROM 
-                review r
-            JOIN 
-                office o ON r.office_no = o.no
-            WHERE 
-                r.member_no = #{no}
-            ORDER BY 
-                r.no
-        ) r
-        WHERE ROWNUM &lt;= #{endRow}
-    )
-    WHERE rnum &gt; #{startRow}
-    </select>
+    <select id="getReviewsByMemberNoWithPagination" resultType="java.util.Map"> SELECT * FROM (
+        SELECT r.*, ROWNUM rnum FROM ( SELECT r.no AS reviewno, o.title AS officetitle, r.content,
+        r.rating, r.office_no AS officeno FROM review r JOIN office o ON r.office_no = o.no WHERE
+        r.member_no = #{no} ORDER BY r.no ) r WHERE ROWNUM &lt;= #{endRow} ) WHERE rnum &gt;
+        #{startRow} </select>
 
-    <update id="updateReview">
-        UPDATE review
-        SET content = #{content},
-            rating = #{rating}
-        WHERE no = #{no}
-    </update>
+    <update id="updateReview"> UPDATE review SET content = #{content}, rating = #{rating} WHERE no =
+        #{no} </update>
 
-    <delete id="deleteReviews">
-        DELETE FROM review WHERE no IN
-        <foreach item="id" collection="list" open="(" separator="," close=")">
-            #{id}
-        </foreach>
+    <delete id="deleteReviews"> DELETE FROM review WHERE no IN <foreach item="id" collection="list"
+            open="(" separator="," close=")"> #{id} </foreach>
     </delete>
 
-    <insert id="insertReview" parameterType="map"> INSERT INTO review (member_no, office_no,
-    content, rating) VALUES (#{memberNo}, #{officeNo}, #{content}, #{rating}) </insert>
+    <insert id="insertReview" parameterType="com.kh.backend.model.Review"> INSERT INTO review
+        (member_no, office_no, booking_no, content, rating) VALUES (#{member_no}, #{office_no},
+        #{booking_no}, #{content}, #{rating}) </insert>
 
+    <select id="getWrittenReviewNumbers" parameterType="int" resultType="Integer"> SELECT booking_no
+        FROM review WHERE member_no = #{no} </select>
 </mapper>

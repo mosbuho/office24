@@ -1,218 +1,215 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import BookingItem from "../../components/member/BookingItem";
-import { NewReviewPopup, VerifyPopup } from "../../components/member/Popups";
+import { NewReviewPopup } from "../../components/member/Popups";
 import "../../styles/pages/member/MemberBooking.css";
 import { getNo } from "../../utils/auth";
 import axios from "../../utils/axiosConfig";
 
-// 탭 네비게이션 컴포넌트
-const TabNavigation = React.memo(({ activeTab, setActiveTab }) => (
+const TabNavigation = React.memo(({ activeTab, onTabChange }) => (
   <div className="tab-navigation">
     {["upcoming", "inUse", "past"].map((tab) => (
       <button
         key={tab}
         className={activeTab === tab ? "active" : ""}
-        onClick={() => setActiveTab(tab)}
+        onClick={() => onTabChange(tab)}
       >
-        {tab === "upcoming"
-          ? "예약 목록"
-          : tab === "inUse"
-          ? "사용 중"
-          : "기간 만료"}
+        {tab === "upcoming" ? "예약 중" : tab === "inUse" ? "이용 중" : "이용 완료"}
       </button>
     ))}
   </div>
 ));
 
-TabNavigation.displayName = "TabNavigation";
-
-// 교차점 관찰자 훅
 const useIntersectionObserver = (callback, options = {}) => {
   const ref = useRef(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {
-      entry.isIntersecting && callback();
+      if (entry.isIntersecting) callback();
     }, options);
 
-    ref.current && observer.observe(ref.current);
-
-    return () => ref.current && observer.unobserve(ref.current);
+    if (ref.current) observer.observe(ref.current);
+    return () => {
+      if (ref.current) observer.unobserve(ref.current);
+    };
   }, [callback, options]);
 
   return ref;
 };
 
+const ITEMS_PER_PAGE = 10;
+
 function MemberBookings() {
-  // 상태 관리
   const [activeTab, setActiveTab] = useState("upcoming");
   const [isReviewPopupOpen, setIsReviewPopupOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
-  const [isVerifyPopupOpen, setIsVerifyPopupOpen] = useState(false);
-  const [bookings, setBookings] = useState([]);
-  const [reviews, setReviews] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-
+  const [reviews, setReviews] = useState(new Set());
   const [isLoading, setIsLoading] = useState(false);
-  const [tabData, setTabData] = useState({
-    upcoming: { bookings: [], page: 1, itemsPerPage: 10, hasMore: true },
-    inUse: { bookings: [], page: 1, itemsPerPage: 10, hasMore: true },
-    past: { bookings: [], page: 1, itemsPerPage: 10, hasMore: true },
+
+  const [bookingsState, setBookingsState] = useState({
+    upcoming: { data: [], page: 1, hasMore: true },
+    inUse: { data: [], page: 1, hasMore: true },
+    past: { data: [], page: 1, hasMore: true },
   });
 
   const no = getNo();
 
-  // 예약 데이터 가져오기
-  const fetchBookings = useCallback(
-    async (tab, page = 1, limit = 10) => {
-      try {
-        const response = await axios.get(`/member/${no}/bookings`, {
-          params: { tab, page, limit },
-        });
-        return response.data;
-      } catch (error) {
-        console.error("예약 데이터 가져오기 오류:", error);
-        return null;
-      }
-    },
-    [no]
-  );
+  const getBookingsState = useCallback((tab) => bookingsState[tab] || { data: [], page: 1, hasMore: true }, [bookingsState]);
 
-  // 예약 데이터 로드
-   const loadBookings = useCallback(
-     async (loadMore = false) => {
-       if (isLoading) return;
-       setIsLoading(true);
-       const currentTabData = tabData[activeTab];
-       const page = loadMore ? currentTabData.page + 1 : 1;
-       const response = await fetchBookings(
-         activeTab,
-         page,
-         currentTabData.itemsPerPage
-       );
-
-       if (response?.bookings) {
-         setTabData((prevTabData) => ({
-           ...prevTabData,
-           [activeTab]: {
-             bookings: loadMore
-               ? [...currentTabData.bookings, ...response.bookings]
-               : response.bookings,
-             page,
-             itemsPerPage: currentTabData.itemsPerPage,
-             hasMore: response.bookings.length === currentTabData.itemsPerPage,
-           },
-         }));
-       }
-       setIsLoading(false);
-     },
-     [activeTab, tabData, fetchBookings, isLoading]
-   );
-
-   useEffect(() => {
-     if (tabData[activeTab].bookings.length === 0 && !isLoading) {
-       loadBookings();
-     }
-   }, [activeTab, loadBookings, tabData, isLoading]);
-
-  // 무한 스크롤 구현
-  const loadMoreRef = useIntersectionObserver(
-
-    () => tabData[activeTab].hasMore && loadBookings(true)
-  );
-
-  // 리뷰 데이터 가져오기
-  const fetchReviews = async () => {
+  const fetchBookings = useCallback(async (tab, page) => {
     try {
-      const response = await axios.get(`/member/${no}/review`);
-      setReviews(response.data);
-    } catch (error) {
-      console.error("리뷰 데이터 가져오기 오류:", error);
+      const response = await axios.get(`/member/${no}/bookings`, {
+        params: { tab, page, limit: ITEMS_PER_PAGE },
+      });
+      return response.data;
+    } catch {
+      return null;
     }
-  };
+  }, [no]);
 
-  // 리뷰 업데이트 처리
-  const handleReviewUpdate = async (updatedReview) => {
+  const fetchWrittenReviews = useCallback(async () => {
     try {
-      setReviews((prevReviews) => [...prevReviews, updatedReview]);
-      await fetchReviews();
-      console.log("리뷰 업데이트 완료:", updatedReview);
+      const response = await axios.get(`/member/${no}/written-reviews`);
+      return new Set(response.data.map(review => review));
+    } catch {
+      return new Set();
+    }
+  }, [no]);
+
+  const loadBookings = useCallback(async (tab, loadMore = false) => {
+    if (isLoading) return;
+
+    const bookings = getBookingsState(tab);
+
+    if (!bookings.hasMore && loadMore) return;
+
+    setIsLoading(true);
+    const page = loadMore ? bookings.page + 1 : 1;
+
+    const response = await fetchBookings(tab, page);
+
+    if (response?.bookings) {
+      setBookingsState(prevState => ({
+        ...prevState,
+        [tab]: {
+          data: loadMore ? [...prevState[tab].data, ...response.bookings] : response.bookings,
+          page,
+          hasMore: response.bookings.length === ITEMS_PER_PAGE,
+        }
+      }));
+    } else {
+      setBookingsState(prevState => ({
+        ...prevState,
+        [tab]: {
+          ...prevState[tab],
+          hasMore: false,
+        }
+      }));
+    }
+
+    setIsLoading(false);
+  }, [isLoading, getBookingsState, fetchBookings]);
+
+  useEffect(() => {
+    const bookings = getBookingsState(activeTab);
+    if (bookings.data.length === 0 && bookings.hasMore) {
+      loadBookings(activeTab);
+    }
+  }, [activeTab, getBookingsState, loadBookings]);
+
+  useEffect(() => {
+    const loadReviews = async () => {
+      const writtenReviewSet = await fetchWrittenReviews();
+      setReviews(writtenReviewSet);
+    };
+    loadReviews();
+  }, [fetchWrittenReviews]);
+
+  const handleTabChange = useCallback((newTab) => {
+    setActiveTab(newTab);
+    setBookingsState(prevState => ({
+      ...prevState,
+      [newTab]: {
+        data: [],
+        page: 1,
+        hasMore: true,
+      }
+    }));
+  }, []);
+
+  const loadMoreRef = useIntersectionObserver(() => {
+    const bookings = getBookingsState(activeTab);
+    if (bookings.hasMore && !isLoading) {
+      loadBookings(activeTab, true);
+    }
+  });
+
+  const handleReviewUpdate = useCallback(async () => {
+    try {
+      const writtenReviewSet = await fetchWrittenReviews();
+      setReviews(writtenReviewSet);
     } catch (error) {
       console.error("리뷰 업데이트 오류:", error);
     }
-  };
+  }, [fetchWrittenReviews]);
 
-  // 예약 수정 팝업 처리
-  const handleEditPopup = (item) => {
+  const handleBookingCancel = useCallback((bookingNo) => {
+    setBookingsState(prevState => ({
+      ...prevState,
+      [activeTab]: {
+        ...prevState[activeTab],
+        data: prevState[activeTab].data.filter(booking => booking.NO !== bookingNo),
+      }
+    }));
+  }, [activeTab]);
+
+  const handleEditPopup = useCallback((item) => {
     setSelectedBooking({
       ...item,
       startDate: item.START_DATE,
       endDate: item.END_DATE,
       attendance: item.ATTENDANCE || 1,
     });
-  };
+  }, []);
 
-  // 예약 취소 확인 팝업 처리
-  const handleVerifyPopup = (item) => {
-    setSelectedBooking(item);
-    setIsVerifyPopupOpen(true);
-  };
+  const renderBookingItem = useCallback((item) => {
+    const hasWrittenReview = reviews.has(item.NO);
 
-  // 선택된 예약에 대한 리뷰 필터링
-  const filteredReviews = useMemo(
-    () =>
-      reviews.filter(
-        (review) => review.OFFICENO === selectedBooking?.OFFICE_NO
-      ),
-    [reviews, selectedBooking]
-  );
-
-  // 예약 아이템 렌더링
-  const renderBookingItem = useCallback(
-    (item) => (
+    return (
       <BookingItem
         key={item.NO}
         item={item}
         activeTab={activeTab}
         onEdit={handleEditPopup}
-        onCancel={handleVerifyPopup}
+        onCancel={handleBookingCancel}
         onReview={() => {
           setSelectedBooking(item);
           setIsReviewPopupOpen(true);
         }}
-        review={filteredReviews.find(
-          (review) => review.OFFICENO === item.OFFICE_NO
-        )}
+        hasWrittenReview={hasWrittenReview}
       />
-    ),
-    [activeTab, filteredReviews]
-  );
+    );
+  }, [activeTab, handleEditPopup, handleBookingCancel, reviews]);
+
+  const currentBookings = getBookingsState(activeTab);
+
+  const renderBookings = () => {
+    if (currentBookings.data.length === 0 && !currentBookings.hasMore) {
+      return <div>예약 내역이 존재하지 않습니다.</div>;
+    }
+
+    return (
+      <>
+        {currentBookings.data.map(renderBookingItem)}
+        {currentBookings.hasMore && <div ref={loadMoreRef}></div>}
+        {isLoading && <></>}
+      </>
+    );
+  };
 
   return (
     <>
-      <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
-
-
-      {tabData[activeTab].bookings.map(renderBookingItem)}
-      {tabData[activeTab].hasMore && <div ref={loadMoreRef}></div>}
-
-      {isVerifyPopupOpen && (
-        <VerifyPopup
-          onConfirm={(result) => {
-            setIsVerifyPopupOpen(false);
-            result === "yes" && loadBookings();
-          }}
-          onCancel={() => setIsVerifyPopupOpen(false)}
-          msg="예약을 취소하시겠습니까?"
-        />
-      )}
+      <TabNavigation activeTab={activeTab} onTabChange={handleTabChange} />
+      {renderBookings()}
       {isReviewPopupOpen && selectedBooking && (
         <NewReviewPopup
           newInitialValue={selectedBooking}
@@ -227,6 +224,5 @@ function MemberBookings() {
     </>
   );
 }
-
 
 export default MemberBookings;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kh.backend.notice.NoticeMapper">
+<mapper namespace="com.kh.backend.mapper.NoticeMapper">
     <select id="getNotice" resultType="map">
         <![CDATA[
         SELECT no, title, content, reg_date FROM ( SELECT no, title, content, reg_date,
@@ -18,11 +18,11 @@
             test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if>
     </select>
 
-    <update id="updateNotice" parameterType="com.kh.backend.notice.Notice"> UPDATE notice SET title
+    <update id="updateNotice" parameterType="com.kh.backend.model.Notice"> UPDATE notice SET title
         = #{title}, content = #{content} WHERE no = #{no} </update>
 
     <delete id="deleteNotice"> DELETE FROM notice WHERE no = #{no} </delete>
 
-    <insert id="createNotice" parameterType="com.kh.backend.notice.Notice"> INSERT INTO notice
+    <insert id="createNotice" parameterType="com.kh.backend.model.Notice"> INSERT INTO notice
         (title, content) VALUES (#{title}, #{content})</insert>
 </mapper>

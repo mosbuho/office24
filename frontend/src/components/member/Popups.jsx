@@ -58,6 +58,62 @@ export const VerifyPopup = ({ onConfirm, onCancel, msg }) => (
   </PopupOverlay>
 );
 
+export const DeleteBookingPopup = ({ item, onConfirm, onCancel, msg }) => {
+  const { BOOKING_PRICE, START_DATE } = item;
+
+  const today = new Date();
+  const startDate = new Date(START_DATE);
+  const timeDiff = startDate.getTime() - today.getTime();
+  const daysUntilStart = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+  let refundAmount = 0;
+  if (daysUntilStart >= 5) {
+    refundAmount = BOOKING_PRICE;
+  } else if (daysUntilStart >= 3) {
+    refundAmount = BOOKING_PRICE * 0.7;
+  } else if (daysUntilStart >= 1) {
+    refundAmount = BOOKING_PRICE * 0.5;
+  } else {
+    refundAmount = 0;
+  }
+
+  return (
+    <PopupOverlay onClose={onCancel}>
+      <div className="popup-content">
+        <div className="refund-policy">
+          <h3>환불 규정</h3>
+          <p>• 예약 5일 전 : 전액 환불</p>
+          <p>• 예약 3일 전 : 70% 환불</p>
+          <p>• 예약 1일 전 : 50% 환불</p>
+          <p>• 예약 당일 : 환불 불가</p>
+          <p>• 환불은 7일 이내 처리됩니다.</p>
+        </div>
+        <PopupHeader title={msg} onClose={onCancel} />
+        <div className="refund-amount">
+          <h3 className="refund-price">
+            환불 금액: {refundAmount.toLocaleString('ko-KR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}원
+          </h3>
+        </div>
+        <div className="popup-buttons verification">
+          <button
+            className="yes"
+            onClick={() => onConfirm("yes")}
+          >
+            예
+          </button>
+          <button
+            className="no"
+            onClick={() => onCancel("no")}
+          >
+            아니오
+          </button>
+        </div>
+      </div>
+    </PopupOverlay>
+  );
+};
+
+
 export const PasswordDeletePopup = ({ onClose }) => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -396,8 +452,9 @@ export const NewReviewPopup = ({ newInitialValue, onClose, onUpdate }) => {
       try {
         const no = getNo();
         const response = await axios.post(`/member/${no}/review`, {
-          memberNo: no,
-          officeNo: newInitialValue.OFFICE_NO,
+          member_no: no,
+          office_no: newInitialValue.OFFICE_NO,
+          booking_no: newInitialValue.NO,
           content: review,
           rating: rating,
         });
@@ -410,7 +467,6 @@ export const NewReviewPopup = ({ newInitialValue, onClose, onUpdate }) => {
           setError("리뷰 작성에 실패했습니다.");
         }
       } catch (err) {
-        console.error("리뷰 작성 중 오류 발생:", err);
         setError("리뷰 작성 중 오류가 발생했습니다.");
       }
     } else {
@@ -421,7 +477,7 @@ export const NewReviewPopup = ({ newInitialValue, onClose, onUpdate }) => {
   return (
     <PopupOverlay onClose={onClose}>
       <PopupHeader
-        title={`${newInitialValue.OFFICE_TITLE} 새 리뷰 작성`}
+        title={`${newInitialValue.OFFICE_TITLE}`}
         onClose={onClose}
       />
       <div className="popup-content">
@@ -439,6 +495,7 @@ export const NewReviewPopup = ({ newInitialValue, onClose, onUpdate }) => {
           value={review}
           onChange={(e) => setReview(e.target.value)}
           rows={5}
+          maxLength={500}
         />
         {error && <p className="error">{error}</p>}
         <PopupButtons onCancel={onClose} onSave={handleSave} />
@@ -462,25 +519,24 @@ export const EditReviewPopup = ({ initialValue, onClose, onUpdate }) => {
         });
 
         if (response.status === 200) {
-          onUpdate(response.data);
+          onUpdate(review);
           alert("리뷰가 성공적으로 수정되었습니다.");
           onClose();
         } else {
           setError("리뷰 수정에 실패했습니다.");
         }
       } catch (err) {
-        console.error("리뷰 수정 중 오류 발생:", err);
         setError("리뷰 수정 중 오류가 발생했습니다.");
       }
     } else {
-      setError("리뷰를 입력해주세요.");
+      setError("내용을 입력해주세요.");
     }
   };
 
   return (
     <PopupOverlay onClose={onClose}>
       <PopupHeader
-        title={`${initialValue.title} 리뷰 수정`}
+        title={`${initialValue.title}`}
         onClose={onClose}
       />
       <div className="popup-content">
@@ -498,6 +554,7 @@ export const EditReviewPopup = ({ initialValue, onClose, onUpdate }) => {
           value={review}
           onChange={(e) => setReview(e.target.value)}
           rows={5}
+          maxLength={500}
         />
         {error && <p className="error">{error}</p>}
         <PopupButtons onCancel={onClose} onSave={handleSave} />

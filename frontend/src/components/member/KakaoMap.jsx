@@ -1,5 +1,3 @@
-/* global kakao */
-
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import ReactDOM from "react-dom/client";
 import { FaStar } from "react-icons/fa";
@@ -17,7 +15,7 @@ const CustomOverlayContent = ({ item, onClick }) => {
         <h3>{item.TITLE}</h3>
         <div className="info-window-content">
           <div className="price">
-            {item.PRICEPERDAY.toLocaleString()}원/일
+            {item.PRICEPERDAY.toLocaleString('ko-KR')}원/일
           </div>
           <div className="item-rating">
             <FaStar />
@@ -61,13 +59,11 @@ export default function KakaoMap(props) {
           });
         },
         (error) => {
-          console.error("Error getting geolocation:", error);
           setUserLocation({ latitude: 37.5665, longitude: 126.9780 });
         },
         { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
       );
     } else {
-      console.error("Geolocation is not supported by this browser.");
       setUserLocation({ latitude: 37.5665, longitude: 126.9780 });
     }
   }, []);

@@ -69,10 +69,8 @@ public class MessageController {
             System.out.println("생성된 인증 코드: " + code);
             return ResponseEntity.ok("인증 코드가 전송되었습니다.");
         } catch (NurigoMessageNotReceivedException exception) {
-            System.out.println(exception.getMessage());
             return ResponseEntity.status(500).body("메시지 전송 중 오류 발생: " + exception.getMessage());
         } catch (Exception exception) {
-            System.out.println(exception.getMessage());
             return ResponseEntity.status(500).body("메시지 전송 중 오류 발생: " + exception.getMessage());
         }
     }

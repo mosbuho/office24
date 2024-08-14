@@ -26,15 +26,19 @@
 
     .overlay h3 {
         margin: 0;
-        font-size: 1.2em;
     }
 
     .overlay p {
         margin: 5px 0;
+        font-size: 14px;
+    }
+
+    .overlay .booking-item-refund-price {
+        color: rgb(255, 52, 52);
+        margin-left: 10px;
     }
 
     .booking-dates {
-        font-size: 20px;
         position: absolute;
         right: 10px;
         bottom: 0px;
@@ -52,7 +56,8 @@
         top: 10px;
         right: 10px;
         cursor: pointer;
-    button {
+
+        button {
             background-color: var(--discard-color);
             border: 0;
             border-radius: 10px;
@@ -63,49 +68,74 @@
             transition: all 0.3s ease-in-out;
             cursor: pointer;
         }
-    
+
         button:hover {
             opacity: 1;
             transition: all 0.3s ease-in-out;
         }
     }
-.review-section {
-    position: relative;
-    input[type="checkbox"]{
-        display: none;
-    }
-}
 
-.review-content,
-.no-review {
-
-    button {
+    .review-create-buttons {
         position: absolute;
-        bottom: 0;
-        right: 0;
-        height: 100%;
-        width: 100px;
-        padding: 8px 16px;
-        border: none;
-        background-color: var(--primary-color);
-        color: white;
+        top: 10px;
+        right: 10px;
         cursor: pointer;
 
+        button {
+            background-color: var(--primary-color);
+            border: 0;
+            border-radius: 10px;
+            padding: 10px;
+            color: var(--background-color);
+            font-weight: 700;
+            opacity: 0.7;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
         button:hover {
-            background-color: var(--secondary-color);
+            opacity: 1;
+            transition: all 0.3s ease-in-out;
+        }
+    }
+
+    .review-section {
+        position: relative;
+
+        input[type="checkbox"] {
+            display: none;
+        }
+    }
+
+    .review-content,
+    .no-review {
+
+        button {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            height: 100%;
+            width: 100px;
+            padding: 8px 16px;
+            border: none;
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+
+            button:hover {
+                background-color: var(--secondary-color);
+            }
+
+        }
+
+        background-color: var(#f8f9fa);
+        border-radius: 0 0 4px 4px;
+    }
+
+    &:hover {
+        .overlay {
+            bottom: 0;
         }
 
     }
-
-    background-color: var(#f8f9fa);
-    border-radius: 0 0 4px 4px;
 }
-
-&:hover {
-    .overlay {
-        bottom: 0;
-    }
-
-}
-}
-

@@ -6,9 +6,10 @@ drop table admin;
 drop table office;
 drop table office_image;
 drop table notice;
+drop table booking;
 drop table wish;
 drop table review;
-drop table booking;
+drop table refund;
 drop table member_statistics;
 drop table manager_statistics;
 drop table office_statistics;
@@ -27,6 +28,7 @@ drop sequence notice_seq;
 drop sequence review_seq;
 drop sequence wish_seq;
 drop sequence booking_seq;
+drop sequence refund_seq;
 
 ------------------------------------------------------------------------------------------------------------------------------
 
@@ -35,7 +37,7 @@ insert into admin (id, pw, lv) values ('admin', '$2a$10$FgmS9NEBxDdbUfWjsqiGDesN
 ------------------------------------------------------------------------------------------------------------------------------
 
 BEGIN
-    FOR i IN 1..100 LOOP
+    FOR i IN 1..10 LOOP
         INSERT INTO member (id, pw, name, phone, email, birth, gender)
         VALUES (
             'user' || LPAD(i, 4, '0'), 
@@ -56,7 +58,7 @@ END;
 ------------------------------------------------------------------------------------------------------------------------------
 
 BEGIN
-    FOR i IN 1..100 LOOP
+    FOR i IN 1..10 LOOP
         INSERT INTO manager (id, pw, name, phone, email)
         VALUES (
             'manager' || LPAD(i, 3, '0'),
@@ -73,7 +75,7 @@ END;
 ------------------------------------------------------------------------------------------------------------------------------
 
 BEGIN
-    FOR i IN 1..100 LOOP
+    FOR i IN 1..10 LOOP
         INSERT INTO notice (title, content)
         VALUES (
             '공지사항 제목 ' || LPAD(i, 3, '0'),
@@ -86,7 +88,7 @@ END;
 ------------------------------------------------------------------------------------------------------------------------------
 
 BEGIN
-    FOR i IN 1..100 LOOP
+    FOR i IN 1..10 LOOP
         INSERT INTO office (title, manager_no, address, zip_code, latitude, longitude, content, price, capacity, title_img, availability, sido)
         VALUES (
             '오피스 ' || i,
@@ -115,22 +117,7 @@ END;
 ------------------------------------------------------------------------------------------------------------------------------
 
 BEGIN
-    FOR i IN 1..100 LOOP
-        INSERT INTO review (member_no, office_no, rating, content)
-        VALUES (
-            100,  
-            100, 
-            TRUNC(DBMS_RANDOM.VALUE(0, 6)),  
-            'Review content for office ' || i
-        );
-    END LOOP;
-END;
-/
-
-------------------------------------------------------------------------------------------------------------------------------
-
-BEGIN
-    FOR i IN 1..100 LOOP
+    FOR i IN 1..10 LOOP
         INSERT INTO wish (member_no, office_no)
         VALUES (
             1, 
@@ -157,6 +144,22 @@ BEGIN
             TRUNC(DBMS_RANDOM.VALUE(5000, 10000)),  
             SYSDATE + i,  
             SYSDATE + i + 1
+        );
+    END LOOP;
+END;
+/
+
+------------------------------------------------------------------------------------------------------------------------------
+
+BEGIN
+    FOR i IN 1..1 LOOP
+        INSERT INTO review (member_no, office_no, booking_no, rating, content)
+        VALUES (
+            1,  
+            1, 
+            11,
+            TRUNC(DBMS_RANDOM.VALUE(0, 6)),  
+            'Review content for office ' || i
         );
     END LOOP;
 END;

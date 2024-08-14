@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kh.backend.booking.BookingMapper">
+<mapper namespace="com.kh.backend.mapper.BookingMapper">
     <select id="selectBookingsByManager" resultType="map"> SELECT * FROM ( SELECT b.no AS
         booking_no, b.reg_date AS booking_date, b.name AS booking_name, m.phone AS booking_phone,
         b.start_date, b.end_date, ROW_NUMBER() OVER (ORDER BY b.no DESC) AS rn FROM booking b JOIN
@@ -48,7 +48,7 @@
             test="f != null and q != null"> WHERE ${f} LIKE '%' || #{q} || '%' </if>
     </select>
 
-    <select id="getBookingsByOfficeNo" resultType="com.kh.backend.booking.Booking"> SELECT
+    <select id="getBookingsByOfficeNo" resultType="com.kh.backend.model.Booking"> SELECT
         start_date, end_date FROM booking WHERE office_no = #{officeNo} </select>
 
     <insert id="insertBooking"> INSERT INTO booking (office_no, member_no, name, phone, price,
@@ -56,19 +56,19 @@
         #{price}, #{payment}, #{start_date}, #{end_date}) </insert>
 
 
-    <select id="getMemberBookings" resultType="map"> SELECT * FROM ( SELECT b.no, b.office_no,
-        b.member_no, b.name, b.phone, b.price as booking_price, b.payment, b.start_date, b.end_date,
-        b.reg_date, o.title as office_title, o.title_img as office_img_url, o.price as office_price,
-        o.address, o.zip_code, o.sido, o.latitude, o.longitude, o.content, o.capacity, r.no as
-        review_no, r.content as review_content, r.rating as review_rating, ROW_NUMBER() OVER (ORDER
-        BY b.reg_date DESC) AS rn FROM booking b JOIN office o ON b.office_no = o.no LEFT JOIN
-        review r ON b.office_no = r.office_no AND b.member_no = r.member_no WHERE b.member_no =
-        #{no} <if test="tab == 'upcoming'">AND b.start_date > SYSDATE</if>
-        <if test="tab == 'inUse'">AND
-        b.start_date &lt;= SYSDATE AND b.end_date >= SYSDATE</if>
-        <if test="tab == 'past'">AND
-        b.end_date &lt; SYSDATE</if> ) WHERE rn BETWEEN (#{page} - 1) * #{limit} + 1 AND #{page} *
-        #{limit} </select>
+    <select id="getMemberBookings" resultType="map"> SELECT * FROM ( SELECT DISTINCT b.no,
+        b.office_no, b.member_no, b.name, b.phone, b.price AS booking_price, b.payment,
+        b.start_date, b.end_date, b.reg_date, o.title AS office_title, o.title_img AS
+        office_img_url, o.price AS office_price, o.address, o.zip_code, o.sido, o.latitude,
+        o.longitude, o.content, o.capacity, r.no AS review_no, r.content AS review_content, r.rating
+        AS review_rating, ROW_NUMBER() OVER (ORDER BY b.reg_date DESC) AS rn FROM booking b JOIN
+        office o ON b.office_no = o.no LEFT JOIN review r ON b.no = r.booking_no WHERE b.member_no =
+        #{no} <if test="tab == 'upcoming'">AND b.start_date &gt; SYSDATE</if>
+                <if
+            test="tab == 'inUse'">AND b.start_date &lt;= SYSDATE AND b.end_date &gt;= SYSDATE</if>
+                <if
+            test="tab == 'past'">AND b.end_date &lt; SYSDATE</if> ) WHERE rn BETWEEN (#{page} - 1) *
+        #{limit} + 1 AND #{page} * #{limit} </select>
 
     <select id="countMemberBookings" resultType="int"> SELECT COUNT(*) FROM booking b WHERE
         b.member_no = #{no} <if test="tab == 'upcoming'">AND b.start_date > SYSDATE</if>
