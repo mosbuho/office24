@@ -1,11 +1,11 @@
-package com.kh.backend.common.auth;
+package com.kh.backend.model;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-class LoginRequest {
+public class LoginRequest {
     private String id;
     private String pw;
 }

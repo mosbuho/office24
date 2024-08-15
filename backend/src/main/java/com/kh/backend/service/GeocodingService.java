@@ -1,4 +1,4 @@
-package com.kh.backend.common.geocoding;
+package com.kh.backend.service;
 
 import java.util.List;
 

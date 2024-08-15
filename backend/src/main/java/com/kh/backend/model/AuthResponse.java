@@ -1,4 +1,4 @@
-package com.kh.backend.common.auth;
+package com.kh.backend.model;
 
 import lombok.Getter;
 

@@ -73,8 +73,8 @@ const MemberLogin = () => {
                         <input type="password" id="pw" name="pw" value={formData.pw} onChange={handleChange} required />
                     </div>
                     <div className="member-login-help-links">
-                        <Link to="/member/findId">아이디 찾기</Link>
-                        <Link to="/member/resetPw">비밀번호 재설정</Link>
+                        <Link to="/member/find-id">아이디 찾기</Link>
+                        <Link to="/member/reset-pw">비밀번호 재설정</Link>
                         <Link to="/member/register">회원가입</Link>
                     </div>
                     <button type="submit" className="member-login-submit-button">로그인</button>

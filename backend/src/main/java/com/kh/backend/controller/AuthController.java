@@ -1,4 +1,4 @@
-package com.kh.backend.common.auth;
+package com.kh.backend.controller;
 
 import java.io.IOException;
 import java.util.Map;
@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kh.backend.common.jwt.JwtUtil;
 import com.kh.backend.model.Admin;
+import com.kh.backend.model.AuthResponse;
+import com.kh.backend.model.LoginRequest;
 import com.kh.backend.model.Manager;
 import com.kh.backend.model.Member;
+import com.kh.backend.service.AuthService;
+import com.kh.backend.service.JwtService;
 import com.kh.backend.service.MemberService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,11 +26,11 @@ import jakarta.servlet.http.HttpServletResponse;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final JwtUtil jwtUtil;
+    private final JwtService jwtUtil;
     private final AuthService authService;
     private final MemberService memberService;
 
-    public AuthController(JwtUtil jwtUtil, AuthService authService, MemberService memberService) {
+    public AuthController(JwtService jwtUtil, AuthService authService, MemberService memberService) {
         this.jwtUtil = jwtUtil;
         this.authService = authService;
         this.memberService = memberService;

@@ -1,4 +1,4 @@
-import axios from '../../utils/axiosConfig';
+import axios from './axiosConfig';
 
 export const fetchAccumulate = async (setAccumulate) => {
     const response = await axios.get('/admin/accumulate');
@@ -20,13 +20,43 @@ export const fetchAgeGroup = async (setAgeGroup) => {
 };
 
 export const fetchSidoGroup = async (setSidoGroup) => {
-    const resSidoGroup = await axios.get("/admin/sidogroup");
-    const totalOffices = resSidoGroup.data.reduce((sum, item) => sum + item.OFFICE_COUNT, 0);
-    const formattedSidoGroup = resSidoGroup.data.map(item => ({
-        name: item.SIDO,
-        value: parseFloat((item.OFFICE_COUNT / totalOffices * 100).toFixed(2)),
-    }));
-    setSidoGroup(formattedSidoGroup);
+    const groupData = (data, threshold) => {
+        let groupedData = data.reduce((acc, item) => {
+            if (item.value >= threshold) {
+                acc.push(item);
+            } else {
+                const otherIndex = acc.findIndex(i => i.name === '기타');
+                if (otherIndex !== -1) {
+                    acc[otherIndex].value += item.value;
+                } else {
+                    acc.push({ name: '기타', value: item.value });
+                }
+            }
+            return acc;
+        }, []);
+
+        groupedData.sort((a, b) => {
+            if (a.name === '기타') return 1;
+            if (b.name === '기타') return -1;
+            return b.value - a.value;
+        });
+
+        return groupedData;
+    };
+
+    try {
+        const resSidoGroup = await axios.get("/admin/sidogroup");
+        const totalOffices = resSidoGroup.data.reduce((sum, item) => sum + item.OFFICE_COUNT, 0);
+        const formattedSidoGroup = resSidoGroup.data.map(item => ({
+            name: item.SIDO,
+            value: parseFloat((item.OFFICE_COUNT / totalOffices * 100).toFixed(2)),
+        }));
+        const groupedData = groupData(formattedSidoGroup, 4);
+        setSidoGroup(groupedData);
+    } catch (error) {
+        console.error("Error fetching sido group data:", error);
+        setSidoGroup([]);
+    }
 };
 
 export const fetchGroupData = async (groupState, setGroupState, group) => {
