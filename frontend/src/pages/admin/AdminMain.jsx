@@ -5,7 +5,7 @@ import '../../styles/pages/admin/AdminMain.css';
 import Header from '../../components/admin/AdminHeader';
 import Sidebar from '../../components/admin/AdminSidebar';
 import StatCard from '../../components/admin/AdminStatCard';
-import { fetchAccumulate, fetchAgeGroup, fetchSidoGroup, fetchGroupData, fetchNotAvailabilityOffice, fetchNotices } from '../../services/admin/AdminMain';
+import { fetchAccumulate, fetchAgeGroup, fetchSidoGroup, fetchGroupData, fetchNotAvailabilityOffice, fetchNotices } from '../../utils/AdminMain';
 
 const calculateChange = (current, previous) => {
     if (previous === 0) return { change: '0.00%', className: 'no-change' };
@@ -224,12 +224,12 @@ const AdminMain = () => {
                         <ResponsiveContainer width="100%" height={300}>
                             <PieChart>
                                 <Pie
-                                    data={sidoGroup} cx="50%" cy="50%" outerRadius={80} innerRadius={60} dataKey="value" label={({ value }) => `${value}%`} animationDuration={1000} animationEasing="ease-out">
+                                    data={sidoGroup} cx="50%" cy="50%" outerRadius={70} innerRadius={0} dataKey="value" label={({ value }) => `${value.toFixed(2)}%`} animationDuration={1000} animationEasing="ease-out">
                                     {sidoGroup.map((entry, index) => (
                                         <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
                                     ))}
                                 </Pie>
-                                <Tooltip formatter={(value, name, props) => [`${value}%`, name]} />
+                                <Tooltip formatter={(value, name, props) => [`${value.toFixed(2)}%`, name]} />
                                 <Legend />
                             </PieChart>
                         </ResponsiveContainer>

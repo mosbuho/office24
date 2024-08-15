@@ -2,12 +2,13 @@
 
 ```
 office24/
+│
 ├── backend/
-│   └── table/
-│       ├── controller
-│       ├── model
-│       ├── mapper
-│       └── service
+│   ├── controller/
+│   ├── model/
+│   ├── mapper/
+│   ├── service/
+│   └── config/
 │
 └── frontend/
     ├── components/
@@ -17,11 +18,7 @@ office24/
     ├── pages/    
     │   ├── member/ 
     │   └── ...           
-    ├── services/
-    │   ├── member/ 
-    │   └── ...   
     ├── utils/
-    │   ├── member/ 
     │   └── ...            
     └── styles/
         ├── components/
@@ -34,10 +31,11 @@ office24/
 
 ### 백엔드 (Spring Boot)
 
-- controller: API 엔드포인트 정의
-- model: 데이터베이스 모델 정의
-- mapper: 데이터베이스 쿼리 매핑
-- service: 비즈니스 로직 구현
+- controller : API 엔드포인트 정의
+- model : 데이터베이스 모델 정의
+- service : 비즈니스 로직 구현
+- mapper : 데이터베이스 쿼리 매핑
+- config : 애플리케이션 설정 및 Spring Security 구성
 
 
 ### 프론트엔드 (React)
@@ -46,7 +44,6 @@ office24/
 - pages: 라우트에 해당하는 페이지 컴포넌트
 - styles: 전역 스타일 및 테마 설정
 - utils: 유틸리티 함수 및 헬퍼 모듈
-- services: API 호출 및 데이터 처리 로직
 
 <br>
 

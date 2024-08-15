@@ -1,4 +1,4 @@
-package com.kh.backend.common.jwt;
+package com.kh.backend.service;
 
 import java.security.Key;
 import java.util.Date;
@@ -11,7 +11,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 @Component
-public class JwtUtil {
+public class JwtService {
     private final Key accessKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final Key refreshKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final long accessTokenExpiration = 1000 * 60 * 60 * 1;

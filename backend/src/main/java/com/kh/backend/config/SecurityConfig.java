@@ -1,4 +1,4 @@
-package com.kh.backend.common.config;
+package com.kh.backend.config;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,17 +15,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
-import com.kh.backend.common.jwt.JwtAuthFilter;
-import com.kh.backend.common.jwt.JwtUtil;
+import com.kh.backend.service.JwtService;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    private final JwtUtil jwtUtil;
+    private final JwtService jwtUtil;
 
-    public SecurityConfig(JwtUtil jwtUtil) {
+    public SecurityConfig(JwtService jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
 

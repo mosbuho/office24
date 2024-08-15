@@ -1,4 +1,4 @@
-package com.kh.backend.common.message;
+package com.kh.backend.controller;
 
 import java.security.SecureRandom;
 import java.util.HashMap;
@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.kh.backend.model.MessageRequest;
 
 import jakarta.servlet.http.HttpSession;
 import net.nurigo.sdk.NurigoApp;

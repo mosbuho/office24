@@ -24,7 +24,7 @@ const AdminLogin = () => {
     return (
         <div className="admin-login">
             <div className='log'>
-                <div className="logo">office24</div>
+                <div className="logo">OFFICE24</div>
                 <div className="login-tabs">
                     <div className="active">총 관리자</div>
                 </div>

@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.kh.backend.common.geocoding.GeocodingService;
 import com.kh.backend.mapper.ManagerMapper;
 import com.kh.backend.mapper.OfficeMapper;
 import com.kh.backend.mapper.ReviewMapper;

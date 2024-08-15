@@ -1,4 +1,4 @@
-package com.kh.backend.common.message;
+package com.kh.backend.model;
 
 import lombok.Data;
 

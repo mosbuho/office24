@@ -7,7 +7,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.3.2</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<relativePath />
 	</parent>
 	<groupId>com.kh</groupId>
 	<artifactId>backend</artifactId>
@@ -99,7 +99,6 @@
 			<version>0.11.2</version>
 			<scope>runtime</scope>
 		</dependency>
-
 		<!-- coolsms -->
 		<dependency>
 			<groupId>net.nurigo</groupId>
@@ -124,9 +123,7 @@
 			<artifactId>spring-boot-starter-aop</artifactId>
 			<version>3.3.2</version>
 		</dependency>
-
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -143,5 +140,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
